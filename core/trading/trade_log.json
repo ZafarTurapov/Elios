@@ -1,0 +1,93 @@
+[
+  {
+    "timestamp": "2025-10-09T14:11:07.888397+00:00",
+    "side": "SELL",
+    "action": "SELL",
+    "symbol": "AGIX",
+    "qty": 316,
+    "entry": 38.26,
+    "exit": 38.27,
+    "pnl": 3.16,
+    "entry_date": "2025-10-09",
+    "exit_date": "2025-10-09",
+    "reason": "GPT_CONFIRM"
+  },
+  {
+    "timestamp": "2025-10-09T15:03:12.883339+00:00",
+    "side": "SELL",
+    "action": "SELL",
+    "symbol": "AMX",
+    "qty": 477,
+    "entry": 21.14,
+    "exit": 21.15,
+    "pnl": 4.77,
+    "entry_date": "2025-10-09",
+    "exit_date": "2025-10-09",
+    "reason": "GPT_CONFIRM"
+  },
+  {
+    "timestamp": "2025-10-09T15:20:05.558579+00:00",
+    "side": "SELL",
+    "action": "SELL",
+    "symbol": "AGIX",
+    "qty": 325,
+    "entry": 38.36,
+    "exit": 38.33,
+    "pnl": -9.75,
+    "entry_date": "2025-10-09",
+    "exit_date": "2025-10-09",
+    "reason": "GPT_CONFIRM"
+  },
+  {
+    "timestamp": "2025-10-09T15:48:10.831010+00:00",
+    "side": "SELL",
+    "action": "SELL",
+    "symbol": "AMX",
+    "qty": 422,
+    "entry": 21.14,
+    "exit": 21.15,
+    "pnl": 4.22,
+    "entry_date": "2025-10-09",
+    "exit_date": "2025-10-09",
+    "reason": "GPT_CONFIRM"
+  },
+  {
+    "timestamp": "2025-10-09T15:52:09.223820+00:00",
+    "side": "SELL",
+    "action": "SELL",
+    "symbol": "AGIX",
+    "qty": 305,
+    "entry": 38.32,
+    "exit": 38.32,
+    "pnl": 0.37,
+    "entry_date": "2025-10-09",
+    "exit_date": "2025-10-09",
+    "reason": "GPT_CONFIRM"
+  },
+  {
+    "timestamp": "2025-10-09T16:02:07.647707+00:00",
+    "side": "SELL",
+    "action": "SELL",
+    "symbol": "AIQ",
+    "qty": 366,
+    "entry": 51.22,
+    "exit": 51.22,
+    "pnl": 0.0,
+    "entry_date": "2025-10-09",
+    "exit_date": "2025-10-09",
+    "reason": "GPT_CONFIRM"
+  },
+  {
+    "timestamp": "2025-10-09T16:02:11.138709+00:00",
+    "side": "SELL",
+    "action": "SELL",
+    "symbol": "AMX",
+    "qty": 423,
+    "entry": 21.17,
+    "exit": 21.17,
+    "pnl": 0.0,
+    "entry_date": "2025-10-09",
+    "exit_date": "2025-10-09",
+    "reason": "GPT_CONFIRM"
+  }
+]

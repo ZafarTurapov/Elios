@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Pre-trade Quality Gate every 1 minute
+
+[Timer]
+OnBootSec=50
+OnUnitActiveSec=1min
+Unit=elios-pretrade-quality.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target

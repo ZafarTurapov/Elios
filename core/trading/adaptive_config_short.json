@@ -1,0 +1,15 @@
+{
+  "thresholds": {
+    "MAX_ATR_PCT": 5.0,
+    "MAX_VOLATILITY": 3.5,
+    "MIN_VOLUME_TREND": 0.1,
+    "MIN_RISK_SCORE": 10.0,
+    "MIN_BEARISH_BODY": 0.3,
+    "MIN_DAY_DROP": 0.2,
+    "MIN_GAP_DOWN": 0.05,
+    "MIN_VOLUME_RATIO": 0.95,
+    "MODEL_SCORE_MIN": 45.0
+  },
+  "last_count": 3,
+  "last_update": "2025-08-17T20:52:42.972962"
+}

@@ -1,0 +1,9 @@
+{
+  "timestamp": "2025-08-13 10:04:37",
+  "accuracy": 0.6081,
+  "f1_win": 0.7563,
+  "f1_loss": 0.0,
+  "n_samples": 366,
+  "n_train": 292,
+  "n_test": 74
+}

@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Elios Data Quality Audit daily at 03:58 +05 (22:58 UTC)
+
+[Timer]
+OnCalendar=*-*-* 22:58:00 UTC
+AccuracySec=1min
+Persistent=true
+Unit=elios-data-quality.service
+
+[Install]
+WantedBy=timers.target

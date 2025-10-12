@@ -1,0 +1,13 @@
+[Unit]
+Description=Elios one-shot SELL tick (positions_sync -> sell_engine)
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root/stockbot
+Environment=PYTHONPATH=/root/stockbot
+EnvironmentFile=-/root/stockbot/.env.local
+# ВАЖНО: python из venv, чтобы были все пакеты
+ExecStartPre=/root/stockbot/venv/bin/python -u -m core.trading.positions_sync
+ExecStart=/root/stockbot/venv/bin/python -u -m core.trading.sell_engine
+TimeoutSec=600

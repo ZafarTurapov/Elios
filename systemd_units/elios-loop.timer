@@ -1,0 +1,11 @@
+[Unit]
+Description=Start Elios loop at 18:30 Asia/Tashkent (weekdays)
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 18:30:00
+Persistent=true
+AccuracySec=15s
+Unit=elios-loop.service
+
+[Install]
+WantedBy=timers.target

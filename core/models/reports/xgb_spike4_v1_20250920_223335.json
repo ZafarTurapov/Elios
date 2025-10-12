@@ -1,0 +1,61 @@
+{
+  "timestamp_utc": "20250920_223335",
+  "params": {
+    "objective": "binary:logistic",
+    "eval_metric": "auc",
+    "tree_method": "hist",
+    "device": "cpu",
+    "eta": 0.05,
+    "max_depth": 6,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "lambda": 1.0,
+    "alpha": 0.0,
+    "seed": 42,
+    "nthread": 1,
+    "scale_pos_weight": 16.393892844053866
+  },
+  "best_iteration": 388,
+  "rows": 2788499,
+  "train_rows": 2230645,
+  "valid_rows": 557854,
+  "class_balance_train": {
+    "pos": 128243,
+    "neg": 2102402,
+    "pos_rate": 0.05749144305794961
+  },
+  "metrics": {
+    "AUC": 0.8669436012151881,
+    "AP": 0.267590982989553,
+    "thresholds": {
+      "t0.50": {
+        "threshold": 0.5,
+        "precision": 0.1432594980587909,
+        "recall": 0.7594872737296702,
+        "f1": 0.24105046734423075
+      },
+      "t_opt": {
+        "threshold": 0.4605807960033417,
+        "precision": 0.1323631430465414,
+        "recall": 0.7889368740237067,
+        "f1": 0.2266930693069307
+      }
+    }
+  },
+  "features": [
+    "rsi14",
+    "ema_dev_pct",
+    "atr_pct",
+    "volatility_pct",
+    "volume_trend",
+    "volume_ratio",
+    "gap_up_pct",
+    "bullish_body_pct",
+    "mom5_pct",
+    "mom20_pct"
+  ],
+  "target": "target_spike4",
+  "paths": {
+    "version_model": "/root/stockbot/core/models/versions/xgb_spike4_v1_20250920_223335.json"
+  }
+}

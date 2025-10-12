@@ -1,0 +1,16 @@
+[Unit]
+Description=Elios Daily Loss Circuit Breaker
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+Environment=PYTHONUNBUFFERED=1
+WorkingDirectory=/root/stockbot
+EnvironmentFile=-/root/stockbot/.env
+EnvironmentFile=-/root/stockbot/.env.local
+ExecStart=/root/stockbot/venv/bin/python -m core.trading.guards.daily_circuit_breaker
+Nice=5
+
+[Install]
+WantedBy=multi-user.target

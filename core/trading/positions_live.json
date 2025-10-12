@@ -1,0 +1,555 @@
+{
+    "AAPL": {
+        "qty": 1,
+        "avg_entry": 204.64,
+        "current_price": 204.02,
+        "unrealized_pl": -0.62,
+        "unrealized_plpc": -0.0030297107114934
+    },
+    "ABNB": {
+        "qty": 2,
+        "avg_entry": 131.6,
+        "current_price": 130.2,
+        "unrealized_pl": -2.8,
+        "unrealized_plpc": -0.0106382978723404
+    },
+    "ACLS": {
+        "qty": 16,
+        "avg_entry": 78.8,
+        "current_price": 77.98,
+        "unrealized_pl": -13.12,
+        "unrealized_plpc": -0.0104060913705584
+    },
+    "AFRM": {
+        "qty": 1,
+        "avg_entry": 72.91,
+        "current_price": 73.48,
+        "unrealized_pl": 0.57,
+        "unrealized_plpc": 0.0078178576326978
+    },
+    "AKAM": {
+        "qty": 1,
+        "avg_entry": 74.09,
+        "current_price": 73.965,
+        "unrealized_pl": -0.125,
+        "unrealized_plpc": -0.0016871372654879
+    },
+    "AMD": {
+        "qty": 2,
+        "avg_entry": 176.835,
+        "current_price": 176.9504,
+        "unrealized_pl": 0.2308,
+        "unrealized_plpc": 0.0006525857437724
+    },
+    "AMPL": {
+        "qty": 4,
+        "avg_entry": 12.04,
+        "current_price": 12.31,
+        "unrealized_pl": 1.08,
+        "unrealized_plpc": 0.0224252491694352
+    },
+    "AMZN": {
+        "qty": 1,
+        "avg_entry": 215.17,
+        "current_price": 215.425,
+        "unrealized_pl": 0.255,
+        "unrealized_plpc": 0.0011851094483432
+    },
+    "ANET": {
+        "qty": 3,
+        "avg_entry": 119.65,
+        "current_price": 119.46,
+        "unrealized_pl": -0.57,
+        "unrealized_plpc": -0.0015879648976181
+    },
+    "ASAN": {
+        "qty": 19,
+        "avg_entry": 14.32,
+        "current_price": 14.15,
+        "unrealized_pl": -3.23,
+        "unrealized_plpc": -0.0118715083798883
+    },
+    "AVGO": {
+        "qty": 1,
+        "avg_entry": 297.87,
+        "current_price": 296.195,
+        "unrealized_pl": -1.675,
+        "unrealized_plpc": -0.0056232584684594
+    },
+    "BIDU": {
+        "qty": 1,
+        "avg_entry": 86.69,
+        "current_price": 86.35,
+        "unrealized_pl": -0.34,
+        "unrealized_plpc": -0.0039220209943477
+    },
+    "BILI": {
+        "qty": 17,
+        "avg_entry": 23.14,
+        "current_price": 22.99,
+        "unrealized_pl": -2.55,
+        "unrealized_plpc": -0.0064822817631806
+    },
+    "BILL": {
+        "qty": 3,
+        "avg_entry": 41.55,
+        "current_price": 41.84,
+        "unrealized_pl": 0.87,
+        "unrealized_plpc": 0.0069795427196149
+    },
+    "CFLT": {
+        "qty": 14,
+        "avg_entry": 17.532857,
+        "current_price": 17.18,
+        "unrealized_pl": -4.94,
+        "unrealized_plpc": -0.0201254786930661
+    },
+    "CSCO": {
+        "qty": 4,
+        "avg_entry": 68.34,
+        "current_price": 67.915,
+        "unrealized_pl": -1.7,
+        "unrealized_plpc": -0.0062189054726368
+    },
+    "DDI": {
+        "qty": 34,
+        "avg_entry": 9.43,
+        "current_price": 9.38,
+        "unrealized_pl": -1.7,
+        "unrealized_plpc": -0.0053022269353128
+    },
+    "DDOG": {
+        "qty": 1,
+        "avg_entry": 137.13,
+        "current_price": 133.98,
+        "unrealized_pl": -3.15,
+        "unrealized_plpc": -0.0229709035222052
+    },
+    "DELL": {
+        "qty": 1,
+        "avg_entry": 127.95,
+        "current_price": 131.465,
+        "unrealized_pl": 3.515,
+        "unrealized_plpc": 0.0274716686205549
+    },
+    "DOCU": {
+        "qty": 2,
+        "avg_entry": 75.31,
+        "current_price": 74.47,
+        "unrealized_pl": -1.68,
+        "unrealized_plpc": -0.0111538972248041
+    },
+    "EA": {
+        "qty": 2,
+        "avg_entry": 160.31,
+        "current_price": 161.12,
+        "unrealized_pl": 1.62,
+        "unrealized_plpc": 0.0050527103736511
+    },
+    "EBAY": {
+        "qty": 7,
+        "avg_entry": 91.68,
+        "current_price": 91.54,
+        "unrealized_pl": -0.98,
+        "unrealized_plpc": -0.0015270506108202
+    },
+    "EDU": {
+        "qty": 5,
+        "avg_entry": 46.28,
+        "current_price": 46.57,
+        "unrealized_pl": 1.45,
+        "unrealized_plpc": 0.006266205704408
+    },
+    "ESTC": {
+        "qty": 2,
+        "avg_entry": 80.81,
+        "current_price": 80.15,
+        "unrealized_pl": -1.32,
+        "unrealized_plpc": -0.0081673060264819
+    },
+    "ETSY": {
+        "qty": 2,
+        "avg_entry": 56.93,
+        "current_price": 56.21,
+        "unrealized_pl": -1.44,
+        "unrealized_plpc": -0.0126471104865624
+    },
+    "FRSH": {
+        "qty": 12,
+        "avg_entry": 12.9,
+        "current_price": 13.555,
+        "unrealized_pl": 7.86,
+        "unrealized_plpc": 0.0507751937984496
+    },
+    "FSLY": {
+        "qty": 33,
+        "avg_entry": 6.469697,
+        "current_price": 6.435,
+        "unrealized_pl": -1.145,
+        "unrealized_plpc": -0.0053629976580796
+    },
+    "FTNT": {
+        "qty": 2,
+        "avg_entry": 98.69,
+        "current_price": 97.16,
+        "unrealized_pl": -3.06,
+        "unrealized_plpc": -0.0155030904853582
+    },
+    "FVRR": {
+        "qty": 1,
+        "avg_entry": 22.12,
+        "current_price": 21.45,
+        "unrealized_pl": -0.67,
+        "unrealized_plpc": -0.0302893309222423
+    },
+    "GLBE": {
+        "qty": 6,
+        "avg_entry": 32.41,
+        "current_price": 32.575,
+        "unrealized_pl": 0.99,
+        "unrealized_plpc": 0.0050910212897254
+    },
+    "GOOG": {
+        "qty": 2,
+        "avg_entry": 197.51,
+        "current_price": 196.28,
+        "unrealized_pl": -2.46,
+        "unrealized_plpc": -0.0062275327831502
+    },
+    "GOOGL": {
+        "qty": 2,
+        "avg_entry": 196.645,
+        "current_price": 195.47,
+        "unrealized_pl": -2.35,
+        "unrealized_plpc": -0.0059752345597396
+    },
+    "HPQ": {
+        "qty": 2,
+        "avg_entry": 25.11,
+        "current_price": 25.185,
+        "unrealized_pl": 0.15,
+        "unrealized_plpc": 0.0029868578255675
+    },
+    "HUYA": {
+        "qty": 16,
+        "avg_entry": 3.4,
+        "current_price": 3.435,
+        "unrealized_pl": 0.56,
+        "unrealized_plpc": 0.0102941176470588
+    },
+    "INTC": {
+        "qty": 31,
+        "avg_entry": 20.28,
+        "current_price": 20.295,
+        "unrealized_pl": 0.465,
+        "unrealized_plpc": 0.0007396449704142
+    },
+    "IQ": {
+        "qty": 143,
+        "avg_entry": 1.851818,
+        "current_price": 1.865,
+        "unrealized_pl": 1.885,
+        "unrealized_plpc": 0.0071183112420226
+    },
+    "JD": {
+        "qty": 4,
+        "avg_entry": 31.5,
+        "current_price": 31.4399,
+        "unrealized_pl": -0.2404,
+        "unrealized_plpc": -0.0019079365079365
+    },
+    "LI": {
+        "qty": 11,
+        "avg_entry": 25.776364,
+        "current_price": 25.595,
+        "unrealized_pl": -1.995,
+        "unrealized_plpc": -0.0070360442971009
+    },
+    "LRCX": {
+        "qty": 2,
+        "avg_entry": 98.33,
+        "current_price": 97.04,
+        "unrealized_pl": -2.58,
+        "unrealized_plpc": -0.0131190887826706
+    },
+    "MDB": {
+        "qty": 1,
+        "avg_entry": 230.89,
+        "current_price": 228.47,
+        "unrealized_pl": -2.42,
+        "unrealized_plpc": -0.0104811815150071
+    },
+    "MRNA": {
+        "qty": 4,
+        "avg_entry": 27.48,
+        "current_price": 27.49,
+        "unrealized_pl": 0.04,
+        "unrealized_plpc": 0.0003639010189229
+    },
+    "MRVL": {
+        "qty": 1,
+        "avg_entry": 75.56,
+        "current_price": 76.52,
+        "unrealized_pl": 0.96,
+        "unrealized_plpc": 0.0127051349920593
+    },
+    "MSFT": {
+        "qty": 1,
+        "avg_entry": 534.71,
+        "current_price": 532.39,
+        "unrealized_pl": -2.32,
+        "unrealized_plpc": -0.0043388004712835
+    },
+    "MSI": {
+        "qty": 1,
+        "avg_entry": 440.24,
+        "current_price": 440.6,
+        "unrealized_pl": 0.36,
+        "unrealized_plpc": 0.0008177357804834
+    },
+    "MU": {
+        "qty": 2,
+        "avg_entry": 108.72,
+        "current_price": 109.1,
+        "unrealized_pl": 0.76,
+        "unrealized_plpc": 0.003495217071376
+    },
+    "NET": {
+        "qty": 3,
+        "avg_entry": 213.8,
+        "current_price": 207.12,
+        "unrealized_pl": -20.04,
+        "unrealized_plpc": -0.031244153414406
+    },
+    "NIO": {
+        "qty": 14,
+        "avg_entry": 4.51,
+        "current_price": 4.4924,
+        "unrealized_pl": -0.2464,
+        "unrealized_plpc": -0.0039024390243902
+    },
+    "NTDOY": {
+        "qty": 21,
+        "avg_entry": 22.658095,
+        "current_price": 22.76,
+        "unrealized_pl": 2.14,
+        "unrealized_plpc": 0.0044974990542642
+    },
+    "NVDA": {
+        "qty": 2,
+        "avg_entry": 179.26,
+        "current_price": 178.93,
+        "unrealized_pl": -0.66,
+        "unrealized_plpc": -0.0018409014838782
+    },
+    "NXPI": {
+        "qty": 1,
+        "avg_entry": 214.09,
+        "current_price": 209.7436,
+        "unrealized_pl": -4.3464,
+        "unrealized_plpc": -0.0203017422579289
+    },
+    "OKTA": {
+        "qty": 1,
+        "avg_entry": 96.69,
+        "current_price": 96.085,
+        "unrealized_pl": -0.605,
+        "unrealized_plpc": -0.0062571103526735
+    },
+    "ON": {
+        "qty": 6,
+        "avg_entry": 48.34,
+        "current_price": 47.545,
+        "unrealized_pl": -4.77,
+        "unrealized_plpc": -0.0164460074472487
+    },
+    "ORCL": {
+        "qty": 2,
+        "avg_entry": 257.74,
+        "current_price": 256.55,
+        "unrealized_pl": -2.38,
+        "unrealized_plpc": -0.0046170559478544
+    },
+    "PDD": {
+        "qty": 2,
+        "avg_entry": 113.235,
+        "current_price": 112.87,
+        "unrealized_pl": -0.73,
+        "unrealized_plpc": -0.0032233849958052
+    },
+    "PINS": {
+        "qty": 9,
+        "avg_entry": 38.808889,
+        "current_price": 38.825,
+        "unrealized_pl": 0.145,
+        "unrealized_plpc": 0.0004151397159872
+    },
+    "PLTR": {
+        "qty": 12,
+        "avg_entry": 174.0575,
+        "current_price": 173.126,
+        "unrealized_pl": -11.178,
+        "unrealized_plpc": -0.0053516797609985
+    },
+    "PYPL": {
+        "qty": 2,
+        "avg_entry": 67.74,
+        "current_price": 68.0,
+        "unrealized_pl": 0.52,
+        "unrealized_plpc": 0.0038382049010924
+    },
+    "RBLX": {
+        "qty": 2,
+        "avg_entry": 129.7,
+        "current_price": 127.5547,
+        "unrealized_pl": -4.2906,
+        "unrealized_plpc": -0.0165404780262143
+    },
+    "RIVN": {
+        "qty": 21,
+        "avg_entry": 12.300476,
+        "current_price": 12.2948,
+        "unrealized_pl": -0.1192,
+        "unrealized_plpc": -0.0004614610351903
+    },
+    "ROKU": {
+        "qty": 1,
+        "avg_entry": 83.77,
+        "current_price": 84.69,
+        "unrealized_pl": 0.92,
+        "unrealized_plpc": 0.0109824519517727
+    },
+    "S": {
+        "qty": 2,
+        "avg_entry": 17.88,
+        "current_price": 17.5147,
+        "unrealized_pl": -0.7306,
+        "unrealized_plpc": -0.0204306487695749
+    },
+    "SE": {
+        "qty": 1,
+        "avg_entry": 152.9,
+        "current_price": 152.23,
+        "unrealized_pl": -0.67,
+        "unrealized_plpc": -0.0043819489862655
+    },
+    "SHOP": {
+        "qty": 2,
+        "avg_entry": 125.23,
+        "current_price": 126.19,
+        "unrealized_pl": 1.92,
+        "unrealized_plpc": 0.0076658947536533
+    },
+    "SNAP": {
+        "qty": 27,
+        "avg_entry": 9.44,
+        "current_price": 9.33,
+        "unrealized_pl": -2.97,
+        "unrealized_plpc": -0.0116525423728814
+    },
+    "SOFI": {
+        "qty": 15,
+        "avg_entry": 21.91,
+        "current_price": 21.575,
+        "unrealized_pl": -5.025,
+        "unrealized_plpc": -0.0152898219990872
+    },
+    "SWKS": {
+        "qty": 2,
+        "avg_entry": 68.03,
+        "current_price": 67.72,
+        "unrealized_pl": -0.62,
+        "unrealized_plpc": -0.00455681317066
+    },
+    "TAL": {
+        "qty": 40,
+        "avg_entry": 11.0,
+        "current_price": 11.07,
+        "unrealized_pl": 2.8,
+        "unrealized_plpc": 0.0063636363636364
+    },
+    "TCEHY": {
+        "qty": 4,
+        "avg_entry": 71.48,
+        "current_price": 71.58,
+        "unrealized_pl": 0.4,
+        "unrealized_plpc": 0.0013989927252378
+    },
+    "TENB": {
+        "qty": 1,
+        "avg_entry": 30.64,
+        "current_price": 30.35,
+        "unrealized_pl": -0.29,
+        "unrealized_plpc": -0.0094647519582245
+    },
+    "TTD": {
+        "qty": 6,
+        "avg_entry": 89.865,
+        "current_price": 88.045,
+        "unrealized_pl": -10.92,
+        "unrealized_plpc": -0.0202526011239081
+    },
+    "TTWO": {
+        "qty": 1,
+        "avg_entry": 227.47,
+        "current_price": 226.895,
+        "unrealized_pl": -0.575,
+        "unrealized_plpc": -0.0025278058645096
+    },
+    "TWLO": {
+        "qty": 2,
+        "avg_entry": 125.82,
+        "current_price": 124.9105,
+        "unrealized_pl": -1.819,
+        "unrealized_plpc": -0.0072285805118423
+    },
+    "TXG": {
+        "qty": 19,
+        "avg_entry": 13.45,
+        "current_price": 13.42,
+        "unrealized_pl": -0.57,
+        "unrealized_plpc": -0.0022304832713755
+    },
+    "TXN": {
+        "qty": 1,
+        "avg_entry": 185.93,
+        "current_price": 185.975,
+        "unrealized_pl": 0.045,
+        "unrealized_plpc": 0.0002420265691389
+    },
+    "U": {
+        "qty": 10,
+        "avg_entry": 34.32,
+        "current_price": 34.34,
+        "unrealized_pl": 0.2,
+        "unrealized_plpc": 0.0005827505827506
+    },
+    "UPST": {
+        "qty": 5,
+        "avg_entry": 82.5,
+        "current_price": 82.1486,
+        "unrealized_pl": -1.757,
+        "unrealized_plpc": -0.0042593939393939
+    },
+    "WIX": {
+        "qty": 1,
+        "avg_entry": 130.23,
+        "current_price": 128.26,
+        "unrealized_pl": -1.97,
+        "unrealized_plpc": -0.0151270828534132
+    },
+    "XPEV": {
+        "qty": 63,
+        "avg_entry": 19.336508,
+        "current_price": 19.3733,
+        "unrealized_pl": 2.3179,
+        "unrealized_plpc": 0.0019027253324577
+    },
+    "ZM": {
+        "qty": 2,
+        "avg_entry": 72.21,
+        "current_price": 72.27,
+        "unrealized_pl": 0.12,
+        "unrealized_plpc": 0.0008309098462817
+    }
+}

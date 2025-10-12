@@ -1,0 +1,14 @@
+[Unit]
+Description=Run sell_notifier every minute during market hours (UTC)
+
+[Timer]
+# 13:00–19:59 UTC: каждую минуту (фильтр 13:30+ делает ExecCondition в сервисе)
+OnCalendar=Mon..Fri *-*-* 13..19:*:00 UTC
+# Финальный тик в 20:00:00 UTC (на закрытии)
+OnCalendar=Mon..Fri *-*-* 20:00:00 UTC
+Persistent=true
+AccuracySec=15s
+Unit=sell-notifier.service
+
+[Install]
+WantedBy=timers.target

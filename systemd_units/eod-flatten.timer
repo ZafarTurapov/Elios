@@ -1,0 +1,14 @@
+[Unit]
+Description=Run EOD flattener near market close (UTC)
+
+[Timer]
+# Основной запуск за 2 минуты до закрытия рынка США
+OnCalendar=Mon..Fri *-*-* 19:58:00 UTC
+# Резервный запуск ровно на закрытии
+OnCalendar=Mon..Fri *-*-* 20:00:00 UTC
+AccuracySec=10s
+Persistent=true
+Unit=eod-flatten.service
+
+[Install]
+WantedBy=timers.target

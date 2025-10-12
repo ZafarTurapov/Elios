@@ -1,0 +1,11 @@
+[Unit]
+Description=Elios SELL tick every 5 minutes (positions_sync -> sell_engine)
+
+[Timer]
+OnCalendar=Mon..Fri *:0/5
+AccuracySec=30s
+Persistent=true
+Unit=elios-sell-once.service
+
+[Install]
+WantedBy=timers.target

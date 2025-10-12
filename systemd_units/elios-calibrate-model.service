@@ -1,0 +1,14 @@
+[Unit]
+Description=Elios Calibrate Model (Platt/Isotonic)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root/stockbot
+Environment=PYTHONPATH=/root/stockbot
+ExecStart=/root/stockbot/venv/bin/python -u /root/stockbot/core/pipeline/calibrate_model.py
+SuccessExitStatus=0
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7

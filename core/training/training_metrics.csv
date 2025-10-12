@@ -1,0 +1,9 @@
+timestamp,rows,groups,features,folds,accuracy_mean,precision_mean,recall_mean,f1_mean
+2025-08-15T10:45:48.397991,674,85,alpha_score|rsi|ema_dev|vol_ratio|atr_pct,5,0.610184,0.668633,0.730577,0.691564
+2025-08-15T12:58:05.194198+00:00,674,85,alpha_score|rsi|ema_dev|vol_ratio|atr_pct,5,0.610184,0.668633,0.730577,0.691564
+2025-08-17T20:31:26.469552+00:00,674,85,alpha_score|rsi|ema_dev|vol_ratio|atr_pct,5,0.610184,0.668633,0.730577,0.691564
+2025-08-18T20:31:31.208982+00:00,674,85,alpha_score|rsi|ema_dev|vol_ratio|atr_pct,5,0.610184,0.668633,0.730577,0.691564
+2025-08-19T20:31:32.312821+00:00,674,85,alpha_score|rsi|ema_dev|vol_ratio|atr_pct,5,0.610184,0.668633,0.730577,0.691564
+2025-08-20T20:31:24.843878+00:00,674,85,alpha_score|rsi|ema_dev|vol_ratio|atr_pct,5,0.610184,0.668633,0.730577,0.691564
+2025-08-21T20:31:31.963988+00:00,674,85,alpha_score|rsi|ema_dev|vol_ratio|atr_pct,5,0.610184,0.668633,0.730577,0.691564
+2025-08-24T20:31:29.684574+00:00,365,85,alpha_score|rsi|ema_dev|vol_ratio|atr_pct,5,0.643836,0.685154,0.784257,0.726465

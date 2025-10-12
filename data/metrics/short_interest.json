@@ -1,0 +1,8 @@
+{
+  "SHOP": {"short_float_pct": 11.5, "days_to_cover": 2.3, "borrow_fee_pct": 6.1},
+  "XNET": {"short_float_pct": 18.0, "days_to_cover": 3.1},
+  "XPEV": {"short_float_pct": 12.2, "days_to_cover": 2.0},
+  "INTC": {"short_float_pct": 2.1, "days_to_cover": 1.1},
+  "UBS":  {"short_float_pct": 1.0, "days_to_cover": 0.7},
+  "ZTO":  {"short_float_pct": 5.5, "days_to_cover": 1.4}
+}

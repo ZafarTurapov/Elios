@@ -1,0 +1,18 @@
+{
+  "mode": "equal_weight",
+  "budget": 86290.79,
+  "items": [
+    {
+      "symbol": "DDS",
+      "qty": 5
+    },
+    {
+      "symbol": "HAL",
+      "qty": 140
+    },
+    {
+      "symbol": "MCK",
+      "qty": 4
+    }
+  ]
+}

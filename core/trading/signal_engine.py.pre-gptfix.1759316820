@@ -1,0 +1,60 @@
+
+# --- ELIOS: unified Telegram emitter (appended at EOF) ---
+def _tg_new_signal(
+    symbol: str,
+    price: float,
+    percent_change: float,
+    rsi: float,
+    ema_dev: float,
+    atr_pct: float,
+    volatility_pct: float,
+    gpt_reply: str = ""
+) -> None:
+    """
+    Формат:
+      📊 Новый сигнал (BUY)
+      📌 $TICKER @ 123.45
+      ∆%=4.49% | RSI=68.44 | EMA dev=2.92%
+      ATR%=2.23 | Vol=1.52%
+      🤖 GPT: "…"
+    """
+    try:
+        from core.utils.telegram import send_telegram_message
+
+def _gpt_healthcheck():
+    try:
+        _key = os.getenv("OPENAI_API_KEY") or ""
+        if not _key or not _key.startswith("sk-"):
+            print("[GPT] OPENAI_API_KEY missing/invalid")
+            return False
+        r = client.chat.completions.create(
+            model=GPT_SIGNAL_MODEL,
+            messages=[{"role":"user","content":"Ответь ровно словом ДА."}],
+            temperature=0, max_tokens=3
+        )
+        ans = (r.choices[0].message.content or "").strip()
+        ok = bool(ans)
+        print(f"[GPT] healthcheck: {'OK' if ok else 'EMPTY'} → {ans}")
+        try:
+            send_telegram_message(f"🤖 GPT OK: {ans}")
+        except Exception as te:
+            print(f"[GPT] telegram note failed: {te}")
+        return ok
+    except Exception as e:
+        print(f"[GPT] healthcheck error: {e}")
+        return False
+
+        import time, os
+        msg = (
+            f"\U0001F4CA Новый сигнал (BUY)\n"
+            f"\U0001F4CD ${symbol} @ {price:.2f}\n"
+            f"\u2206%={percent_change:.2f}% | RSI={rsi:.2f} | EMA dev={ema_dev:.2f}%\n"
+            f"ATR%={atr_pct:.2f} | Vol={volatility_pct:.2f}%\n"
+            f"\U0001F916 GPT: \"{gpt_reply}\""
+        )
+        send_telegram_message(msg)
+        print(f"✅ TG emit: ${symbol} -> sent")
+        time.sleep(float(os.getenv("ELIOS_TG_COOLDOWN_SEC","0.3")))
+    except Exception as e:
+        print(f"[WARN] Telegram unified signal msg: {e}")
+# --- /ELIOS ---

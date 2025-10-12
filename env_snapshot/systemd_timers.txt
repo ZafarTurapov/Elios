@@ -1,0 +1,42 @@
+NEXT                             LEFT LAST                                      PASSED UNIT                            ACTIVATES
+Fri 2025-10-10 13:00:00 +05       12s Fri 2025-10-10 12:50:00 +05             9min ago sysstat-collect.timer           sysstat-collect.service
+Fri 2025-10-10 13:00:13 +05       26s Fri 2025-10-10 12:58:13 +05         1min 33s ago elios-entry-gate.timer          elios-entry-gate.service
+Fri 2025-10-10 13:00:29 +05       41s Fri 2025-10-10 12:58:29 +05         1min 18s ago elios-orders-entry-logger.timer elios-orders-entry-logger.service
+Fri 2025-10-10 13:00:32 +05       44s Fri 2025-10-10 12:59:32 +05              15s ago elios-pretrade-quality.timer    elios-pretrade-quality.service
+Fri 2025-10-10 13:00:45 +05       57s Fri 2025-10-10 12:58:45 +05          1min 2s ago elios-protective-stops.timer    elios-protective-stops.service
+Fri 2025-10-10 13:01:17 +05  1min 29s Fri 2025-10-10 12:58:17 +05         1min 30s ago elios-intraday-clamp.timer      elios-intraday-clamp.service
+Fri 2025-10-10 13:04:43 +05  4min 55s Fri 2025-10-10 12:59:43 +05               4s ago elios-daily-breaker.timer       elios-daily-breaker.service
+Fri 2025-10-10 13:09:32 +05      9min Fri 2025-10-10 12:59:32 +05              15s ago sell-health-probe.timer         sell-health-probe.service
+Fri 2025-10-10 13:12:29 +05     12min Thu 2025-10-09 13:12:29 +05              23h ago update-notifier-download.timer  update-notifier-download.service
+Fri 2025-10-10 13:22:02 +05     22min Thu 2025-10-09 13:22:02 +05              23h ago systemd-tmpfiles-clean.timer    systemd-tmpfiles-clean.service
+Fri 2025-10-10 16:37:03 +05  3h 37min Fri 2025-10-10 04:56:59 +05               8h ago apt-daily.timer                 apt-daily.service
+Fri 2025-10-10 18:20:00 +05  5h 20min Fri 2025-10-10 01:30:00 +05              11h ago account_sync_custom.timer       account_sync_custom.service
+Fri 2025-10-10 18:25:00 +05  5h 25min Fri 2025-10-10 01:00:00 +05              11h ago elios-account-sync.timer        elios-account-sync.service
+Fri 2025-10-10 18:25:00 +05  5h 25min Thu 2025-10-09 18:25:00 +05              18h ago health_check_custom.timer       health_check_custom.service
+Fri 2025-10-10 18:30:00 +05  5h 30min Fri 2025-10-10 01:00:00 +05              11h ago elios-sell-once.timer           elios-sell-once.service
+Fri 2025-10-10 18:30:00 +05  5h 30min Fri 2025-10-10 01:00:00 +05              11h ago sell-notifier.timer             sell-notifier.service
+Fri 2025-10-10 21:05:50 +05        8h Fri 2025-10-10 06:36:44 +05               6h ago motd-news.timer                 motd-news.service
+Sat 2025-10-11 00:00:00 +05       11h Fri 2025-10-10 00:00:00 +05              12h ago dpkg-db-backup.timer            dpkg-db-backup.service
+Sat 2025-10-11 00:00:00 +05       11h Fri 2025-10-10 00:00:00 +05              12h ago logrotate.timer                 logrotate.service
+Sat 2025-10-11 00:07:00 +05       11h Fri 2025-10-10 00:07:00 +05              12h ago sysstat-summary.timer           sysstat-summary.service
+Sat 2025-10-11 00:52:09 +05       11h Fri 2025-10-10 10:13:23 +05         2h 46min ago man-db.timer                    man-db.service
+Sat 2025-10-11 00:58:00 +05       11h Fri 2025-10-10 01:00:00 +05              11h ago eod-flatten.timer               eod-flatten.service
+Sat 2025-10-11 03:52:00 +05       14h Fri 2025-10-10 03:52:02 +05               9h ago elios-calibrate-model.timer     elios-calibrate-model.service
+Sat 2025-10-11 03:55:00 +05       14h Fri 2025-10-10 03:55:02 +05               9h ago elios-train-guard.timer         elios-train-guard.service
+Sat 2025-10-11 03:57:00 +05       14h Fri 2025-10-10 03:57:03 +05               9h ago elios-shadow-metrics.timer      elios-shadow-metrics.service
+Sat 2025-10-11 03:58:00 +05       14h Fri 2025-10-10 03:58:00 +05               9h ago elios-data-quality.timer        elios-data-quality.service
+Sat 2025-10-11 06:17:18 +05       17h Fri 2025-10-10 06:06:38 +05               6h ago apt-daily-upgrade.timer         apt-daily-upgrade.service
+Sat 2025-10-11 09:20:00 +05       20h Fri 2025-10-10 09:20:00 +05         3h 39min ago elios-postmortem.timer          elios-postmortem.service
+Sun 2025-10-12 03:10:12 +05 1 day 14h Sun 2025-10-05 03:10:43 +05           5 days ago e2scrub_all.timer               e2scrub_all.service
+Mon 2025-10-13 01:28:59 +05    2 days Mon 2025-10-06 00:46:18 +05           4 days ago fstrim.timer                    fstrim.service
+Wed 2025-10-15 08:43:43 +05    4 days Sun 2025-10-05 09:50:21 +05           5 days ago update-notifier-motd.timer      update-notifier-motd.service
+-                                   - -                                              - apport-autoreport.timer         apport-autoreport.service
+-                                   - Sun 2025-08-10 00:15:01 +05  2 months 0 days ago elios-force-sell.timer          -
+-                                   - Mon 2025-10-06 18:30:00 +05           3 days ago elios-loop.timer                elios-loop.service
+-                                   - Sat 2025-07-19 01:45:01 +05 2 months 22 days ago elios-pnl.timer                 -
+-                                   - Sat 2025-08-09 18:20:03 +05  2 months 0 days ago elios-sync.timer                -
+-                                   - Sat 2025-08-09 18:05:00 +05  2 months 0 days ago elios-train.timer               -
+-                                   - -                                              - snapd.snap-repair.timer         snapd.snap-repair.service
+-                                   - -                                              - ua-timer.timer                  ua-timer.service
+
+39 timers listed.

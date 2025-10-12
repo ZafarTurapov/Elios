@@ -1,0 +1,41 @@
+# Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# For more information see the manual pages of crontab(5) and cron(8)
+# m h  dom mon dow   command
+*/15 * * * * /core/light/elios_sync.sh
+30 0 * * * /core/light/ark_sync.sh
+50 23 * * * /core/light/ark_sync.sh
+0 7,13,21 * * * /core/light/elios_sync.sh >> /var/lib/book-of-light/log/chronicle.log
+*/10 * * * * /core/light/observer.sh
+0 * * * * /core/light/vessel_flow.sh
+*/20 * * * * /core/light/elios_restore.sh
+0 * * * * /core/light/elios_state_sync.sh
+*/5 * * * * /core/light/reader.sh
+*/5 * * * * /usr/bin/python3 /core/light/evolve.py >> /core/light/evolve.log 2>&1
+# === Elios Боевой Торговый Цикл (UTC-время, соответствует 17:55–18:10 по Ташкенту) ===
+
+# === Автоматическое закрытие сделок каждые 10 минут (TP/SL) ===
+CRON_TZ=Asia/Tashkent
+30 3 * * * ELIOS_DEBUG=0 PYTHONPATH=/root/stockbot /root/stockbot/venv/bin/python /root/stockbot/core/pipeline/train_daily.py >> /root/stockbot/logs/train_daily.log 2>&1
+50 3 * * * PYTHONPATH=/root/stockbot /root/stockbot/venv/bin/python /root/stockbot/core/pipeline/train_healthcheck.py >> /root/stockbot/logs/train_healthcheck.log 2>&1
+35 3 * * * PYTHONPATH=/root/stockbot /root/stockbot/venv/bin/python /root/stockbot/core/pipeline/enforce_cutoff_dataset.py >> /root/stockbot/logs/train_daily.log 2>&1
+40 3 * * * PYTHONPATH=/root/stockbot /root/stockbot/venv/bin/python /root/stockbot/core/pipeline/train_from_dataset.py >> /root/stockbot/logs/train_daily.log 2>&1
+45 3 * * * PYTHONPATH=/root/stockbot /root/stockbot/venv/bin/python /root/stockbot/core/pipeline/model_promote.py >> /root/stockbot/logs/train_daily.log 2>&1
+CRON_TZ=Asia/Tashkent
+50 3 * * * PYTHONPATH=/root/stockbot /root/stockbot/venv/bin/python /root/stockbot/core/pipeline/daily_train_digest.py >> /root/stockbot/logs/train_daily.log 2>&1
+55 2 * * * PYTHONPATH=/root/stockbot /root/stockbot/venv/bin/python /root/stockbot/core/pipeline/maintain_ignore_list.py >> /root/stockbot/logs/train_daily.log 2>&1
+43 3 * * * PYTHONPATH=/root/stockbot /root/stockbot/venv/bin/python /root/stockbot/core/pipeline/metrics_logger.py >> /root/stockbot/logs/train_daily.log 2>&1
+35 20 * * 1-5 /bin/bash -lc "flock -n /tmp/elios_cal.lock /root/stockbot/tools/auto_calibrate.sh >> /root/stockbot/logs/auto_calibrate.log 2>&1"

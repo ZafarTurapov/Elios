@@ -1,0 +1,8 @@
+[Unit]
+Description=Elios postmortem (yesterday)
+[Service]
+Type=oneshot
+Environment=PYTHONPATH=/root/stockbot
+Environment="ELIOS_POSTM_DATE="
+ExecStart=/root/stockbot/venv/bin/python /root/stockbot/tools/postmortem_yday.py
+WorkingDirectory=/root/stockbot

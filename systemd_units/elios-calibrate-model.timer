@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Elios Model Calibration daily at 03:52 +05 (22:52 UTC)
+
+[Timer]
+OnCalendar=*-*-* 22:52:00 UTC
+AccuracySec=1min
+Persistent=true
+Unit=elios-calibrate-model.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,14 @@
+[Unit]
+Description=Elios Shadow Metrics (precision@K & Brier)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root/stockbot
+Environment=PYTHONPATH=/root/stockbot
+ExecStart=/root/stockbot/venv/bin/python -u /root/stockbot/core/pipeline/shadow_metrics.py
+SuccessExitStatus=0 2
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7

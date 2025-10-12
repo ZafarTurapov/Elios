@@ -1,0 +1,17 @@
+[Unit]
+Description=Elios Orders Entry Logger -> trade_log.json
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+Environment=PYTHONUNBUFFERED=1
+WorkingDirectory=/root/stockbot
+EnvironmentFile=-/root/stockbot/.env
+EnvironmentFile=-/root/stockbot/.env.local
+ExecStart=/root/stockbot/venv/bin/python -m core.trading.telemetry.orders_entry_logger
+Nice=5
+IOSchedulingClass=2
+
+[Install]
+WantedBy=multi-user.target

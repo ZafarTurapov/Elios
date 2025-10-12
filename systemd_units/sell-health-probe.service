@@ -1,0 +1,12 @@
+[Unit]
+Description=Elios SELL health-probe (heartbeat & positions)
+Wants=sell-health-probe.timer
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root/stockbot
+Environment=PYTHONPATH=/root/stockbot
+ExecStart=/root/stockbot/venv/bin/python /root/stockbot/tools/sell_health_probe.py
+
+[Install]
+WantedBy=multi-user.target

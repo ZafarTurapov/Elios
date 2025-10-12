@@ -1,0 +1,192 @@
+{
+  "loaded": true,
+  "count": 366,
+  "time_range": [
+    "2025-07-17T14:12:05.588023",
+    "2025-07-26T05:55:05.452122"
+  ],
+  "unique_symbols": 85,
+  "top_symbols": [
+    [
+      "PINS",
+      13
+    ],
+    [
+      "U",
+      12
+    ],
+    [
+      "ON",
+      9
+    ],
+    [
+      "AMD",
+      8
+    ],
+    [
+      "COIN",
+      8
+    ],
+    [
+      "MSFT",
+      8
+    ],
+    [
+      "NFLX",
+      8
+    ],
+    [
+      "SNAP",
+      8
+    ],
+    [
+      "EA",
+      8
+    ],
+    [
+      "RBLX",
+      7
+    ]
+  ],
+  "class_balance": {
+    "WIN": 225,
+    "LOSS": 141,
+    "WIN_share": 0.6148
+  },
+  "missing_fields": {},
+  "nan_counts": {},
+  "out_of_range": {},
+  "duplicates": 0,
+  "per_symbol_stats": {
+    "MU": {
+      "n": 5,
+      "wins": 2,
+      "losses": 3,
+      "win_rate": 0.4
+    },
+    "AFRM": {
+      "n": 5,
+      "wins": 4,
+      "losses": 1,
+      "win_rate": 0.8
+    },
+    "AMD": {
+      "n": 8,
+      "wins": 7,
+      "losses": 1,
+      "win_rate": 0.875
+    },
+    "COIN": {
+      "n": 8,
+      "wins": 4,
+      "losses": 4,
+      "win_rate": 0.5
+    },
+    "CRWD": {
+      "n": 5,
+      "wins": 2,
+      "losses": 3,
+      "win_rate": 0.4
+    },
+    "CSCO": {
+      "n": 3,
+      "wins": 2,
+      "losses": 1,
+      "win_rate": 0.6667
+    },
+    "EDU": {
+      "n": 5,
+      "wins": 1,
+      "losses": 4,
+      "win_rate": 0.2
+    },
+    "KLAC": {
+      "n": 6,
+      "wins": 5,
+      "losses": 1,
+      "win_rate": 0.8333
+    },
+    "LRCX": {
+      "n": 6,
+      "wins": 3,
+      "losses": 3,
+      "win_rate": 0.5
+    },
+    "MRVL": {
+      "n": 4,
+      "wins": 3,
+      "losses": 1,
+      "win_rate": 0.75
+    },
+    "MSFT": {
+      "n": 8,
+      "wins": 8,
+      "losses": 0,
+      "win_rate": 1.0
+    },
+    "NET": {
+      "n": 6,
+      "wins": 5,
+      "losses": 1,
+      "win_rate": 0.8333
+    },
+    "NFLX": {
+      "n": 8,
+      "wins": 4,
+      "losses": 4,
+      "win_rate": 0.5
+    },
+    "NTDOY": {
+      "n": 2,
+      "wins": 1,
+      "losses": 1,
+      "win_rate": 0.5
+    },
+    "NVDA": {
+      "n": 6,
+      "wins": 5,
+      "losses": 1,
+      "win_rate": 0.8333
+    },
+    "ORCL": {
+      "n": 6,
+      "wins": 5,
+      "losses": 1,
+      "win_rate": 0.8333
+    },
+    "PLTR": {
+      "n": 2,
+      "wins": 2,
+      "losses": 0,
+      "win_rate": 1.0
+    },
+    "RBLX": {
+      "n": 7,
+      "wins": 4,
+      "losses": 3,
+      "win_rate": 0.5714
+    },
+    "ROKU": {
+      "n": 5,
+      "wins": 2,
+      "losses": 3,
+      "win_rate": 0.4
+    },
+    "SOFI": {
+      "n": 4,
+      "wins": 2,
+      "losses": 2,
+      "win_rate": 0.5
+    }
+  },
+  "notes": [
+    "ticker_imbalance: PINS имеет 13 примеров (>12); проверь downsampling"
+  ],
+  "sklearn_cv": {
+    "folds": 5,
+    "accuracy_mean": 0.6310995927434284,
+    "precision_mean": 0.692259068824001,
+    "recall_mean": 0.7495203930161872,
+    "f1_mean": 0.7113014032926381
+  }
+}

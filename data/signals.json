@@ -1,0 +1,14 @@
+[
+  {
+    "symbol": "SOFI",
+    "side": "buy",
+    "qty": 3,
+    "score": 0.99,
+    "reason": "GPT_CONFIRM",
+    "order_type": "market",
+    "bracket": {
+      "take_profit_pct": 0.002,
+      "stop_loss_pct": 0.0025
+    }
+  }
+]

@@ -1,0 +1,2 @@
+timestamp,loaded_rows,downsample_rows,n_features,acc_mean,acc_std,prec_mean,prec_std,recall_mean,recall_std,f1_mean,f1_std,model_path
+2025-08-25T01:31:28,366,365,6,0.6521,0.0602,0.7033,0.1138,0.7621,0.0437,0.7259,0.0575,/root/stockbot/core/training/trained_model.pkl

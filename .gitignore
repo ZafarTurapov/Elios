@@ -26,3 +26,11 @@ signals_backup.json
 
 # Misc
 *.sqlite3
+
+# Secrets & quarantine
+.env.sh
+.env.local
+.quarantine/
+
+# temp restore dir
+restore_tmp/

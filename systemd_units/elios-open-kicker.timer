@@ -1,0 +1,11 @@
+[Unit]
+Description=Timer for opening safety kicker
+
+[Timer]
+OnCalendar=*-*-* 18:31:00
+OnCalendar=*-*-* 18:36:00
+Persistent=true
+Unit=elios-open-kicker.service
+
+[Install]
+WantedBy=timers.target

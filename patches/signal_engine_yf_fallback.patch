@@ -1,0 +1,122 @@
+--- core/trading/signal_engine.py
++++ core/trading/signal_engine.py
+@@
+-from datetime import datetime, timezone
++from datetime import datetime, timezone, timedelta
+@@
+-# === Внешние библиотеки ===
+-import yfinance as yf
+-from ta.momentum import RSIIndicator
+-from ta.trend import EMAIndicator
+-from ta.volatility import AverageTrueRange
++# === Внешние библиотеки ===
++import yfinance as yf
++from ta.momentum import RSIIndicator
++from ta.trend import EMAIndicator
++from ta.volatility import AverageTrueRange
++import logging
++logging.getLogger("yfinance").setLevel(logging.ERROR)
++logging.getLogger("urllib3").setLevel(logging.WARNING)
+@@
+ def safe_squeeze(series):
+     if hasattr(series, 'ndim') and series.ndim > 1:
+         return series.squeeze()
+     return series
++
++# === Надёжная подгрузка OHLCV + чёрный список тикеров ===
++def _timeframe_days(tf: str) -> int:
++    """Преобразует '30d'/'3mo'/'1y' в дни для фетчера."""
++    try:
++        tf = (tf or "").strip().lower()
++        if tf.endswith("d"):
++            return int(tf[:-1])
++        if tf.endswith("mo"):
++            return int(tf[:-2]) * 30
++        if tf.endswith("y"):
++            return int(tf[:-1]) * 365
++    except Exception:
++        pass
++    return 30
++
++def fetch_ohlcv(symbol: str, days: int = 60, interval: str = "1d"):
++    """
++    1) Пробуем Yahoo Finance
++    2) Фолбэк: Alpaca /v2/stocks/{symbol}/bars
++    Возвращает DataFrame c колонками Open, High, Low, Close, Volume либо None.
++    """
++    # 1) Yahoo
++    try:
++        df = yf.download(symbol, period=f"{days}d", interval=interval,
++                         progress=False, auto_adjust=False)
++        if df is not None and not getattr(df, "empty", True) and df.shape[0] >= 2:
++            return df
++    except Exception as e:
++        print(f"[YF FAIL {symbol}] {str(e)[:120]}")
++
++    # 2) Alpaca
++    try:
++        end = datetime.now(timezone.utc)
++        start = end - timedelta(days=days * 2)
++        url = f"{ALPACA_DATA_BASE}/stocks/{symbol}/bars"
++        params = {
++            "timeframe": "1Day" if interval == "1d" else "1Min",
++            "start": end.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
++            "end":   start.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
++            "limit": 10000,
++            "adjustment": "raw",
++        }
++        r = requests.get(url, headers=_alpaca_headers(), params=params, timeout=10)
++        if r.status_code == 200:
++            payload = r.json() or {}
++            bars = payload.get("bars") or []
++            if bars:
++                import pandas as pd
++                df = pd.DataFrame(bars)
++                df["Date"] = pd.to_datetime(df["t"], utc=True)
++                df.set_index("Date", inplace=True)
++                df.rename(columns={"o":"Open","h":"High","l":"Low","c":"Close","v":"Volume"}, inplace=True)
++                df = df[["Open","High","Low","Close","Volume"]]
++                if not df.empty and df.shape[0] >= 2:
++                    return df
++        else:
++            print(f"[ALPACA BARS {symbol}] {r.status_code} {r.text[:120]}")
++    except Exception as e:
++        print(f"[ALPACA FAIL {symbol}] {str(e)[:120]}")
++
++    return None
++
++BLACKLIST_PATH = "core/trading/blacklist.json"
++def load_blacklist() -> set:
++    try:
++        p = Path(BLACKLIST_PATH)
++        if p.exists():
++            data = json.loads(p.read_text())
++            if isinstance(data, list):
++                return set(map(str, data))
++    except Exception as e:
++        print(f"[WARN] blacklist read: {e}")
++    return set()
+@@
+-    active_symbols = load_active_symbols()
++    active_symbols = load_active_symbols()
++    blacklist = load_blacklist()
+@@
+-    for symbol in tickers:
++    for symbol in tickers:
++        if symbol in blacklist:
++            print(f"[SKIP] {symbol} — blacklist")
++            continue
+         if symbol in active_symbols:
+             print(f"[SKIP] {symbol} — already in position")
+             continue
+@@
+-            data = yf.download(symbol, period=TIMEFRAME, interval=INTERVAL, progress=False, auto_adjust=False)
+-            if data is None or getattr(data, "empty", True) or data.shape[0] < 2:
+-                rejected[symbol] = "Недостаточно данных"
+-                reasons_count["Недостаточно данных"] += 1
+-                continue
++            data = fetch_ohlcv(symbol, days=_timeframe_days(TIMEFRAME), interval=INTERVAL)
++            if data is None or getattr(data, "empty", True) or data.shape[0] < 2:
++                rejected[symbol] = "Нет котировок (делистинг/стоп торги/провайдер)"
++                reasons_count["Нет котировок"] += 1
++                continue

@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Orders Entry Logger every 2 minutes
+
+[Timer]
+OnBootSec=70
+OnUnitActiveSec=2min
+Unit=elios-orders-entry-logger.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target

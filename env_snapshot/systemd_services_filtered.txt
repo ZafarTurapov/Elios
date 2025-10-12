@@ -1,0 +1,6 @@
+● elios-api.service                                     not-found active     running      elios-api.service
+● elios-force-sell.service                              not-found failed     failed       elios-force-sell.service
+  elios-loop.service                                    loaded    active     running      Elios Trading Loop Launcher
+● elios-sync.service                                    not-found failed     failed       elios-sync.service
+  evolve-agent.service                                  loaded    activating auto-restart Elios Evolve Auto-Updater
+  signal-engine.service                                 loaded    activating auto-restart Elios Signal Engine — Торговый Анализатор

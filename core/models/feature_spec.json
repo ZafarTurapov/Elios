@@ -1,0 +1,25 @@
+{
+  "target": "target_spike4",
+  "features": [
+    "rsi14",
+    "ema_dev_pct",
+    "atr_pct",
+    "volatility_pct",
+    "volume_trend",
+    "volume_ratio",
+    "gap_up_pct",
+    "bullish_body_pct",
+    "mom5_pct",
+    "mom20_pct"
+  ],
+  "windows": {
+    "rsi": 14,
+    "ema": 10,
+    "atr": 14,
+    "volatility": 30,
+    "volratio": 10,
+    "mom5": 5,
+    "mom20": 20
+  },
+  "target_pct": 0.04
+}

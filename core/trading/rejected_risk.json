@@ -1,0 +1,240 @@
+{
+  "AAPL": {
+    "price": 220.4,
+    "action": "BUY",
+    "confidence": 0.3,
+    "score": 64.67,
+    "reason": "no_data"
+  },
+  "ADBE": {
+    "price": 488,
+    "action": "BUY",
+    "confidence": 0.06,
+    "score": 38.73,
+    "reason": "no_data"
+  },
+  "AFRM": {
+    "price": 79.71,
+    "action": "BUY",
+    "confidence": 0.41,
+    "score": 60.34,
+    "reason": "no_data"
+  },
+  "AMD": {
+    "price": 171.86,
+    "action": "BUY",
+    "confidence": 0.29,
+    "score": 63.1,
+    "reason": "no_data"
+  },
+  "ASAN": {
+    "price": 14.05,
+    "action": "BUY",
+    "confidence": 0.06,
+    "score": 39.0,
+    "reason": "no_data"
+  },
+  "COIN": {
+    "price": 316,
+    "action": "BUY",
+    "confidence": 0.11,
+    "score": 32.69,
+    "reason": "no_data"
+  },
+  "DDOG": {
+    "price": 144.2,
+    "action": "BUY",
+    "confidence": 0.17,
+    "score": 75.63,
+    "reason": "no_data"
+  },
+  "DOCU": {
+    "price": 69.52,
+    "action": "BUY",
+    "confidence": 0.1,
+    "score": 58.6,
+    "reason": "no_data"
+  },
+  "ETSY": {
+    "price": 59.31,
+    "action": "BUY",
+    "confidence": 0.26,
+    "score": 41.56,
+    "reason": "no_data"
+  },
+  "FSLY": {
+    "price": 7.41,
+    "action": "BUY",
+    "confidence": 0.72,
+    "score": 108.35,
+    "reason": "no_data"
+  },
+  "HUYA": {
+    "price": 3.29,
+    "action": "BUY",
+    "confidence": 0.02,
+    "score": 19.7,
+    "reason": "no_data"
+  },
+  "IQ": {
+    "price": 1.84,
+    "action": "BUY",
+    "confidence": 0.02,
+    "score": 15.47,
+    "reason": "no_data"
+  },
+  "LI": {
+    "price": 24.63,
+    "action": "BUY",
+    "confidence": 0.11,
+    "score": 26.78,
+    "reason": "no_data"
+  },
+  "MDB": {
+    "price": 224.61,
+    "action": "BUY",
+    "confidence": 0.07,
+    "score": 50.2,
+    "reason": "no_data"
+  },
+  "MRVL": {
+    "price": 75.38,
+    "action": "BUY",
+    "confidence": 0.04,
+    "score": 28.37,
+    "reason": "no_data"
+  },
+  "MSFT": {
+    "price": 518.87,
+    "action": "BUY",
+    "confidence": 0.03,
+    "score": 26.51,
+    "reason": "no_data"
+  },
+  "NIO": {
+    "price": 4.67,
+    "action": "BUY",
+    "confidence": 0.07,
+    "score": 22.58,
+    "reason": "no_data"
+  },
+  "NOW": {
+    "price": 869.2,
+    "action": "BUY",
+    "confidence": 0.07,
+    "score": 44.86,
+    "reason": "no_data"
+  },
+  "OKTA": {
+    "price": 92.44,
+    "action": "BUY",
+    "confidence": 0.05,
+    "score": 38.01,
+    "reason": "no_data"
+  },
+  "ORCL": {
+    "price": 248.61,
+    "action": "BUY",
+    "confidence": 0.06,
+    "score": 41.0,
+    "reason": "no_data"
+  },
+  "PANW": {
+    "price": 331.03,
+    "action": "BUY",
+    "confidence": 0.06,
+    "score": 38.38,
+    "reason": "no_data"
+  },
+  "SNAP": {
+    "price": 7.49,
+    "action": "BUY",
+    "confidence": 0.07,
+    "score": 42.39,
+    "reason": "no_data"
+  },
+  "SNOW": {
+    "price": 204.64,
+    "action": "BUY",
+    "confidence": 0.06,
+    "score": 41.94,
+    "reason": "no_data"
+  },
+  "TAL": {
+    "price": 11.47,
+    "action": "BUY",
+    "confidence": 0.24,
+    "score": 42.06,
+    "reason": "no_data"
+  },
+  "TXN": {
+    "price": 185.8,
+    "action": "BUY",
+    "confidence": 0.03,
+    "score": 20.75,
+    "reason": "no_data"
+  },
+  "U": {
+    "price": 33.09,
+    "action": "BUY",
+    "confidence": 0.21,
+    "score": 50.05,
+    "reason": "no_data"
+  },
+  "ZS": {
+    "price": 269.39,
+    "action": "BUY",
+    "confidence": 0.09,
+    "score": 55.24,
+    "reason": "no_data"
+  },
+  "FRSH": {
+    "price": 13.11,
+    "action": "BUY",
+    "confidence": 0.04,
+    "score": 26.55,
+    "reason": "no_data"
+  },
+  "AMPL": {
+    "price": 12.44,
+    "action": "BUY",
+    "confidence": 0.26,
+    "score": 82.57,
+    "reason": "no_data"
+  },
+  "GLBE": {
+    "price": 35.46,
+    "action": "BUY",
+    "confidence": 0.25,
+    "score": 65.72,
+    "reason": "no_data"
+  },
+  "MNDY": {
+    "price": 247.21,
+    "action": "BUY",
+    "confidence": 0.09,
+    "score": 53.0,
+    "reason": "no_data"
+  },
+  "ANET": {
+    "price": 137.65,
+    "action": "BUY",
+    "confidence": 0.35,
+    "score": 57.19,
+    "reason": "no_data"
+  },
+  "DELL": {
+    "price": 133.07,
+    "action": "BUY",
+    "confidence": 0.2,
+    "score": 44.96,
+    "reason": "no_data"
+  },
+  "HPQ": {
+    "price": 25.29,
+    "action": "BUY",
+    "confidence": 0.09,
+    "score": 35.68,
+    "reason": "no_data"
+  }
+}

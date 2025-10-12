@@ -1,0 +1,13 @@
+[Unit]
+Description=Run account sync at 18:25 and 01:00 (Asia/Tashkent), Mon-Fri
+
+[Timer]
+# сервер в часовом поясе +05; при UTC-сервере — смотри комментарий ниже
+OnCalendar=Mon..Fri 18:25
+OnCalendar=Mon..Fri 01:00
+Persistent=true
+RandomizedDelaySec=0
+Unit=elios-account-sync.service
+
+[Install]
+WantedBy=timers.target

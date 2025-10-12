@@ -1,0 +1,11 @@
+[Unit]
+Description=Elios account sync (balance/cash/margins) + Telegram forward
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root/stockbot
+Environment=PYTHONPATH=/root/stockbot
+EnvironmentFile=-/root/stockbot/.env.local
+ExecStart=/root/stockbot/tools/run_account_sync_and_notify.sh
+TimeoutSec=600

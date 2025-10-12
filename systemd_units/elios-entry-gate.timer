@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Elios Entry Orders Gate every 2 minutes
+
+[Timer]
+OnBootSec=60
+OnUnitActiveSec=2min
+Unit=elios-entry-gate.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target

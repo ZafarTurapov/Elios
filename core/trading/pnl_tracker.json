@@ -1,0 +1,1883 @@
+[
+  {
+    "timestamp": "2025-09-02T14:10:09.098145+00:00",
+    "symbol": "JD",
+    "qty": 1229,
+    "entry": 30.78,
+    "exit": 30.88,
+    "invested": 37828.62,
+    "revenue": 37951.52
+  },
+  {
+    "timestamp": "2025-09-02T14:25:07.137923+00:00",
+    "symbol": "BABA",
+    "qty": 21,
+    "entry": 136.97,
+    "exit": 137.73,
+    "invested": 2876.37,
+    "revenue": 2892.33
+  },
+  {
+    "timestamp": "2025-09-02T14:25:10.247890+00:00",
+    "symbol": "DVN",
+    "qty": 20,
+    "entry": 36.48,
+    "exit": 36.19,
+    "invested": 729.6,
+    "revenue": 723.8
+  },
+  {
+    "timestamp": "2025-09-02T14:55:08.529490+00:00",
+    "symbol": "BABA",
+    "qty": 231,
+    "entry": 137.9,
+    "exit": 136.78,
+    "invested": 31854.9,
+    "revenue": 31596.18
+  },
+  {
+    "timestamp": "2025-09-02T15:50:07.118244+00:00",
+    "symbol": "AMT",
+    "qty": 26,
+    "entry": 202.4,
+    "exit": 202.46,
+    "invested": 5262.4,
+    "revenue": 5263.96
+  },
+  {
+    "timestamp": "2025-09-02T16:05:07.532459+00:00",
+    "symbol": "BABA",
+    "qty": 210,
+    "entry": 136.92,
+    "exit": 137.06,
+    "invested": 28753.2,
+    "revenue": 28782.6
+  },
+  {
+    "timestamp": "2025-09-02T19:15:05.916511+00:00",
+    "symbol": "DDI",
+    "qty": 444,
+    "entry": 9.82,
+    "exit": 9.71,
+    "invested": 4360.08,
+    "revenue": 4311.24
+  },
+  {
+    "timestamp": "2025-09-03T14:10:09.433986+00:00",
+    "symbol": "M",
+    "qty": 2336,
+    "entry": 16.05,
+    "exit": 16.13,
+    "invested": 37492.8,
+    "revenue": 37679.68
+  },
+  {
+    "timestamp": "2025-09-03T14:35:09.207776+00:00",
+    "symbol": "M",
+    "qty": 2353,
+    "entry": 16.11,
+    "exit": 16.15,
+    "invested": 37906.83,
+    "revenue": 38000.95
+  },
+  {
+    "timestamp": "2025-09-03T15:15:08.354444+00:00",
+    "symbol": "M",
+    "qty": 2357,
+    "entry": 16.0,
+    "exit": 16.04,
+    "invested": 37712.0,
+    "revenue": 37806.28
+  },
+  {
+    "timestamp": "2025-09-03T15:35:07.656966+00:00",
+    "symbol": "M",
+    "qty": 2397,
+    "entry": 15.71,
+    "exit": 15.74,
+    "invested": 37656.87,
+    "revenue": 37728.78
+  },
+  {
+    "timestamp": "2025-09-03T16:20:10.275779+00:00",
+    "symbol": "CPB",
+    "qty": 1153,
+    "entry": 32.97,
+    "exit": 33.0,
+    "invested": 38014.41,
+    "revenue": 38049.0
+  },
+  {
+    "timestamp": "2025-09-04T14:25:07.929132+00:00",
+    "symbol": "RBLX",
+    "qty": 262,
+    "entry": 131.85,
+    "exit": 132.11,
+    "invested": 34544.7,
+    "revenue": 34612.82
+  },
+  {
+    "timestamp": "2025-09-04T15:05:08.178908+00:00",
+    "symbol": "M",
+    "qty": 2289,
+    "entry": 16.54,
+    "exit": 16.36,
+    "invested": 37860.06,
+    "revenue": 37448.04
+  },
+  {
+    "timestamp": "2025-09-04T15:15:08.273954+00:00",
+    "symbol": "HPE",
+    "qty": 1173,
+    "entry": 24.0,
+    "exit": 24.01,
+    "invested": 28152.0,
+    "revenue": 28163.73
+  },
+  {
+    "timestamp": "2025-09-04T15:45:17.538188+00:00",
+    "symbol": "HPE",
+    "qty": 970,
+    "entry": 23.99,
+    "exit": 24.06,
+    "invested": 23270.3,
+    "revenue": 23338.2
+  },
+  {
+    "timestamp": "2025-09-04T15:45:23.412917+00:00",
+    "symbol": "K",
+    "qty": 73,
+    "entry": 79.71,
+    "exit": 79.74,
+    "invested": 5818.83,
+    "revenue": 5821.02
+  },
+  {
+    "timestamp": "2025-09-04T16:06:43.894430+00:00",
+    "symbol": "M",
+    "qty": 1766,
+    "entry": 16.57,
+    "exit": 16.66,
+    "invested": 29262.62,
+    "revenue": 29421.56
+  },
+  {
+    "timestamp": "2025-09-04T16:20:07.565089+00:00",
+    "symbol": "LUMN",
+    "qty": 1814,
+    "entry": 5.17,
+    "exit": 4.99,
+    "invested": 9378.38,
+    "revenue": 9051.86
+  },
+  {
+    "timestamp": "2025-09-05T13:45:20.259607+00:00",
+    "symbol": "TJX",
+    "qty": 130,
+    "entry": 141.17,
+    "exit": 141.24,
+    "invested": 18352.1,
+    "revenue": 18361.43
+  },
+  {
+    "timestamp": "2025-09-05T14:05:07.340927+00:00",
+    "symbol": "CLX",
+    "qty": 72,
+    "entry": 126.6,
+    "exit": 126.84,
+    "invested": 9115.2,
+    "revenue": 9132.48
+  },
+  {
+    "timestamp": "2025-09-05T14:05:12.137159+00:00",
+    "symbol": "PG",
+    "qty": 46,
+    "entry": 159.73,
+    "exit": 159.89,
+    "invested": 7347.58,
+    "revenue": 7354.94
+  },
+  {
+    "timestamp": "2025-09-05T14:05:15.834086+00:00",
+    "symbol": "TJX",
+    "qty": 85,
+    "entry": 140.44,
+    "exit": 140.77,
+    "invested": 11937.4,
+    "revenue": 11965.45
+  },
+  {
+    "timestamp": "2025-09-05T14:30:07.484689+00:00",
+    "symbol": "CLX",
+    "qty": 69,
+    "entry": 126.96,
+    "exit": 127.0,
+    "invested": 8760.24,
+    "revenue": 8763.0
+  },
+  {
+    "timestamp": "2025-09-05T14:30:11.071885+00:00",
+    "symbol": "HST",
+    "qty": 821,
+    "entry": 17.78,
+    "exit": 17.78,
+    "invested": 14597.38,
+    "revenue": 14597.38
+  },
+  {
+    "timestamp": "2025-09-05T14:40:08.217960+00:00",
+    "symbol": "HST",
+    "qty": 775,
+    "entry": 17.74,
+    "exit": 17.74,
+    "invested": 13748.5,
+    "revenue": 13748.5
+  },
+  {
+    "timestamp": "2025-09-05T14:45:09.330447+00:00",
+    "symbol": "TJX",
+    "qty": 72,
+    "entry": 140.38,
+    "exit": 140.43,
+    "invested": 10107.36,
+    "revenue": 10110.96
+  },
+  {
+    "timestamp": "2025-09-05T15:00:18.851049+00:00",
+    "symbol": "CLX",
+    "qty": 94,
+    "entry": 127.18,
+    "exit": 127.16,
+    "invested": 11954.92,
+    "revenue": 11953.04
+  },
+  {
+    "timestamp": "2025-09-05T15:05:20.343100+00:00",
+    "symbol": "PG",
+    "qty": 36,
+    "entry": 159.97,
+    "exit": 160.29,
+    "invested": 5758.92,
+    "revenue": 5770.44
+  },
+  {
+    "timestamp": "2025-09-05T15:25:08.304251+00:00",
+    "symbol": "AR",
+    "qty": 147,
+    "entry": 32.56,
+    "exit": 32.1,
+    "invested": 4786.32,
+    "revenue": 4718.7
+  },
+  {
+    "timestamp": "2025-09-05T15:25:11.972052+00:00",
+    "symbol": "GE",
+    "qty": 6,
+    "entry": 274.87,
+    "exit": 275.11,
+    "invested": 1649.22,
+    "revenue": 1650.66
+  },
+  {
+    "timestamp": "2025-09-05T15:30:13.191450+00:00",
+    "symbol": "PG",
+    "qty": 35,
+    "entry": 160.26,
+    "exit": 160.44,
+    "invested": 5609.1,
+    "revenue": 5615.4
+  },
+  {
+    "timestamp": "2025-09-05T15:45:09.374243+00:00",
+    "symbol": "CLX",
+    "qty": 30,
+    "entry": 127.65,
+    "exit": 127.67,
+    "invested": 3829.5,
+    "revenue": 3830.1
+  },
+  {
+    "timestamp": "2025-09-05T16:05:10.366715+00:00",
+    "symbol": "GE",
+    "qty": 5,
+    "entry": 276.56,
+    "exit": 276.59,
+    "invested": 1382.8,
+    "revenue": 1382.95
+  },
+  {
+    "timestamp": "2025-09-05T16:05:17.928077+00:00",
+    "symbol": "KIM",
+    "qty": 404,
+    "entry": 22.95,
+    "exit": 22.71,
+    "invested": 9271.8,
+    "revenue": 9174.84
+  },
+  {
+    "timestamp": "2025-09-05T16:10:13.342105+00:00",
+    "symbol": "TJX",
+    "qty": 36,
+    "entry": 139.66,
+    "exit": 139.8,
+    "invested": 5027.76,
+    "revenue": 5032.8
+  },
+  {
+    "timestamp": "2025-09-05T16:15:05.358062+00:00",
+    "symbol": "APH",
+    "qty": 62,
+    "entry": 110.08,
+    "exit": 110.05,
+    "invested": 6824.96,
+    "revenue": 6823.1
+  },
+  {
+    "timestamp": "2025-09-05T16:25:12.103891+00:00",
+    "symbol": "HST",
+    "qty": 636,
+    "entry": 17.72,
+    "exit": 17.5,
+    "invested": 11269.92,
+    "revenue": 11130.0
+  },
+  {
+    "timestamp": "2025-09-05T17:55:09.771918+00:00",
+    "symbol": "FOXA",
+    "qty": 15,
+    "entry": 60.8,
+    "exit": 61.02,
+    "invested": 912.0,
+    "revenue": 915.37
+  },
+  {
+    "timestamp": "2025-09-05T18:05:08.902827+00:00",
+    "symbol": "PG",
+    "qty": 24,
+    "entry": 160.32,
+    "exit": 158.83,
+    "invested": 3847.68,
+    "revenue": 3811.92
+  },
+  {
+    "timestamp": "2025-09-05T18:10:07.715994+00:00",
+    "symbol": "CLX",
+    "qty": 18,
+    "entry": 127.91,
+    "exit": 126.53,
+    "invested": 2302.38,
+    "revenue": 2277.54
+  },
+  {
+    "timestamp": "2025-09-08T13:50:06.462175+00:00",
+    "symbol": "GLW",
+    "qty": 221,
+    "entry": 71.77,
+    "exit": 71.81,
+    "invested": 15861.17,
+    "revenue": 15870.01
+  },
+  {
+    "timestamp": "2025-09-08T14:05:08.062393+00:00",
+    "symbol": "WIX",
+    "qty": 119,
+    "entry": 148.9,
+    "exit": 149.32,
+    "invested": 17719.1,
+    "revenue": 17769.08
+  },
+  {
+    "timestamp": "2025-09-08T14:10:09.099726+00:00",
+    "symbol": "CRM",
+    "qty": 23,
+    "entry": 251.49,
+    "exit": 251.81,
+    "invested": 5784.2,
+    "revenue": 5791.63
+  },
+  {
+    "timestamp": "2025-09-08T14:20:10.967031+00:00",
+    "symbol": "KLAC",
+    "qty": 7,
+    "entry": 919.55,
+    "exit": 920.23,
+    "invested": 6436.85,
+    "revenue": 6441.61
+  },
+  {
+    "timestamp": "2025-09-08T14:30:11.159081+00:00",
+    "symbol": "WIX",
+    "qty": 59,
+    "entry": 149.94,
+    "exit": 149.82,
+    "invested": 8846.51,
+    "revenue": 8839.38
+  },
+  {
+    "timestamp": "2025-09-08T14:45:08.902677+00:00",
+    "symbol": "CRM",
+    "qty": 9,
+    "entry": 251.24,
+    "exit": 251.32,
+    "invested": 2261.16,
+    "revenue": 2261.88
+  },
+  {
+    "timestamp": "2025-09-08T14:45:12.741137+00:00",
+    "symbol": "ISRG",
+    "qty": 8,
+    "entry": 467.6,
+    "exit": 467.79,
+    "invested": 3740.8,
+    "revenue": 3742.32
+  },
+  {
+    "timestamp": "2025-09-08T14:45:17.822468+00:00",
+    "symbol": "NOW",
+    "qty": 2,
+    "entry": 919.84,
+    "exit": 921.46,
+    "invested": 1839.68,
+    "revenue": 1842.92
+  },
+  {
+    "timestamp": "2025-09-08T14:55:09.807126+00:00",
+    "symbol": "MU",
+    "qty": 56,
+    "entry": 131.15,
+    "exit": 131.27,
+    "invested": 7344.39,
+    "revenue": 7351.12
+  },
+  {
+    "timestamp": "2025-09-08T15:05:08.577764+00:00",
+    "symbol": "FOX",
+    "qty": 81,
+    "entry": 56.3,
+    "exit": 56.49,
+    "invested": 4560.3,
+    "revenue": 4575.69
+  },
+  {
+    "timestamp": "2025-09-08T15:05:14.909536+00:00",
+    "symbol": "WIX",
+    "qty": 54,
+    "entry": 153.03,
+    "exit": 153.33,
+    "invested": 8263.62,
+    "revenue": 8279.82
+  },
+  {
+    "timestamp": "2025-09-08T15:25:15.006789+00:00",
+    "symbol": "MTCH",
+    "qty": 66,
+    "entry": 38.48,
+    "exit": 38.52,
+    "invested": 2539.68,
+    "revenue": 2542.32
+  },
+  {
+    "timestamp": "2025-09-08T15:40:08.143095+00:00",
+    "symbol": "CRM",
+    "qty": 10,
+    "entry": 251.72,
+    "exit": 251.68,
+    "invested": 2517.2,
+    "revenue": 2516.8
+  },
+  {
+    "timestamp": "2025-09-08T15:40:15.845112+00:00",
+    "symbol": "LRCX",
+    "qty": 43,
+    "entry": 106.28,
+    "exit": 105.31,
+    "invested": 4570.04,
+    "revenue": 4528.33
+  },
+  {
+    "timestamp": "2025-09-08T15:45:19.850681+00:00",
+    "symbol": "EXR",
+    "qty": 8,
+    "entry": 146.07,
+    "exit": 145.95,
+    "invested": 1168.56,
+    "revenue": 1167.6
+  },
+  {
+    "timestamp": "2025-09-08T15:55:12.352226+00:00",
+    "symbol": "GLW",
+    "qty": 107,
+    "entry": 72.04,
+    "exit": 72.04,
+    "invested": 7708.28,
+    "revenue": 7708.28
+  },
+  {
+    "timestamp": "2025-09-08T16:00:11.308310+00:00",
+    "symbol": "KLAC",
+    "qty": 2,
+    "entry": 922.0,
+    "exit": 912.11,
+    "invested": 1844.0,
+    "revenue": 1824.22
+  },
+  {
+    "timestamp": "2025-09-08T16:35:11.544981+00:00",
+    "symbol": "FOX",
+    "qty": 8,
+    "entry": 56.36,
+    "exit": 56.43,
+    "invested": 450.88,
+    "revenue": 451.44
+  },
+  {
+    "timestamp": "2025-09-08T17:10:07.157551+00:00",
+    "symbol": "AKAM",
+    "qty": 9,
+    "entry": 79.39,
+    "exit": 78.78,
+    "invested": 714.51,
+    "revenue": 709.02
+  },
+  {
+    "timestamp": "2025-09-08T17:15:12.122605+00:00",
+    "symbol": "CPB",
+    "qty": 224,
+    "entry": 34.04,
+    "exit": 33.72,
+    "invested": 7624.96,
+    "revenue": 7553.28
+  },
+  {
+    "timestamp": "2025-09-08T17:25:10.812345+00:00",
+    "symbol": "WIX",
+    "qty": 8,
+    "entry": 156.27,
+    "exit": 156.36,
+    "invested": 1250.16,
+    "revenue": 1250.88
+  },
+  {
+    "timestamp": "2025-09-09T16:10:10.570196+00:00",
+    "symbol": "NDAQ",
+    "qty": 111,
+    "entry": 95.37,
+    "exit": 94.84,
+    "invested": 10586.07,
+    "revenue": 10527.24
+  },
+  {
+    "timestamp": "2025-09-09T16:15:07.777344+00:00",
+    "symbol": "MSCI",
+    "qty": 19,
+    "entry": 574.53,
+    "exit": 567.82,
+    "invested": 10916.07,
+    "revenue": 10788.58
+  },
+  {
+    "timestamp": "2025-09-10T14:00:17.166128+00:00",
+    "symbol": "APH",
+    "qty": 92,
+    "entry": 118.06,
+    "exit": 118.18,
+    "invested": 10861.52,
+    "revenue": 10872.56
+  },
+  {
+    "timestamp": "2025-09-10T14:00:22.481950+00:00",
+    "symbol": "VLO",
+    "qty": 90,
+    "entry": 162.5,
+    "exit": 162.51,
+    "invested": 14625.0,
+    "revenue": 14625.9
+  },
+  {
+    "timestamp": "2025-09-10T14:20:08.232063+00:00",
+    "symbol": "APH",
+    "qty": 111,
+    "entry": 119.39,
+    "exit": 119.34,
+    "invested": 13251.99,
+    "revenue": 13246.74
+  },
+  {
+    "timestamp": "2025-09-10T14:20:11.839158+00:00",
+    "symbol": "DB",
+    "qty": 91,
+    "entry": 36.39,
+    "exit": 36.41,
+    "invested": 3311.49,
+    "revenue": 3313.31
+  },
+  {
+    "timestamp": "2025-09-10T14:20:13.627026+00:00",
+    "symbol": "IRM",
+    "qty": 111,
+    "entry": 98.79,
+    "exit": 98.77,
+    "invested": 10965.69,
+    "revenue": 10963.47
+  },
+  {
+    "timestamp": "2025-09-10T14:40:06.355795+00:00",
+    "symbol": "APH",
+    "qty": 76,
+    "entry": 119.46,
+    "exit": 119.51,
+    "invested": 9078.96,
+    "revenue": 9082.76
+  },
+  {
+    "timestamp": "2025-09-10T14:40:10.888320+00:00",
+    "symbol": "STNE",
+    "qty": 511,
+    "entry": 17.93,
+    "exit": 17.93,
+    "invested": 9162.23,
+    "revenue": 9162.23
+  },
+  {
+    "timestamp": "2025-09-10T14:45:09.339253+00:00",
+    "symbol": "VLO",
+    "qty": 61,
+    "entry": 161.24,
+    "exit": 155.82,
+    "invested": 9835.64,
+    "revenue": 9505.02
+  },
+  {
+    "timestamp": "2025-09-10T15:00:08.882606+00:00",
+    "symbol": "APH",
+    "qty": 116,
+    "entry": 119.85,
+    "exit": 119.95,
+    "invested": 13902.6,
+    "revenue": 13914.2
+  },
+  {
+    "timestamp": "2025-09-10T15:00:15.026319+00:00",
+    "symbol": "KLAC",
+    "qty": 6,
+    "entry": 924.26,
+    "exit": 922.9,
+    "invested": 5545.56,
+    "revenue": 5537.4
+  },
+  {
+    "timestamp": "2025-09-10T15:00:18.810503+00:00",
+    "symbol": "PLTR",
+    "qty": 16,
+    "entry": 167.28,
+    "exit": 167.53,
+    "invested": 2676.44,
+    "revenue": 2680.48
+  },
+  {
+    "timestamp": "2025-09-10T15:10:06.057890+00:00",
+    "symbol": "DDOG",
+    "qty": 38,
+    "entry": 143.04,
+    "exit": 141.86,
+    "invested": 5435.5,
+    "revenue": 5390.68
+  },
+  {
+    "timestamp": "2025-09-10T15:10:11.578017+00:00",
+    "symbol": "VIPS",
+    "qty": 276,
+    "entry": 17.88,
+    "exit": 17.89,
+    "invested": 4934.88,
+    "revenue": 4937.64
+  },
+  {
+    "timestamp": "2025-09-10T15:25:12.479306+00:00",
+    "symbol": "IBM",
+    "qty": 18,
+    "entry": 259.21,
+    "exit": 259.32,
+    "invested": 4665.78,
+    "revenue": 4667.76
+  },
+  {
+    "timestamp": "2025-09-10T15:30:07.613722+00:00",
+    "symbol": "APH",
+    "qty": 68,
+    "entry": 120.1,
+    "exit": 120.12,
+    "invested": 8166.75,
+    "revenue": 8168.34
+  },
+  {
+    "timestamp": "2025-09-10T15:30:13.087815+00:00",
+    "symbol": "MU",
+    "qty": 46,
+    "entry": 140.73,
+    "exit": 141.23,
+    "invested": 6473.58,
+    "revenue": 6496.58
+  },
+  {
+    "timestamp": "2025-09-10T15:30:16.627532+00:00",
+    "symbol": "PLTR",
+    "qty": 21,
+    "entry": 167.64,
+    "exit": 167.88,
+    "invested": 3520.44,
+    "revenue": 3525.52
+  },
+  {
+    "timestamp": "2025-09-10T15:35:09.721022+00:00",
+    "symbol": "KLAC",
+    "qty": 3,
+    "entry": 925.92,
+    "exit": 926.61,
+    "invested": 2777.76,
+    "revenue": 2779.83
+  },
+  {
+    "timestamp": "2025-09-10T15:40:11.281239+00:00",
+    "symbol": "MU",
+    "qty": 41,
+    "entry": 141.67,
+    "exit": 141.74,
+    "invested": 5808.47,
+    "revenue": 5811.34
+  },
+  {
+    "timestamp": "2025-09-10T15:45:08.974459+00:00",
+    "symbol": "APH",
+    "qty": 65,
+    "entry": 120.06,
+    "exit": 120.31,
+    "invested": 7804.18,
+    "revenue": 7820.15
+  },
+  {
+    "timestamp": "2025-09-10T15:50:25.291362+00:00",
+    "symbol": "MU",
+    "qty": 30,
+    "entry": 141.29,
+    "exit": 141.42,
+    "invested": 4238.68,
+    "revenue": 4242.6
+  },
+  {
+    "timestamp": "2025-09-10T15:50:28.921121+00:00",
+    "symbol": "PLTR",
+    "qty": 11,
+    "entry": 167.62,
+    "exit": 167.79,
+    "invested": 1843.82,
+    "revenue": 1845.66
+  },
+  {
+    "timestamp": "2025-09-10T15:55:17.254766+00:00",
+    "symbol": "KLAC",
+    "qty": 3,
+    "entry": 929.2,
+    "exit": 929.6,
+    "invested": 2787.6,
+    "revenue": 2788.8
+  },
+  {
+    "timestamp": "2025-09-10T16:00:11.716792+00:00",
+    "symbol": "DDOG",
+    "qty": 27,
+    "entry": 142.08,
+    "exit": 141.13,
+    "invested": 3836.16,
+    "revenue": 3810.51
+  },
+  {
+    "timestamp": "2025-09-10T16:00:17.563595+00:00",
+    "symbol": "EDU",
+    "qty": 135,
+    "entry": 53.29,
+    "exit": 53.33,
+    "invested": 7194.15,
+    "revenue": 7199.48
+  },
+  {
+    "timestamp": "2025-09-10T16:05:08.033487+00:00",
+    "symbol": "IBM",
+    "qty": 8,
+    "entry": 256.66,
+    "exit": 256.7,
+    "invested": 2053.28,
+    "revenue": 2053.6
+  },
+  {
+    "timestamp": "2025-09-10T16:05:13.879176+00:00",
+    "symbol": "ZTO",
+    "qty": 100,
+    "entry": 19.29,
+    "exit": 19.3,
+    "invested": 1929.0,
+    "revenue": 1930.0
+  },
+  {
+    "timestamp": "2025-09-10T16:15:09.307850+00:00",
+    "symbol": "APH",
+    "qty": 39,
+    "entry": 120.58,
+    "exit": 119.35,
+    "invested": 4702.81,
+    "revenue": 4654.65
+  },
+  {
+    "timestamp": "2025-09-10T16:15:13.304984+00:00",
+    "symbol": "IRM",
+    "qty": 92,
+    "entry": 98.74,
+    "exit": 97.78,
+    "invested": 9084.08,
+    "revenue": 8995.76
+  },
+  {
+    "timestamp": "2025-09-10T16:50:09.384868+00:00",
+    "symbol": "VIPS",
+    "qty": 387,
+    "entry": 17.91,
+    "exit": 17.77,
+    "invested": 6931.17,
+    "revenue": 6876.99
+  },
+  {
+    "timestamp": "2025-09-10T17:45:07.248604+00:00",
+    "symbol": "ANET",
+    "qty": 15,
+    "entry": 151.37,
+    "exit": 151.46,
+    "invested": 2270.55,
+    "revenue": 2271.9
+  },
+  {
+    "timestamp": "2025-09-11T13:45:08.713504+00:00",
+    "symbol": "NEM",
+    "qty": 450,
+    "entry": 77.98,
+    "exit": 78.13,
+    "invested": 35091.0,
+    "revenue": 35156.54
+  },
+  {
+    "timestamp": "2025-09-11T13:55:19.760478+00:00",
+    "symbol": "CVX",
+    "qty": 45,
+    "entry": 158.07,
+    "exit": 158.31,
+    "invested": 7113.15,
+    "revenue": 7123.95
+  },
+  {
+    "timestamp": "2025-09-11T13:55:22.123778+00:00",
+    "symbol": "XOM",
+    "qty": 63,
+    "entry": 112.3,
+    "exit": 112.58,
+    "invested": 7074.9,
+    "revenue": 7092.54
+  },
+  {
+    "timestamp": "2025-09-11T14:10:06.963702+00:00",
+    "symbol": "APH",
+    "qty": 179,
+    "entry": 119.28,
+    "exit": 119.54,
+    "invested": 21351.12,
+    "revenue": 21397.66
+  },
+  {
+    "timestamp": "2025-09-11T14:15:07.565459+00:00",
+    "symbol": "HSBC",
+    "qty": 243,
+    "entry": 68.77,
+    "exit": 68.79,
+    "invested": 16711.11,
+    "revenue": 16715.97
+  },
+  {
+    "timestamp": "2025-09-11T14:35:05.332314+00:00",
+    "symbol": "ANET",
+    "qty": 92,
+    "entry": 155.17,
+    "exit": 155.31,
+    "invested": 14275.64,
+    "revenue": 14288.52
+  },
+  {
+    "timestamp": "2025-09-11T14:45:11.195890+00:00",
+    "symbol": "GLW",
+    "qty": 281,
+    "entry": 76.58,
+    "exit": 76.58,
+    "invested": 21520.34,
+    "revenue": 21518.98
+  },
+  {
+    "timestamp": "2025-09-11T14:45:14.991461+00:00",
+    "symbol": "HSBC",
+    "qty": 43,
+    "entry": 68.92,
+    "exit": 68.94,
+    "invested": 2963.56,
+    "revenue": 2964.42
+  },
+  {
+    "timestamp": "2025-09-11T14:55:08.452172+00:00",
+    "symbol": "PNC",
+    "qty": 57,
+    "entry": 203.4,
+    "exit": 203.43,
+    "invested": 11593.8,
+    "revenue": 11595.51
+  },
+  {
+    "timestamp": "2025-09-11T15:00:09.556968+00:00",
+    "symbol": "GLW",
+    "qty": 187,
+    "entry": 76.53,
+    "exit": 76.57,
+    "invested": 14311.11,
+    "revenue": 14318.58
+  },
+  {
+    "timestamp": "2025-09-11T15:10:08.468790+00:00",
+    "symbol": "HSBC",
+    "qty": 166,
+    "entry": 68.83,
+    "exit": 68.85,
+    "invested": 11425.78,
+    "revenue": 11429.1
+  },
+  {
+    "timestamp": "2025-09-11T15:20:19.416418+00:00",
+    "symbol": "PNC",
+    "qty": 7,
+    "entry": 202.51,
+    "exit": 202.5,
+    "invested": 1417.57,
+    "revenue": 1417.5
+  },
+  {
+    "timestamp": "2025-09-11T15:20:23.071570+00:00",
+    "symbol": "XOM",
+    "qty": 109,
+    "entry": 112.25,
+    "exit": 112.36,
+    "invested": 12235.25,
+    "revenue": 12247.24
+  },
+  {
+    "timestamp": "2025-09-11T15:35:07.063391+00:00",
+    "symbol": "APH",
+    "qty": 45,
+    "entry": 119.94,
+    "exit": 119.96,
+    "invested": 5397.3,
+    "revenue": 5398.2
+  },
+  {
+    "timestamp": "2025-09-11T15:35:12.684007+00:00",
+    "symbol": "HSBC",
+    "qty": 117,
+    "entry": 68.99,
+    "exit": 69.15,
+    "invested": 8071.83,
+    "revenue": 8090.55
+  },
+  {
+    "timestamp": "2025-09-11T15:35:27.418759+00:00",
+    "symbol": "NOC",
+    "qty": 20,
+    "entry": 582.6,
+    "exit": 583.55,
+    "invested": 11652.0,
+    "revenue": 11671.0
+  },
+  {
+    "timestamp": "2025-09-11T15:40:07.703709+00:00",
+    "symbol": "GLW",
+    "qty": 154,
+    "entry": 76.75,
+    "exit": 76.9,
+    "invested": 11819.5,
+    "revenue": 11842.49
+  },
+  {
+    "timestamp": "2025-09-11T15:40:22.232753+00:00",
+    "symbol": "NEM",
+    "qty": 302,
+    "entry": 78.51,
+    "exit": 78.59,
+    "invested": 23710.02,
+    "revenue": 23734.18
+  },
+  {
+    "timestamp": "2025-09-11T15:50:10.203573+00:00",
+    "symbol": "HSBC",
+    "qty": 314,
+    "entry": 69.13,
+    "exit": 69.15,
+    "invested": 21706.82,
+    "revenue": 21713.1
+  },
+  {
+    "timestamp": "2025-09-11T16:20:07.934033+00:00",
+    "symbol": "CVX",
+    "qty": 1,
+    "entry": 158.83,
+    "exit": 157.72,
+    "invested": 158.83,
+    "revenue": 157.72
+  },
+  {
+    "timestamp": "2025-09-11T16:40:11.046853+00:00",
+    "symbol": "KMI",
+    "qty": 52,
+    "entry": 27.51,
+    "exit": 27.52,
+    "invested": 1430.52,
+    "revenue": 1431.04
+  },
+  {
+    "timestamp": "2025-09-12T13:55:05.493023+00:00",
+    "symbol": "AON",
+    "qty": 37,
+    "entry": 372.71,
+    "exit": 372.95,
+    "invested": 13790.27,
+    "revenue": 13799.15
+  },
+  {
+    "timestamp": "2025-09-12T14:05:08.357580+00:00",
+    "symbol": "EVRG",
+    "qty": 192,
+    "entry": 72.46,
+    "exit": 72.51,
+    "invested": 13912.32,
+    "revenue": 13921.92
+  },
+  {
+    "timestamp": "2025-09-12T14:25:10.082358+00:00",
+    "symbol": "ETR",
+    "qty": 115,
+    "entry": 90.2,
+    "exit": 90.28,
+    "invested": 10373.0,
+    "revenue": 10382.2
+  },
+  {
+    "timestamp": "2025-09-12T14:40:40.552276+00:00",
+    "symbol": "DD",
+    "qty": 56,
+    "entry": 77.46,
+    "exit": 77.49,
+    "invested": 4337.76,
+    "revenue": 4339.44
+  },
+  {
+    "timestamp": "2025-09-12T15:40:15.537792+00:00",
+    "symbol": "YUM",
+    "qty": 1,
+    "entry": 148.93,
+    "exit": 148.99,
+    "invested": 148.93,
+    "revenue": 148.99
+  },
+  {
+    "timestamp": "2025-09-12T15:45:07.830480+00:00",
+    "symbol": "AON",
+    "qty": 23,
+    "entry": 374.08,
+    "exit": 370.94,
+    "invested": 8603.84,
+    "revenue": 8531.62
+  },
+  {
+    "timestamp": "2025-09-12T15:45:18.623883+00:00",
+    "symbol": "MDT",
+    "qty": 43,
+    "entry": 95.13,
+    "exit": 94.36,
+    "invested": 4090.59,
+    "revenue": 4057.48
+  },
+  {
+    "timestamp": "2025-09-12T15:50:12.663037+00:00",
+    "symbol": "FFIV",
+    "qty": 14,
+    "entry": 325.6,
+    "exit": 322.56,
+    "invested": 4558.4,
+    "revenue": 4515.84
+  },
+  {
+    "timestamp": "2025-09-12T15:50:18.638495+00:00",
+    "symbol": "LRCX",
+    "qty": 3,
+    "entry": 116.76,
+    "exit": 116.97,
+    "invested": 350.27,
+    "revenue": 350.91
+  },
+  {
+    "timestamp": "2025-09-12T15:50:22.754433+00:00",
+    "symbol": "MCK",
+    "qty": 11,
+    "entry": 720.76,
+    "exit": 713.11,
+    "invested": 7928.36,
+    "revenue": 7844.21
+  },
+  {
+    "timestamp": "2025-09-12T15:55:07.572250+00:00",
+    "symbol": "BLK",
+    "qty": 7,
+    "entry": 1133.46,
+    "exit": 1118.16,
+    "invested": 7934.22,
+    "revenue": 7827.12
+  },
+  {
+    "timestamp": "2025-09-12T16:00:06.408365+00:00",
+    "symbol": "CHRW",
+    "qty": 31,
+    "entry": 131.35,
+    "exit": 131.41,
+    "invested": 4071.85,
+    "revenue": 4073.71
+  },
+  {
+    "timestamp": "2025-09-12T16:00:16.738268+00:00",
+    "symbol": "KLAC",
+    "qty": 4,
+    "entry": 963.0,
+    "exit": 962.77,
+    "invested": 3852.0,
+    "revenue": 3851.08
+  },
+  {
+    "timestamp": "2025-09-12T16:10:07.251991+00:00",
+    "symbol": "DB",
+    "qty": 91,
+    "entry": 36.97,
+    "exit": 37.01,
+    "invested": 3364.27,
+    "revenue": 3367.91
+  },
+  {
+    "timestamp": "2025-09-15T13:45:08.713018+00:00",
+    "symbol": "MSFT",
+    "qty": 65,
+    "entry": 509.92,
+    "exit": 510.16,
+    "invested": 33144.8,
+    "revenue": 33160.4
+  },
+  {
+    "timestamp": "2025-09-15T14:00:07.379429+00:00",
+    "symbol": "MSFT",
+    "qty": 6,
+    "entry": 510.29,
+    "exit": 510.46,
+    "invested": 3061.74,
+    "revenue": 3062.76
+  },
+  {
+    "timestamp": "2025-09-15T14:25:09.971166+00:00",
+    "symbol": "WIX",
+    "qty": 10,
+    "entry": 175.05,
+    "exit": 175.14,
+    "invested": 1750.5,
+    "revenue": 1751.4
+  },
+  {
+    "timestamp": "2025-09-15T15:00:07.365182+00:00",
+    "symbol": "MSFT",
+    "qty": 2,
+    "entry": 512.15,
+    "exit": 512.56,
+    "invested": 1024.3,
+    "revenue": 1025.12
+  },
+  {
+    "timestamp": "2025-09-15T15:00:10.804970+00:00",
+    "symbol": "WIX",
+    "qty": 12,
+    "entry": 175.36,
+    "exit": 175.59,
+    "invested": 2104.32,
+    "revenue": 2107.08
+  },
+  {
+    "timestamp": "2025-09-15T15:40:07.128867+00:00",
+    "symbol": "MSFT",
+    "qty": 2,
+    "entry": 513.41,
+    "exit": 513.89,
+    "invested": 1026.82,
+    "revenue": 1027.78
+  },
+  {
+    "timestamp": "2025-09-15T16:30:10.819170+00:00",
+    "symbol": "WIX",
+    "qty": 10,
+    "entry": 175.65,
+    "exit": 172.9,
+    "invested": 1756.5,
+    "revenue": 1729.0
+  },
+  {
+    "timestamp": "2025-09-16T14:00:12.461268+00:00",
+    "symbol": "GOOGL",
+    "qty": 10,
+    "entry": 249.84,
+    "exit": 250.02,
+    "invested": 2498.4,
+    "revenue": 2500.16
+  },
+  {
+    "timestamp": "2025-09-16T14:20:07.206138+00:00",
+    "symbol": "AFRM",
+    "qty": 6,
+    "entry": 87.43,
+    "exit": 86.87,
+    "invested": 524.58,
+    "revenue": 521.22
+  },
+  {
+    "timestamp": "2025-09-16T14:35:10.378510+00:00",
+    "symbol": "PDD",
+    "qty": 6,
+    "entry": 129.19,
+    "exit": 129.6,
+    "invested": 775.14,
+    "revenue": 777.6
+  },
+  {
+    "timestamp": "2025-09-16T14:50:08.038401+00:00",
+    "symbol": "AFRM",
+    "qty": 15,
+    "entry": 87.62,
+    "exit": 87.83,
+    "invested": 1314.3,
+    "revenue": 1317.45
+  },
+  {
+    "timestamp": "2025-09-16T15:10:09.837423+00:00",
+    "symbol": "MGM",
+    "qty": 32,
+    "entry": 35.78,
+    "exit": 35.25,
+    "invested": 1144.96,
+    "revenue": 1128.0
+  },
+  {
+    "timestamp": "2025-09-16T15:15:08.490273+00:00",
+    "symbol": "PDD",
+    "qty": 1,
+    "entry": 129.07,
+    "exit": 129.5,
+    "invested": 129.07,
+    "revenue": 129.5
+  },
+  {
+    "timestamp": "2025-09-16T15:40:07.603557+00:00",
+    "symbol": "NOW",
+    "qty": 1,
+    "entry": 930.99,
+    "exit": 932.84,
+    "invested": 930.99,
+    "revenue": 932.84
+  },
+  {
+    "timestamp": "2025-09-16T15:45:10.136395+00:00",
+    "symbol": "NWS",
+    "qty": 21,
+    "entry": 32.91,
+    "exit": 32.75,
+    "invested": 691.11,
+    "revenue": 687.75
+  },
+  {
+    "timestamp": "2025-09-16T15:55:10.908275+00:00",
+    "symbol": "LI",
+    "qty": 33,
+    "entry": 26.02,
+    "exit": 26.06,
+    "invested": 858.66,
+    "revenue": 859.98
+  },
+  {
+    "timestamp": "2025-09-16T15:55:16.897176+00:00",
+    "symbol": "TXG",
+    "qty": 20,
+    "entry": 13.06,
+    "exit": 13.13,
+    "invested": 261.2,
+    "revenue": 262.6
+  },
+  {
+    "timestamp": "2025-09-16T16:30:10.791261+00:00",
+    "symbol": "PDD",
+    "qty": 5,
+    "entry": 129.23,
+    "exit": 129.37,
+    "invested": 646.17,
+    "revenue": 646.85
+  },
+  {
+    "timestamp": "2025-09-16T16:55:08.670471+00:00",
+    "symbol": "CP",
+    "qty": 448,
+    "entry": 76.95,
+    "exit": 75.97,
+    "invested": 34473.6,
+    "revenue": 34034.56
+  },
+  {
+    "timestamp": "2025-09-16T17:00:08.390544+00:00",
+    "symbol": "ACLS",
+    "qty": 9,
+    "entry": 88.6,
+    "exit": 88.99,
+    "invested": 797.4,
+    "revenue": 800.91
+  },
+  {
+    "timestamp": "2025-09-17T13:45:10.227699+00:00",
+    "symbol": "MNST",
+    "qty": 253,
+    "entry": 66.58,
+    "exit": 66.61,
+    "invested": 16844.74,
+    "revenue": 16851.54
+  },
+  {
+    "timestamp": "2025-09-17T13:50:08.690816+00:00",
+    "symbol": "PG",
+    "qty": 52,
+    "entry": 159.92,
+    "exit": 160.02,
+    "invested": 8315.77,
+    "revenue": 8321.04
+  },
+  {
+    "timestamp": "2025-09-17T14:00:08.429103+00:00",
+    "symbol": "MNST",
+    "qty": 52,
+    "entry": 66.56,
+    "exit": 66.64,
+    "invested": 3461.12,
+    "revenue": 3465.28
+  },
+  {
+    "timestamp": "2025-09-17T14:05:07.375888+00:00",
+    "symbol": "ABNB",
+    "qty": 64,
+    "entry": 124.03,
+    "exit": 124.2,
+    "invested": 7937.92,
+    "revenue": 7948.8
+  },
+  {
+    "timestamp": "2025-09-17T14:10:11.991250+00:00",
+    "symbol": "VLO",
+    "qty": 45,
+    "entry": 164.12,
+    "exit": 164.6,
+    "invested": 7385.4,
+    "revenue": 7407.0
+  },
+  {
+    "timestamp": "2025-09-17T14:25:07.927421+00:00",
+    "symbol": "ABNB",
+    "qty": 27,
+    "entry": 123.84,
+    "exit": 124.11,
+    "invested": 3343.79,
+    "revenue": 3350.97
+  },
+  {
+    "timestamp": "2025-09-17T14:25:16.041171+00:00",
+    "symbol": "XOM",
+    "qty": 94,
+    "entry": 115.25,
+    "exit": 115.33,
+    "invested": 10833.5,
+    "revenue": 10841.02
+  },
+  {
+    "timestamp": "2025-09-17T14:30:17.272153+00:00",
+    "symbol": "CNX",
+    "qty": 116,
+    "entry": 31.11,
+    "exit": 31.14,
+    "invested": 3608.76,
+    "revenue": 3612.24
+  },
+  {
+    "timestamp": "2025-09-17T14:45:08.056076+00:00",
+    "symbol": "CLX",
+    "qty": 43,
+    "entry": 126.85,
+    "exit": 127.0,
+    "invested": 5454.55,
+    "revenue": 5461.0
+  },
+  {
+    "timestamp": "2025-09-17T14:45:13.026607+00:00",
+    "symbol": "MNST",
+    "qty": 109,
+    "entry": 66.54,
+    "exit": 66.62,
+    "invested": 7252.86,
+    "revenue": 7261.58
+  },
+  {
+    "timestamp": "2025-09-17T14:55:09.516622+00:00",
+    "symbol": "OXY",
+    "qty": 98,
+    "entry": 47.55,
+    "exit": 47.55,
+    "invested": 4659.9,
+    "revenue": 4659.72
+  },
+  {
+    "timestamp": "2025-09-17T14:55:14.826058+00:00",
+    "symbol": "PG",
+    "qty": 14,
+    "entry": 159.98,
+    "exit": 160.0,
+    "invested": 2239.74,
+    "revenue": 2240.02
+  },
+  {
+    "timestamp": "2025-09-17T15:10:09.987843+00:00",
+    "symbol": "MNST",
+    "qty": 59,
+    "entry": 66.66,
+    "exit": 66.71,
+    "invested": 3932.94,
+    "revenue": 3935.89
+  },
+  {
+    "timestamp": "2025-09-17T15:25:13.399956+00:00",
+    "symbol": "MNST",
+    "qty": 35,
+    "entry": 66.8,
+    "exit": 66.86,
+    "invested": 2338.0,
+    "revenue": 2340.1
+  },
+  {
+    "timestamp": "2025-09-17T15:35:09.063739+00:00",
+    "symbol": "GE",
+    "qty": 36,
+    "entry": 291.52,
+    "exit": 288.0,
+    "invested": 10494.72,
+    "revenue": 10368.0
+  },
+  {
+    "timestamp": "2025-09-17T15:45:08.397098+00:00",
+    "symbol": "ABNB",
+    "qty": 29,
+    "entry": 123.64,
+    "exit": 123.72,
+    "invested": 3585.56,
+    "revenue": 3587.88
+  },
+  {
+    "timestamp": "2025-09-17T15:45:13.393697+00:00",
+    "symbol": "COP",
+    "qty": 21,
+    "entry": 93.69,
+    "exit": 93.78,
+    "invested": 1967.49,
+    "revenue": 1969.38
+  },
+  {
+    "timestamp": "2025-09-17T15:50:08.572727+00:00",
+    "symbol": "META",
+    "qty": 3,
+    "entry": 770.3,
+    "exit": 773.61,
+    "invested": 2310.9,
+    "revenue": 2320.83
+  },
+  {
+    "timestamp": "2025-09-17T15:55:10.111627+00:00",
+    "symbol": "MNST",
+    "qty": 90,
+    "entry": 66.74,
+    "exit": 66.78,
+    "invested": 6006.38,
+    "revenue": 6010.2
+  },
+  {
+    "timestamp": "2025-09-17T15:55:15.841098+00:00",
+    "symbol": "PG",
+    "qty": 8,
+    "entry": 159.84,
+    "exit": 160.14,
+    "invested": 1278.72,
+    "revenue": 1281.12
+  },
+  {
+    "timestamp": "2025-09-17T16:05:11.500260+00:00",
+    "symbol": "OXY",
+    "qty": 189,
+    "entry": 47.58,
+    "exit": 47.66,
+    "invested": 8992.62,
+    "revenue": 9008.06
+  },
+  {
+    "timestamp": "2025-09-17T16:45:12.991525+00:00",
+    "symbol": "VLO",
+    "qty": 79,
+    "entry": 163.78,
+    "exit": 162.69,
+    "invested": 12938.88,
+    "revenue": 12852.51
+  },
+  {
+    "timestamp": "2025-09-17T16:55:07.391361+00:00",
+    "symbol": "CLX",
+    "qty": 12,
+    "entry": 126.69,
+    "exit": 125.77,
+    "invested": 1520.28,
+    "revenue": 1509.24
+  },
+  {
+    "timestamp": "2025-09-17T17:55:08.692188+00:00",
+    "symbol": "XOM",
+    "qty": 47,
+    "entry": 115.14,
+    "exit": 115.22,
+    "invested": 5411.58,
+    "revenue": 5415.34
+  },
+  {
+    "timestamp": "2025-09-17T18:05:07.527764+00:00",
+    "symbol": "MPC",
+    "qty": 5,
+    "entry": 184.64,
+    "exit": 184.92,
+    "invested": 923.2,
+    "revenue": 924.6
+  },
+  {
+    "timestamp": "2025-09-17T18:05:10.973160+00:00",
+    "symbol": "SBUX",
+    "qty": 35,
+    "entry": 84.22,
+    "exit": 84.52,
+    "invested": 2947.7,
+    "revenue": 2958.2
+  },
+  {
+    "timestamp": "2025-09-19T15:10:08.309165+00:00",
+    "symbol": "MDT",
+    "qty": 417,
+    "entry": 94.44,
+    "exit": 94.58,
+    "invested": 39381.48,
+    "revenue": 39439.86
+  },
+  {
+    "timestamp": "2025-09-19T15:40:09.082274+00:00",
+    "symbol": "PLTR",
+    "qty": 13,
+    "entry": 182.18,
+    "exit": 183.19,
+    "invested": 2368.37,
+    "revenue": 2381.47
+  },
+  {
+    "timestamp": "2025-09-19T15:55:08.746597+00:00",
+    "symbol": "MDT",
+    "qty": 58,
+    "entry": 94.58,
+    "exit": 94.61,
+    "invested": 5485.64,
+    "revenue": 5487.38
+  },
+  {
+    "timestamp": "2025-09-19T15:55:12.239036+00:00",
+    "symbol": "SOFI",
+    "qty": 14,
+    "entry": 28.93,
+    "exit": 29.02,
+    "invested": 405.02,
+    "revenue": 406.28
+  },
+  {
+    "timestamp": "2025-09-19T16:20:08.405383+00:00",
+    "symbol": "BBVA",
+    "qty": 1833,
+    "entry": 19.39,
+    "exit": 19.28,
+    "invested": 35541.87,
+    "revenue": 35340.24
+  },
+  {
+    "timestamp": "2025-09-19T16:30:09.900258+00:00",
+    "symbol": "GE",
+    "qty": 12,
+    "entry": 298.36,
+    "exit": 298.36,
+    "invested": 3580.32,
+    "revenue": 3580.34
+  },
+  {
+    "timestamp": "2025-09-22T13:50:07.810514+00:00",
+    "symbol": "AMD",
+    "qty": 80,
+    "entry": 159.23,
+    "exit": 160.56,
+    "invested": 12738.12,
+    "revenue": 12844.8
+  },
+  {
+    "timestamp": "2025-10-06T14:00:08.225204+00:00",
+    "symbol": "CME",
+    "qty": 8,
+    "entry": 270.82,
+    "exit": 262.18,
+    "invested": 2166.56,
+    "revenue": 2097.44
+  },
+  {
+    "timestamp": "2025-10-06T14:20:07.517722+00:00",
+    "symbol": "AEE",
+    "qty": 150,
+    "entry": 104.59,
+    "exit": 104.6,
+    "invested": 15688.5,
+    "revenue": 15690.0
+  },
+  {
+    "timestamp": "2025-10-06T14:55:08.804173+00:00",
+    "symbol": "ARVN",
+    "qty": 317,
+    "entry": 10.02,
+    "exit": 9.86,
+    "invested": 3176.34,
+    "revenue": 3125.62
+  },
+  {
+    "timestamp": "2025-10-06T15:06:07.899347+00:00",
+    "symbol": "ADCT",
+    "qty": 1588,
+    "entry": 4.58,
+    "exit": 4.59,
+    "invested": 7273.04,
+    "revenue": 7288.92
+  },
+  {
+    "timestamp": "2025-10-06T15:13:08.359841+00:00",
+    "symbol": "AEE",
+    "qty": 70,
+    "entry": 104.63,
+    "exit": 104.64,
+    "invested": 7324.1,
+    "revenue": 7324.8
+  },
+  {
+    "timestamp": "2025-10-06T15:23:09.549242+00:00",
+    "symbol": "AWRE",
+    "qty": 3850,
+    "entry": 2.83,
+    "exit": 2.63,
+    "invested": 10895.5,
+    "revenue": 10125.5
+  },
+  {
+    "timestamp": "2025-10-06T15:40:07.915531+00:00",
+    "symbol": "ADUR",
+    "qty": 258,
+    "entry": 15.5,
+    "exit": 15.31,
+    "invested": 3999.0,
+    "revenue": 3949.98
+  },
+  {
+    "timestamp": "2025-10-06T15:59:08.593892+00:00",
+    "symbol": "AMRN",
+    "qty": 805,
+    "entry": 20.34,
+    "exit": 19.77,
+    "invested": 16373.7,
+    "revenue": 15914.85
+  },
+  {
+    "timestamp": "2025-10-07T14:11:07.611847+00:00",
+    "symbol": "ADCT",
+    "qty": 3610,
+    "entry": 4.31,
+    "exit": 4.32,
+    "invested": 15559.1,
+    "revenue": 15595.2
+  },
+  {
+    "timestamp": "2025-10-07T14:58:06.792262+00:00",
+    "symbol": "ADUR",
+    "qty": 630,
+    "entry": 16.1,
+    "exit": 15.57,
+    "invested": 10143.0,
+    "revenue": 9809.1
+  },
+  {
+    "timestamp": "2025-10-07T15:06:10.788092+00:00",
+    "symbol": "AEP",
+    "qty": 127,
+    "entry": 117.77,
+    "exit": 117.83,
+    "invested": 14957.3,
+    "revenue": 14963.92
+  },
+  {
+    "timestamp": "2025-10-07T15:15:08.271120+00:00",
+    "symbol": "AVAV",
+    "qty": 19,
+    "entry": 398.73,
+    "exit": 392.61,
+    "invested": 7575.87,
+    "revenue": 7459.59
+  },
+  {
+    "timestamp": "2025-10-07T15:21:07.306130+00:00",
+    "symbol": "AEP",
+    "qty": 125,
+    "entry": 118.03,
+    "exit": 117.99,
+    "invested": 14753.75,
+    "revenue": 14748.75
+  },
+  {
+    "timestamp": "2025-10-07T15:49:07.816568+00:00",
+    "symbol": "AEP",
+    "qty": 251,
+    "entry": 118.78,
+    "exit": 118.9,
+    "invested": 29813.78,
+    "revenue": 29843.21
+  },
+  {
+    "timestamp": "2025-10-07T16:25:08.967444+00:00",
+    "symbol": "BEPC",
+    "qty": 259,
+    "entry": 38.33,
+    "exit": 38.08,
+    "invested": 9927.47,
+    "revenue": 9862.72
+  },
+  {
+    "timestamp": "2025-10-07T17:41:08.398701+00:00",
+    "symbol": "AEP",
+    "qty": 125,
+    "entry": 118.85,
+    "exit": 118.03,
+    "invested": 14856.17,
+    "revenue": 14753.75
+  },
+  {
+    "timestamp": "2025-10-08T13:59:07.438580+00:00",
+    "symbol": "ANIX",
+    "qty": 4542,
+    "entry": 4.3,
+    "exit": 4.22,
+    "invested": 19530.6,
+    "revenue": 19167.24
+  },
+  {
+    "timestamp": "2025-10-08T14:04:05.476742+00:00",
+    "symbol": "ACGL",
+    "qty": 197,
+    "entry": 93.67,
+    "exit": 93.6,
+    "invested": 18452.99,
+    "revenue": 18439.2
+  },
+  {
+    "timestamp": "2025-10-08T14:19:10.495537+00:00",
+    "symbol": "ACIC",
+    "qty": 1551,
+    "entry": 12.28,
+    "exit": 12.28,
+    "invested": 19046.28,
+    "revenue": 19046.28
+  },
+  {
+    "timestamp": "2025-10-09T14:11:07.884985+00:00",
+    "symbol": "AGIX",
+    "qty": 316,
+    "entry": 38.26,
+    "exit": 38.27,
+    "invested": 12090.16,
+    "revenue": 12093.32
+  },
+  {
+    "timestamp": "2025-10-09T15:03:12.880800+00:00",
+    "symbol": "AMX",
+    "qty": 477,
+    "entry": 21.14,
+    "exit": 21.15,
+    "invested": 10083.78,
+    "revenue": 10088.55
+  },
+  {
+    "timestamp": "2025-10-09T15:20:05.555948+00:00",
+    "symbol": "AGIX",
+    "qty": 325,
+    "entry": 38.36,
+    "exit": 38.33,
+    "invested": 12467.0,
+    "revenue": 12457.25
+  },
+  {
+    "timestamp": "2025-10-09T15:48:10.824479+00:00",
+    "symbol": "AMX",
+    "qty": 422,
+    "entry": 21.14,
+    "exit": 21.15,
+    "invested": 8921.08,
+    "revenue": 8925.3
+  },
+  {
+    "timestamp": "2025-10-09T15:52:09.221039+00:00",
+    "symbol": "AGIX",
+    "qty": 305,
+    "entry": 38.32,
+    "exit": 38.32,
+    "invested": 11687.6,
+    "revenue": 11687.97
+  },
+  {
+    "timestamp": "2025-10-09T16:02:07.643465+00:00",
+    "symbol": "AIQ",
+    "qty": 366,
+    "entry": 51.22,
+    "exit": 51.22,
+    "invested": 18746.52,
+    "revenue": 18746.52
+  },
+  {
+    "timestamp": "2025-10-09T16:02:11.135616+00:00",
+    "symbol": "AMX",
+    "qty": 423,
+    "entry": 21.17,
+    "exit": 21.17,
+    "invested": 8954.91,
+    "revenue": 8954.91
+  }
+]

@@ -1,0 +1,728 @@
+Loaded rows: 732
+After downsample rows: 674 (max_per_symbol=12)
+Top symbols (post-ds):
+{'AMD': 12, 'COIN': 12, 'EBAY': 12, 'EA': 12, 'TTD': 12, 'PDD': 12, 'PINS': 12, 'RBLX': 12, 'SNAP': 12, 'ORCL': 12, 'ON': 12, 'NET': 12, 'NVDA': 12, 'MSFT': 12, 'NFLX': 12, 'KLAC': 12, 'MDB': 12, 'LRCX': 12, 'GOOG': 12, 'HUYA': 12}
+Feature matrix shape: (674, 6)
+Label distribution:
+ {1: np.int64(417), 0: np.int64(257)}
+
+=== Fold 1 ===
+size train/test: 538 136
+accuracy: 0.5441 precision: 0.6292 recall: 0.6588 f1: 0.6437
+confusion matrix:
+ [[18 33]
+ [29 56]]
+              precision    recall  f1-score   support
+
+           0       0.38      0.35      0.37        51
+           1       0.63      0.66      0.64        85
+
+    accuracy                           0.54       136
+   macro avg       0.51      0.51      0.51       136
+weighted avg       0.54      0.54      0.54       136
+
+
+=== Fold 2 ===
+size train/test: 538 136
+accuracy: 0.6765 precision: 0.6923 recall: 0.7975 f1: 0.7412
+confusion matrix:
+ [[29 28]
+ [16 63]]
+              precision    recall  f1-score   support
+
+           0       0.64      0.51      0.57        57
+           1       0.69      0.80      0.74        79
+
+    accuracy                           0.68       136
+   macro avg       0.67      0.65      0.65       136
+weighted avg       0.67      0.68      0.67       136
+
+
+=== Fold 3 ===
+size train/test: 540 134
+accuracy: 0.7313 precision: 0.8228 recall: 0.7471 f1: 0.7831
+confusion matrix:
+ [[33 14]
+ [22 65]]
+              precision    recall  f1-score   support
+
+           0       0.60      0.70      0.65        47
+           1       0.82      0.75      0.78        87
+
+    accuracy                           0.73       134
+   macro avg       0.71      0.72      0.72       134
+weighted avg       0.74      0.73      0.74       134
+
+
+=== Fold 4 ===
+size train/test: 540 134
+accuracy: 0.6119 precision: 0.7564 recall: 0.6413 f1: 0.6941
+confusion matrix:
+ [[23 19]
+ [33 59]]
+              precision    recall  f1-score   support
+
+           0       0.41      0.55      0.47        42
+           1       0.76      0.64      0.69        92
+
+    accuracy                           0.61       134
+   macro avg       0.58      0.59      0.58       134
+weighted avg       0.65      0.61      0.62       134
+
+
+=== Fold 5 ===
+size train/test: 540 134
+accuracy: 0.7612 precision: 0.7059 recall: 0.973 f1: 0.8182
+confusion matrix:
+ [[30 30]
+ [ 2 72]]
+              precision    recall  f1-score   support
+
+           0       0.94      0.50      0.65        60
+           1       0.71      0.97      0.82        74
+
+    accuracy                           0.76       134
+   macro avg       0.82      0.74      0.74       134
+weighted avg       0.81      0.76      0.74       134
+
+
+=== GroupKFold summary ===
+Accuracy mean/std: 0.665 / 0.0883
+Precision mean/std: 0.7213 / 0.0726
+Recall mean/std: 0.7635 / 0.1334
+F1 mean/std: 0.7361 / 0.0694
+
+Feature importances (avg):
+  ema_dev   : 0.1980
+  atr_pct   : 0.1911
+  alpha_score: 0.1805
+  rsi       : 0.1511
+  vol_ratio : 0.1496
+  atr       : 0.1297
+
+Saved model to /root/stockbot/core/training/trained_model.pkl
+Done.
+Loaded rows: 732
+After downsample rows: 674 (max_per_symbol=12)
+Top symbols (post-ds):
+{'AMD': 12, 'COIN': 12, 'EBAY': 12, 'EA': 12, 'TTD': 12, 'PDD': 12, 'PINS': 12, 'RBLX': 12, 'SNAP': 12, 'ORCL': 12, 'ON': 12, 'NET': 12, 'NVDA': 12, 'MSFT': 12, 'NFLX': 12, 'KLAC': 12, 'MDB': 12, 'LRCX': 12, 'GOOG': 12, 'HUYA': 12}
+Feature matrix shape: (674, 6)
+Label distribution:
+ {1: np.int64(417), 0: np.int64(257)}
+
+=== Fold 1 ===
+size train/test: 538 136
+accuracy: 0.5441 precision: 0.6292 recall: 0.6588 f1: 0.6437
+confusion matrix:
+ [[18 33]
+ [29 56]]
+              precision    recall  f1-score   support
+
+           0       0.38      0.35      0.37        51
+           1       0.63      0.66      0.64        85
+
+    accuracy                           0.54       136
+   macro avg       0.51      0.51      0.51       136
+weighted avg       0.54      0.54      0.54       136
+
+
+=== Fold 2 ===
+size train/test: 538 136
+accuracy: 0.6765 precision: 0.6923 recall: 0.7975 f1: 0.7412
+confusion matrix:
+ [[29 28]
+ [16 63]]
+              precision    recall  f1-score   support
+
+           0       0.64      0.51      0.57        57
+           1       0.69      0.80      0.74        79
+
+    accuracy                           0.68       136
+   macro avg       0.67      0.65      0.65       136
+weighted avg       0.67      0.68      0.67       136
+
+
+=== Fold 3 ===
+size train/test: 540 134
+accuracy: 0.7313 precision: 0.8228 recall: 0.7471 f1: 0.7831
+confusion matrix:
+ [[33 14]
+ [22 65]]
+              precision    recall  f1-score   support
+
+           0       0.60      0.70      0.65        47
+           1       0.82      0.75      0.78        87
+
+    accuracy                           0.73       134
+   macro avg       0.71      0.72      0.72       134
+weighted avg       0.74      0.73      0.74       134
+
+
+=== Fold 4 ===
+size train/test: 540 134
+accuracy: 0.6119 precision: 0.7564 recall: 0.6413 f1: 0.6941
+confusion matrix:
+ [[23 19]
+ [33 59]]
+              precision    recall  f1-score   support
+
+           0       0.41      0.55      0.47        42
+           1       0.76      0.64      0.69        92
+
+    accuracy                           0.61       134
+   macro avg       0.58      0.59      0.58       134
+weighted avg       0.65      0.61      0.62       134
+
+
+=== Fold 5 ===
+size train/test: 540 134
+accuracy: 0.7612 precision: 0.7059 recall: 0.973 f1: 0.8182
+confusion matrix:
+ [[30 30]
+ [ 2 72]]
+              precision    recall  f1-score   support
+
+           0       0.94      0.50      0.65        60
+           1       0.71      0.97      0.82        74
+
+    accuracy                           0.76       134
+   macro avg       0.82      0.74      0.74       134
+weighted avg       0.81      0.76      0.74       134
+
+
+=== GroupKFold summary ===
+Accuracy mean/std: 0.665 / 0.0883
+Precision mean/std: 0.7213 / 0.0726
+Recall mean/std: 0.7635 / 0.1334
+F1 mean/std: 0.7361 / 0.0694
+
+Feature importances (avg):
+  ema_dev   : 0.1980
+  atr_pct   : 0.1911
+  alpha_score: 0.1805
+  rsi       : 0.1511
+  vol_ratio : 0.1496
+  atr       : 0.1297
+
+Saved model to /root/stockbot/core/training/trained_model.pkl
+Done.
+Loaded rows: 732
+After downsample rows: 674 (max_per_symbol=12)
+Top symbols (post-ds):
+{'AMD': 12, 'COIN': 12, 'EBAY': 12, 'EA': 12, 'TTD': 12, 'PDD': 12, 'PINS': 12, 'RBLX': 12, 'SNAP': 12, 'ORCL': 12, 'ON': 12, 'NET': 12, 'NVDA': 12, 'MSFT': 12, 'NFLX': 12, 'KLAC': 12, 'MDB': 12, 'LRCX': 12, 'GOOG': 12, 'HUYA': 12}
+Feature matrix shape: (674, 6)
+Label distribution:
+ {1: np.int64(417), 0: np.int64(257)}
+
+=== Fold 1 ===
+size train/test: 538 136
+accuracy: 0.5441 precision: 0.6292 recall: 0.6588 f1: 0.6437
+confusion matrix:
+ [[18 33]
+ [29 56]]
+              precision    recall  f1-score   support
+
+           0       0.38      0.35      0.37        51
+           1       0.63      0.66      0.64        85
+
+    accuracy                           0.54       136
+   macro avg       0.51      0.51      0.51       136
+weighted avg       0.54      0.54      0.54       136
+
+
+=== Fold 2 ===
+size train/test: 538 136
+accuracy: 0.6765 precision: 0.6923 recall: 0.7975 f1: 0.7412
+confusion matrix:
+ [[29 28]
+ [16 63]]
+              precision    recall  f1-score   support
+
+           0       0.64      0.51      0.57        57
+           1       0.69      0.80      0.74        79
+
+    accuracy                           0.68       136
+   macro avg       0.67      0.65      0.65       136
+weighted avg       0.67      0.68      0.67       136
+
+
+=== Fold 3 ===
+size train/test: 540 134
+accuracy: 0.7313 precision: 0.8228 recall: 0.7471 f1: 0.7831
+confusion matrix:
+ [[33 14]
+ [22 65]]
+              precision    recall  f1-score   support
+
+           0       0.60      0.70      0.65        47
+           1       0.82      0.75      0.78        87
+
+    accuracy                           0.73       134
+   macro avg       0.71      0.72      0.72       134
+weighted avg       0.74      0.73      0.74       134
+
+
+=== Fold 4 ===
+size train/test: 540 134
+accuracy: 0.6119 precision: 0.7564 recall: 0.6413 f1: 0.6941
+confusion matrix:
+ [[23 19]
+ [33 59]]
+              precision    recall  f1-score   support
+
+           0       0.41      0.55      0.47        42
+           1       0.76      0.64      0.69        92
+
+    accuracy                           0.61       134
+   macro avg       0.58      0.59      0.58       134
+weighted avg       0.65      0.61      0.62       134
+
+
+=== Fold 5 ===
+size train/test: 540 134
+accuracy: 0.7612 precision: 0.7059 recall: 0.973 f1: 0.8182
+confusion matrix:
+ [[30 30]
+ [ 2 72]]
+              precision    recall  f1-score   support
+
+           0       0.94      0.50      0.65        60
+           1       0.71      0.97      0.82        74
+
+    accuracy                           0.76       134
+   macro avg       0.82      0.74      0.74       134
+weighted avg       0.81      0.76      0.74       134
+
+
+=== GroupKFold summary ===
+Accuracy mean/std: 0.665 / 0.0883
+Precision mean/std: 0.7213 / 0.0726
+Recall mean/std: 0.7635 / 0.1334
+F1 mean/std: 0.7361 / 0.0694
+
+Feature importances (avg):
+  ema_dev   : 0.1980
+  atr_pct   : 0.1911
+  alpha_score: 0.1805
+  rsi       : 0.1511
+  vol_ratio : 0.1496
+  atr       : 0.1297
+
+Saved model to /root/stockbot/core/training/trained_model.pkl
+Done.
+Loaded rows: 732
+After downsample rows: 674 (max_per_symbol=12)
+Top symbols (post-ds):
+{'AMD': 12, 'COIN': 12, 'EBAY': 12, 'EA': 12, 'TTD': 12, 'PDD': 12, 'PINS': 12, 'RBLX': 12, 'SNAP': 12, 'ORCL': 12, 'ON': 12, 'NET': 12, 'NVDA': 12, 'MSFT': 12, 'NFLX': 12, 'KLAC': 12, 'MDB': 12, 'LRCX': 12, 'GOOG': 12, 'HUYA': 12}
+Feature matrix shape: (674, 6)
+Label distribution:
+ {1: np.int64(417), 0: np.int64(257)}
+
+=== Fold 1 ===
+size train/test: 538 136
+accuracy: 0.5441 precision: 0.6292 recall: 0.6588 f1: 0.6437
+confusion matrix:
+ [[18 33]
+ [29 56]]
+              precision    recall  f1-score   support
+
+           0       0.38      0.35      0.37        51
+           1       0.63      0.66      0.64        85
+
+    accuracy                           0.54       136
+   macro avg       0.51      0.51      0.51       136
+weighted avg       0.54      0.54      0.54       136
+
+
+=== Fold 2 ===
+size train/test: 538 136
+accuracy: 0.6765 precision: 0.6923 recall: 0.7975 f1: 0.7412
+confusion matrix:
+ [[29 28]
+ [16 63]]
+              precision    recall  f1-score   support
+
+           0       0.64      0.51      0.57        57
+           1       0.69      0.80      0.74        79
+
+    accuracy                           0.68       136
+   macro avg       0.67      0.65      0.65       136
+weighted avg       0.67      0.68      0.67       136
+
+
+=== Fold 3 ===
+size train/test: 540 134
+accuracy: 0.7313 precision: 0.8228 recall: 0.7471 f1: 0.7831
+confusion matrix:
+ [[33 14]
+ [22 65]]
+              precision    recall  f1-score   support
+
+           0       0.60      0.70      0.65        47
+           1       0.82      0.75      0.78        87
+
+    accuracy                           0.73       134
+   macro avg       0.71      0.72      0.72       134
+weighted avg       0.74      0.73      0.74       134
+
+
+=== Fold 4 ===
+size train/test: 540 134
+accuracy: 0.6119 precision: 0.7564 recall: 0.6413 f1: 0.6941
+confusion matrix:
+ [[23 19]
+ [33 59]]
+              precision    recall  f1-score   support
+
+           0       0.41      0.55      0.47        42
+           1       0.76      0.64      0.69        92
+
+    accuracy                           0.61       134
+   macro avg       0.58      0.59      0.58       134
+weighted avg       0.65      0.61      0.62       134
+
+
+=== Fold 5 ===
+size train/test: 540 134
+accuracy: 0.7612 precision: 0.7059 recall: 0.973 f1: 0.8182
+confusion matrix:
+ [[30 30]
+ [ 2 72]]
+              precision    recall  f1-score   support
+
+           0       0.94      0.50      0.65        60
+           1       0.71      0.97      0.82        74
+
+    accuracy                           0.76       134
+   macro avg       0.82      0.74      0.74       134
+weighted avg       0.81      0.76      0.74       134
+
+
+=== GroupKFold summary ===
+Accuracy mean/std: 0.665 / 0.0883
+Precision mean/std: 0.7213 / 0.0726
+Recall mean/std: 0.7635 / 0.1334
+F1 mean/std: 0.7361 / 0.0694
+
+Feature importances (avg):
+  ema_dev   : 0.1980
+  atr_pct   : 0.1911
+  alpha_score: 0.1805
+  rsi       : 0.1511
+  vol_ratio : 0.1496
+  atr       : 0.1297
+
+Saved model to /root/stockbot/core/training/trained_model.pkl
+Done.
+Loaded rows: 732
+After downsample rows: 674 (max_per_symbol=12)
+Top symbols (post-ds):
+{'AMD': 12, 'COIN': 12, 'EBAY': 12, 'EA': 12, 'TTD': 12, 'PDD': 12, 'PINS': 12, 'RBLX': 12, 'SNAP': 12, 'ORCL': 12, 'ON': 12, 'NET': 12, 'NVDA': 12, 'MSFT': 12, 'NFLX': 12, 'KLAC': 12, 'MDB': 12, 'LRCX': 12, 'GOOG': 12, 'HUYA': 12}
+Feature matrix shape: (674, 6)
+Label distribution:
+ {1: np.int64(417), 0: np.int64(257)}
+
+=== Fold 1 ===
+size train/test: 538 136
+accuracy: 0.5441 precision: 0.6292 recall: 0.6588 f1: 0.6437
+confusion matrix:
+ [[18 33]
+ [29 56]]
+              precision    recall  f1-score   support
+
+           0       0.38      0.35      0.37        51
+           1       0.63      0.66      0.64        85
+
+    accuracy                           0.54       136
+   macro avg       0.51      0.51      0.51       136
+weighted avg       0.54      0.54      0.54       136
+
+
+=== Fold 2 ===
+size train/test: 538 136
+accuracy: 0.6765 precision: 0.6923 recall: 0.7975 f1: 0.7412
+confusion matrix:
+ [[29 28]
+ [16 63]]
+              precision    recall  f1-score   support
+
+           0       0.64      0.51      0.57        57
+           1       0.69      0.80      0.74        79
+
+    accuracy                           0.68       136
+   macro avg       0.67      0.65      0.65       136
+weighted avg       0.67      0.68      0.67       136
+
+
+=== Fold 3 ===
+size train/test: 540 134
+accuracy: 0.7313 precision: 0.8228 recall: 0.7471 f1: 0.7831
+confusion matrix:
+ [[33 14]
+ [22 65]]
+              precision    recall  f1-score   support
+
+           0       0.60      0.70      0.65        47
+           1       0.82      0.75      0.78        87
+
+    accuracy                           0.73       134
+   macro avg       0.71      0.72      0.72       134
+weighted avg       0.74      0.73      0.74       134
+
+
+=== Fold 4 ===
+size train/test: 540 134
+accuracy: 0.6119 precision: 0.7564 recall: 0.6413 f1: 0.6941
+confusion matrix:
+ [[23 19]
+ [33 59]]
+              precision    recall  f1-score   support
+
+           0       0.41      0.55      0.47        42
+           1       0.76      0.64      0.69        92
+
+    accuracy                           0.61       134
+   macro avg       0.58      0.59      0.58       134
+weighted avg       0.65      0.61      0.62       134
+
+
+=== Fold 5 ===
+size train/test: 540 134
+accuracy: 0.7612 precision: 0.7059 recall: 0.973 f1: 0.8182
+confusion matrix:
+ [[30 30]
+ [ 2 72]]
+              precision    recall  f1-score   support
+
+           0       0.94      0.50      0.65        60
+           1       0.71      0.97      0.82        74
+
+    accuracy                           0.76       134
+   macro avg       0.82      0.74      0.74       134
+weighted avg       0.81      0.76      0.74       134
+
+
+=== GroupKFold summary ===
+Accuracy mean/std: 0.665 / 0.0883
+Precision mean/std: 0.7213 / 0.0726
+Recall mean/std: 0.7635 / 0.1334
+F1 mean/std: 0.7361 / 0.0694
+
+Feature importances (avg):
+  ema_dev   : 0.1980
+  atr_pct   : 0.1911
+  alpha_score: 0.1805
+  rsi       : 0.1511
+  vol_ratio : 0.1496
+  atr       : 0.1297
+
+Saved model to /root/stockbot/core/training/trained_model.pkl
+Done.
+Loaded rows: 732
+After downsample rows: 674 (max_per_symbol=12)
+Top symbols (post-ds):
+{'AMD': 12, 'COIN': 12, 'EBAY': 12, 'EA': 12, 'TTD': 12, 'PDD': 12, 'PINS': 12, 'RBLX': 12, 'SNAP': 12, 'ORCL': 12, 'ON': 12, 'NET': 12, 'NVDA': 12, 'MSFT': 12, 'NFLX': 12, 'KLAC': 12, 'MDB': 12, 'LRCX': 12, 'GOOG': 12, 'HUYA': 12}
+Feature matrix shape: (674, 6)
+Label distribution:
+ {1: np.int64(417), 0: np.int64(257)}
+
+=== Fold 1 ===
+size train/test: 538 136
+accuracy: 0.5441 precision: 0.6292 recall: 0.6588 f1: 0.6437
+confusion matrix:
+ [[18 33]
+ [29 56]]
+              precision    recall  f1-score   support
+
+           0       0.38      0.35      0.37        51
+           1       0.63      0.66      0.64        85
+
+    accuracy                           0.54       136
+   macro avg       0.51      0.51      0.51       136
+weighted avg       0.54      0.54      0.54       136
+
+
+=== Fold 2 ===
+size train/test: 538 136
+accuracy: 0.6765 precision: 0.6923 recall: 0.7975 f1: 0.7412
+confusion matrix:
+ [[29 28]
+ [16 63]]
+              precision    recall  f1-score   support
+
+           0       0.64      0.51      0.57        57
+           1       0.69      0.80      0.74        79
+
+    accuracy                           0.68       136
+   macro avg       0.67      0.65      0.65       136
+weighted avg       0.67      0.68      0.67       136
+
+
+=== Fold 3 ===
+size train/test: 540 134
+accuracy: 0.7313 precision: 0.8228 recall: 0.7471 f1: 0.7831
+confusion matrix:
+ [[33 14]
+ [22 65]]
+              precision    recall  f1-score   support
+
+           0       0.60      0.70      0.65        47
+           1       0.82      0.75      0.78        87
+
+    accuracy                           0.73       134
+   macro avg       0.71      0.72      0.72       134
+weighted avg       0.74      0.73      0.74       134
+
+
+=== Fold 4 ===
+size train/test: 540 134
+accuracy: 0.6119 precision: 0.7564 recall: 0.6413 f1: 0.6941
+confusion matrix:
+ [[23 19]
+ [33 59]]
+              precision    recall  f1-score   support
+
+           0       0.41      0.55      0.47        42
+           1       0.76      0.64      0.69        92
+
+    accuracy                           0.61       134
+   macro avg       0.58      0.59      0.58       134
+weighted avg       0.65      0.61      0.62       134
+
+
+=== Fold 5 ===
+size train/test: 540 134
+accuracy: 0.7612 precision: 0.7059 recall: 0.973 f1: 0.8182
+confusion matrix:
+ [[30 30]
+ [ 2 72]]
+              precision    recall  f1-score   support
+
+           0       0.94      0.50      0.65        60
+           1       0.71      0.97      0.82        74
+
+    accuracy                           0.76       134
+   macro avg       0.82      0.74      0.74       134
+weighted avg       0.81      0.76      0.74       134
+
+
+=== GroupKFold summary ===
+Accuracy mean/std: 0.665 / 0.0883
+Precision mean/std: 0.7213 / 0.0726
+Recall mean/std: 0.7635 / 0.1334
+F1 mean/std: 0.7361 / 0.0694
+
+Feature importances (avg):
+  ema_dev   : 0.1980
+  atr_pct   : 0.1911
+  alpha_score: 0.1805
+  rsi       : 0.1511
+  vol_ratio : 0.1496
+  atr       : 0.1297
+
+Saved model to /root/stockbot/core/training/trained_model.pkl
+Done.
+Loaded rows: 366
+After downsample rows: 365 (max_per_symbol=12)
+Top symbols (post-ds):
+{'U': 12, 'PINS': 12, 'ON': 9, 'COIN': 8, 'AMD': 8, 'MSFT': 8, 'EA': 8, 'SNAP': 8, 'NFLX': 8, 'RBLX': 7, 'LRCX': 6, 'KLAC': 6, 'NET': 6, 'GOOGL': 6, 'GOOG': 6, 'HUYA': 6, 'MDB': 6, 'NVDA': 6, 'ORCL': 6, 'EBAY': 6}
+Feature matrix shape: (365, 6)
+Label distribution:
+ {1: np.int64(224), 0: np.int64(141)}
+
+=== Fold 1 ===
+size train/test: 292 73
+accuracy: 0.589 precision: 0.5472 recall: 0.8286 f1: 0.6591
+confusion matrix:
+ [[14 24]
+ [ 6 29]]
+              precision    recall  f1-score   support
+
+           0       0.70      0.37      0.48        38
+           1       0.55      0.83      0.66        35
+
+    accuracy                           0.59        73
+   macro avg       0.62      0.60      0.57        73
+weighted avg       0.63      0.59      0.57        73
+
+
+=== Fold 2 ===
+size train/test: 292 73
+accuracy: 0.6712 precision: 0.7609 recall: 0.7292 f1: 0.7447
+confusion matrix:
+ [[14 11]
+ [13 35]]
+              precision    recall  f1-score   support
+
+           0       0.52      0.56      0.54        25
+           1       0.76      0.73      0.74        48
+
+    accuracy                           0.67        73
+   macro avg       0.64      0.64      0.64        73
+weighted avg       0.68      0.67      0.67        73
+
+
+=== Fold 3 ===
+size train/test: 292 73
+accuracy: 0.6027 precision: 0.6735 recall: 0.7174 f1: 0.6947
+confusion matrix:
+ [[11 16]
+ [13 33]]
+              precision    recall  f1-score   support
+
+           0       0.46      0.41      0.43        27
+           1       0.67      0.72      0.69        46
+
+    accuracy                           0.60        73
+   macro avg       0.57      0.56      0.56        73
+weighted avg       0.59      0.60      0.60        73
+
+
+=== Fold 4 ===
+size train/test: 292 73
+accuracy: 0.6575 precision: 0.6809 recall: 0.7619 f1: 0.7191
+confusion matrix:
+ [[16 15]
+ [10 32]]
+              precision    recall  f1-score   support
+
+           0       0.62      0.52      0.56        31
+           1       0.68      0.76      0.72        42
+
+    accuracy                           0.66        73
+   macro avg       0.65      0.64      0.64        73
+weighted avg       0.65      0.66      0.65        73
+
+
+=== Fold 5 ===
+size train/test: 292 73
+accuracy: 0.7397 precision: 0.8542 recall: 0.7736 f1: 0.8119
+confusion matrix:
+ [[13  7]
+ [12 41]]
+              precision    recall  f1-score   support
+
+           0       0.52      0.65      0.58        20
+           1       0.85      0.77      0.81        53
+
+    accuracy                           0.74        73
+   macro avg       0.69      0.71      0.69        73
+weighted avg       0.76      0.74      0.75        73
+
+
+=== GroupKFold summary ===
+Accuracy mean/std: 0.6521 / 0.0602
+Precision mean/std: 0.7033 / 0.1138
+Recall mean/std: 0.7621 / 0.0437
+F1 mean/std: 0.7259 / 0.0575
+
+Feature importances (avg):
+  atr_pct   : 0.2016
+  alpha_score: 0.1867
+  ema_dev   : 0.1855
+  rsi       : 0.1501
+  vol_ratio : 0.1438
+  atr       : 0.1323
+
+Saved model to /root/stockbot/core/training/trained_model.pkl
+Done.

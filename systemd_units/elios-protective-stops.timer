@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Elios Protective Stops every 2 minutes
+
+[Timer]
+OnBootSec=75
+OnUnitActiveSec=2min
+Unit=elios-protective-stops.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target

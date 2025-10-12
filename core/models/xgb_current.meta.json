@@ -1,0 +1,23 @@
+{
+  "features": [
+    "rsi14",
+    "ema_dev_pct",
+    "atr_pct",
+    "volatility_pct",
+    "volume_trend",
+    "volume_ratio",
+    "gap_up_pct",
+    "bullish_body_pct",
+    "mom5_pct",
+    "mom20_pct"
+  ],
+  "target": "target_spike4",
+  "train_rows": 7077,
+  "valid_rows": 375,
+  "date_min": "2015-10-06 00:00:00",
+  "date_max": "2025-08-21 00:00:00",
+  "valid_window_days": 180,
+  "best_iteration": 12,
+  "auc_valid": 0.7793247242399786,
+  "ap_valid": 0.30822623330296156
+}

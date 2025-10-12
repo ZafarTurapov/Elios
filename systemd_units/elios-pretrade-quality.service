@@ -1,0 +1,13 @@
+[Unit]
+Description=Elios Pre-trade Quality Gate (spread/liquidity via DATA API)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+Environment=PYTHONUNBUFFERED=1
+WorkingDirectory=/root/stockbot
+EnvironmentFile=-/root/stockbot/.env
+EnvironmentFile=-/root/stockbot/.env.local
+ExecStart=/root/stockbot/venv/bin/python -m core.trading.guards.pretrade_quality_gate
+Nice=5

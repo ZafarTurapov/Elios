@@ -1,0 +1,38 @@
+[
+  {
+    "symbol": "INTC",
+    "side": "buy",
+    "entry": 35.5,
+    "qty_hint": null
+  },
+  {
+    "symbol": "IBM",
+    "side": "buy",
+    "entry": 284.30999755859375,
+    "qty_hint": null
+  },
+  {
+    "symbol": "CME",
+    "side": "buy",
+    "entry": 270.2799987792969,
+    "qty_hint": null
+  },
+  {
+    "symbol": "LHX",
+    "side": "buy",
+    "entry": 293.55999755859375,
+    "qty_hint": null
+  },
+  {
+    "symbol": "VLO",
+    "side": "buy",
+    "entry": 175.6300048828125,
+    "qty_hint": null
+  },
+  {
+    "symbol": "NEE",
+    "side": "buy",
+    "entry": 75.8499984741211,
+    "qty_hint": null
+  }
+]

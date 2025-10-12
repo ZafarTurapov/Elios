@@ -1,0 +1,17 @@
+[Unit]
+Description=Elios sell_notifier (watch Alpaca fills and notify Telegram)
+Wants=network-online.target
+After=network-online.target
+ConditionPathExists=/root/stockbot/core/trading/sell_notifier.py
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root/stockbot
+EnvironmentFile=-/root/stockbot/.env.local
+ExecStart=/root/stockbot/venv/bin/python3 -u /root/stockbot/core/trading/sell_notifier.py
+User=root
+Group=root
+Nice=5
+
+[Install]
+WantedBy=multi-user.target

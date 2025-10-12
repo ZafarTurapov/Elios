@@ -1,0 +1,7 @@
+[Unit]
+Description=Elios opening safety kicker (force run if 18:30 missed)
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/elios-open-kicker.sh
