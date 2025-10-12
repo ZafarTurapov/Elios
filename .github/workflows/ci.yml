@@ -20,12 +20,11 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
 
       - name: Python syntax check
-        run: python -m compileall -q .
-
-      # опционально выполняется, только если файл существует в репо
-      - name: Sanity checks (signals normalization)
-        if: ${{ hashFiles('tools/ci_sanity.py') != '' }}
-        run: python tools/ci_sanity.py
+        run: |
+          python -m compileall -q .
+          if [ -f tools/ci_sanity.py ]; then
+            python tools/ci_sanity.py
+          fi
 
       # опционально проверяем бит исполняемого файла
       - name: Check exec wrapper is executable
