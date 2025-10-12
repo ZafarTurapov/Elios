@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [main]
+    branches: [main, dev, "feat/**", "fix/**", "chore/**"]
   pull_request:
 
 jobs:
@@ -9,14 +9,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - name: Install minimal deps
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
+
       - name: Python syntax check
-      - name: Sanity checks (signals normalization)
-        run: python tools/ci_sanity.py
         run: python -m compileall -q .
+
+      # опционально выполняется, только если файл существует в репо
+      - name: Sanity checks (signals normalization)
+        if: ${{ hashFiles('tools/ci_sanity.py') != '' }}
+        run: python tools/ci_sanity.py
+
+      # опционально проверяем бит исполняемого файла
+      - name: Check exec wrapper is executable
+        if: ${{ hashFiles('bin/execute_trades.sh') != '' }}
+        run: test -x bin/execute_trades.sh
