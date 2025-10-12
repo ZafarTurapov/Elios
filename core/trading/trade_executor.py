@@ -148,7 +148,12 @@ if USE_GPT:
     except Exception:
         OpenAI = None
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY",
+client = None
+if USE_GPT and OpenAI is not None:
+    try:
+        client = OpenAI(api_key=os.getenv('OPENAI_API_KEY',''))
+    except Exception as _e:
+        client = None
     os.getenv("OPENAI_API_KEY","")))
 GPT_MODEL = os.getenv("ELIOS_GPT_MODEL", "gpt-4o-mini")
 
