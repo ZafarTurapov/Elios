@@ -25,7 +25,8 @@ jobs:
       # опционально выполняется, только если файл существует в репо
       - name: Sanity checks (signals normalization)
         if: ${{ hashFiles('tools/ci_sanity.py') != '' }}
-        run: python tools/ci_sanity.py
+        run: |
+          python tools/ci_sanity.py
 
       # опционально проверяем бит исполняемого файла
       - name: Check exec wrapper is executable
