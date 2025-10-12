@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# OS/IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Project runtime
+.env
+*.env
+logs/
+core/trading/signals/
+logs/cache/
+logs/snapshots/
+logs/decisions/
+core/trading/open_positions.json
+core/trading/signals.json
+core/trading/rejected.json
+core/trading/gpt_decisions.json
+signals_backup.json
+
+# Misc
+*.sqlite3
