@@ -17,4 +17,6 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
       - name: Python syntax check
+      - name: Sanity checks (signals normalization)
+        run: python tools/ci_sanity.py
         run: python -m compileall -q .
