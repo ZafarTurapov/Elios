@@ -1,3 +1,4 @@
+from __future__ import annotations
 from core.utils.alpaca_headers import alpaca_headers
 # -*- coding: utf-8 -*-
 """
@@ -12,7 +13,6 @@ Orders Entry Logger -> trade_log.json
 ENV:
   ALPACA_BASE_URL, APCA_API_KEY_ID/ALPACA_API_KEY_ID, APCA_API_SECRET_KEY/ALPACA_API_SECRET_KEY
 """
-from __future__ import annotations
 import os, json, time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
