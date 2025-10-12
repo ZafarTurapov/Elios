@@ -1,6 +1,6 @@
+from __future__ import annotations
 from core.utils.alpaca_headers import alpaca_headers
 # -*- coding: utf-8 -*-
-from __future__ import annotations
 import os, sys
 from datetime import datetime, timedelta, timezone
 import requests
