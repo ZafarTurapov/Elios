@@ -34,3 +34,13 @@ signals_backup.json
 
 # temp restore dir
 restore_tmp/
+
+# heavy artifacts
+*.zip
+*.pkl
+backups/
+snapshots/
+core/training/model_backups/
+core/data/train/
+core/data/eod/
+data/history/
