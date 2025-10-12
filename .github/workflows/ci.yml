@@ -19,15 +19,12 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
 
-      - name: Python syntax check
-        run: python -m compileall -q .
-
-      # опционально выполняется, только если файл существует в репо
-      - name: Sanity checks (signals normalization)
-        if: ${{ hashFiles('tools/ci_sanity.py') != '' }}
-        run: python tools/ci_sanity.py
-
-      # опционально проверяем бит исполняемого файла
-      - name: Check exec wrapper is executable
-        if: ${{ hashFiles('bin/execute_trades.sh') != '' }}
-        run: test -x bin/execute_trades.sh
+      - name: Run repository sanity checks
+        run: |
+          python -m compileall -q .
+          if [ -f tools/ci_sanity.py ]; then
+            python tools/ci_sanity.py
+          fi
+          if [ -f bin/execute_trades.sh ]; then
+            test -x bin/execute_trades.sh
+          fi
