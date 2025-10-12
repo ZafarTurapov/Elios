@@ -1,3 +1,4 @@
+from __future__ import annotations
 from core.utils.alpaca_headers import alpaca_headers
 # -*- coding: utf-8 -*-
 """
@@ -14,7 +15,6 @@ core/trading/account_sync.py — сводка по счёту Alpaca + отчё�
     PYTHONPATH=/root/stockbot python3 -m core.trading.account_sync --send --limit 5 --tz Asia/Tashkent
 """
 
-from __future__ import annotations
 import os
 import json
 import argparse

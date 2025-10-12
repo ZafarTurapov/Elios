@@ -1,3 +1,4 @@
+from __future__ import annotations
 from core.utils.alpaca_headers import alpaca_headers
 # -*- coding: utf-8 -*-
 """
@@ -10,7 +11,6 @@ Risk Guard (kill-switch) для Elios:
 Запуск (проверка):  python -m core.trading.risk_guard --check
 Код выхода: 0 = можно торговать; 100 = БЛОК; !=0 = ошибка
 """
-from __future__ import annotations
 import os, sys, json, argparse
 from datetime import datetime, timedelta, timezone
 from pathlib import Path

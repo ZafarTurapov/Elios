@@ -1,3 +1,4 @@
+from __future__ import annotations
 from core.utils.alpaca_headers import alpaca_headers
 # -*- coding: utf-8 -*-
 """
@@ -13,7 +14,6 @@ ENV:
   ELIOS_TZ=Asia/Tashkent
 Примечание: если используешь полноценные bracket-ордера при входе — этот страж просто ничего не сделает.
 """
-from __future__ import annotations
 import os, sys, math, time
 from datetime import datetime, timezone, timedelta
 from pathlib import Path

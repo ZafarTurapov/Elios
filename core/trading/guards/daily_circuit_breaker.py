@@ -1,3 +1,4 @@
+from __future__ import annotations
 from core.utils.alpaca_headers import alpaca_headers
 # -*- coding: utf-8 -*-
 """
@@ -13,7 +14,6 @@ ENV:
   ELIOS_DD_LIMIT_USD=400          # сработает при просадке <= -400$
   ELIOS_DD_LIMIT_PCT=0.01         # и/или при просадке <= -1% (берётся тот, что раньше)
 """
-from __future__ import annotations
 import os, sys, json
 from datetime import datetime, timedelta, timezone, time as dtime
 from zoneinfo import ZoneInfo

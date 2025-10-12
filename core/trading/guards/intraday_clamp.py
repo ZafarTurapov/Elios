@@ -1,3 +1,4 @@
+from __future__ import annotations
 from core.utils.alpaca_headers import alpaca_headers
 # -*- coding: utf-8 -*-
 """
@@ -16,7 +17,6 @@ ENV (опционально):
   ELIOS_IMPULSE_PCT=0.012
   ELIOS_BREAKEVEN_PCT=0.002
 """
-from __future__ import annotations
 import os, sys, json
 from datetime import datetime, timedelta, time as dtime, timezone
 from zoneinfo import ZoneInfo

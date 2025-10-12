@@ -1,6 +1,6 @@
+from __future__ import annotations
 from core.utils.alpaca_headers import alpaca_headers
 # см. предыдущие шаги — это тот же Entry Orders Gate (окно, MAX_OPEN_POS, MAX_ORDER_NOTIONAL)
-from __future__ import annotations
 import os, sys, json, math
 from datetime import datetime, time as dtime, timezone, timedelta
 from zoneinfo import ZoneInfo
