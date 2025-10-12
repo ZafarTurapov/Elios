@@ -44,3 +44,8 @@ core/training/model_backups/
 core/data/train/
 core/data/eod/
 data/history/
+
+# oversized CSVs
+/data/merged_with_labels.csv
+/data/sp500_stocks.csv
+/data/merged_sp500_fundamentals_clean.csv
