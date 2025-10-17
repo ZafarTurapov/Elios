@@ -138,9 +138,22 @@ ELIOS_ALLOCATION_AUDIT = os.getenv("ELIOS_ALLOCATION_AUDIT","1").strip().lower()
 LAST_GPT_WEIGHTS = {}
 
 # === OpenAI (для GPT-аллокации) ===
-from openai import OpenAI
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY",
-    os.getenv("OPENAI_API_KEY","")))
+
+import os
+USE_GPT = os.getenv('ELIOS_USE_GPT','0') == '1'
+OpenAI = None
+if USE_GPT:
+    try:
+        from openai import OpenAI  # guarded lazy import
+    except Exception:
+        OpenAI = None
+
+client = None
+if USE_GPT and OpenAI is not None:
+    try:
+        client = OpenAI(api_key=os.getenv('OPENAI_API_KEY',''))
+    except Exception as _e:
+        client = None
 GPT_MODEL = os.getenv("ELIOS_GPT_MODEL", "gpt-4o-mini")
 
 # === Paths ===
