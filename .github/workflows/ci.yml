@@ -19,12 +19,10 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
 
-      - name: Python syntax check
+      - name: Python syntax & sanity checks
         run: |
           python -m compileall -q .
-          if [ -f tools/ci_sanity.py ]; then
-            python tools/ci_sanity.py
-          fi
+          if [ -f tools/ci_sanity.py ]; then python tools/ci_sanity.py; fi
 
       # опционально проверяем бит исполняемого файла
       - name: Check exec wrapper is executable
