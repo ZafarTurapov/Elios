@@ -8,7 +8,9 @@ def _read_signals_any_format(path="core/trading/signals.json"):
       • {"signals":[...]}
       • {"AAPL": {...}, "NVDA": {...}}
     """
-    import json, os
+    import json
+    import os
+
     if not os.path.exists(path):
         return []
     obj = json.load(open(path, encoding="utf-8"))
@@ -16,10 +18,10 @@ def _read_signals_any_format(path="core/trading/signals.json"):
         # уже нормализовано
         out = []
         for it in obj["signals"]:
-            if not isinstance(it, dict): 
+            if not isinstance(it, dict):
                 continue
             sym = (it.get("symbol") or it.get("ticker") or "").upper()
-            if not sym: 
+            if not sym:
                 continue
             it = {**it}
             it.setdefault("action", "BUY")
@@ -29,10 +31,10 @@ def _read_signals_any_format(path="core/trading/signals.json"):
     if isinstance(obj, dict):
         out = []
         for k, v in obj.items():
-            if str(k).startswith("__"): 
+            if str(k).startswith("__"):
                 continue
             d = v or {}
-            if not isinstance(d, dict): 
+            if not isinstance(d, dict):
                 d = {}
             sym = str(k).upper()
             item = {
@@ -43,13 +45,24 @@ def _read_signals_any_format(path="core/trading/signals.json"):
                 "meta": d.get("meta"),
             }
             # прокинем полезные поля, если есть
-            for fld in ("confidence","score","atr","atr_pct","volatility",
-                        "volume_trend","bullish_body","gap_up","reason","squeeze"):
+            for fld in (
+                "confidence",
+                "score",
+                "atr",
+                "atr_pct",
+                "volatility",
+                "volume_trend",
+                "bullish_body",
+                "gap_up",
+                "reason",
+                "squeeze",
+            ):
                 if fld in d:
                     item[fld] = d[fld]
             out.append(item)
         return out
     return []
+
 
 # core/trading/trade_executor.py — гибридная аллокация с реальным BP/плечом, gross-капом,
 # BUY только в окно 18:30–21:00 (Asia/Tashkent). Выход делает Sell Engine.
@@ -62,85 +75,132 @@ def _read_signals_any_format(path="core/trading/signals.json"):
 # • ВКЛЮЧЕНО: поддержка short-squeeze-флагов из signals, даунсайз при long_risk
 # • ВКЛЮЧЕНО: OCO (bracket) с ужесточенными TP/SL при long_risk + ATR-режим
 
-import os
 import json
-import time
-from datetime import datetime, timezone, timedelta
-from zoneinfo import ZoneInfo
-import requests
-from pathlib import Path
+import os
 
 # === ensure /root/stockbot on sys.path ===
 import sys
+import time
+from datetime import datetime, timezone
+from pathlib import Path
+from zoneinfo import ZoneInfo
+
+import requests
+
 if "/root/stockbot" not in sys.path:
     sys.path.insert(0, "/root/stockbot")
 
 # === Alpaca Keys ===
-ALPACA_API_KEY    = os.getenv("ALPACA_API_KEY")
+ALPACA_API_KEY = os.getenv("ALPACA_API_KEY")
 ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
-ALPACA_BASE_URL   = os.getenv("ALPACA_BASE_URL",   "https://paper-api.alpaca.markets")
-ALPACA_DATA_BASE  = os.getenv("ALPACA_DATA_BASE",  "https://data.alpaca.markets/v2")
+ALPACA_BASE_URL = os.getenv("ALPACA_BASE_URL", "https://paper-api.alpaca.markets")
+ALPACA_DATA_BASE = os.getenv("ALPACA_DATA_BASE", "https://data.alpaca.markets/v2")
 
 HEADERS = alpaca_headers()
 
 # --- ENV-флаги/режимы ---
-STRICT_ASSETS  = os.getenv("ELIOS_STRICT_ASSETS_CHECK", "").strip().lower() in ("1","true","yes")
-SKIP_ASSETS    = not STRICT_ASSETS if os.getenv("ELIOS_SKIP_ASSETS_CHECK") is None else (
-    os.getenv("ELIOS_SKIP_ASSETS_CHECK","").strip().lower() in ("1","true","yes")
+STRICT_ASSETS = os.getenv("ELIOS_STRICT_ASSETS_CHECK", "").strip().lower() in (
+    "1",
+    "true",
+    "yes",
 )
-FAILOPEN_IF_EMPTY = os.getenv("ELIOS_FAILOPEN_IF_EMPTY","1").strip().lower() in ("1","true","yes")
+SKIP_ASSETS = (
+    not STRICT_ASSETS
+    if os.getenv("ELIOS_SKIP_ASSETS_CHECK") is None
+    else (
+        os.getenv("ELIOS_SKIP_ASSETS_CHECK", "").strip().lower() in ("1", "true", "yes")
+    )
+)
+FAILOPEN_IF_EMPTY = os.getenv("ELIOS_FAILOPEN_IF_EMPTY", "1").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+)
 
-ROUNDING_RESCUE_ENABLED = os.getenv("ELIOS_ROUNDING_RESCUE","1").strip().lower() in ("1","true","yes")
-CHECK_US_MARKET_OPEN    = os.getenv("ELIOS_CHECK_US_MARKET_OPEN","1").strip().lower() in ("1","true","yes")
-DRY_RUN                 = os.getenv("ELIOS_DRY_RUN","0").strip().lower() in ("1","true","yes")
-ORDER_THROTTLE_MS       = int(os.getenv("ELIOS_ORDER_THROTTLE_MS","300"))
-ORDER_TIF               = os.getenv("ELIOS_ORDER_TIME_IN_FORCE","day")
-ORDER_TYPE              = os.getenv("ELIOS_ORDER_TYPE","market")  # market|limit (limit не рекомендуется в этом модуле)
+ROUNDING_RESCUE_ENABLED = os.getenv("ELIOS_ROUNDING_RESCUE", "1").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+)
+CHECK_US_MARKET_OPEN = os.getenv("ELIOS_CHECK_US_MARKET_OPEN", "1").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+)
+DRY_RUN = os.getenv("ELIOS_DRY_RUN", "0").strip().lower() in ("1", "true", "yes")
+ORDER_THROTTLE_MS = int(os.getenv("ELIOS_ORDER_THROTTLE_MS", "300"))
+ORDER_TIF = os.getenv("ELIOS_ORDER_TIME_IN_FORCE", "day")
+ORDER_TYPE = os.getenv(
+    "ELIOS_ORDER_TYPE", "market"
+)  # market|limit (limit не рекомендуется в этом модуле)
 
 # --- BUY-окно (локальное время Asia/Tashkent) ---
 TZ_LOCAL = ZoneInfo("Asia/Tashkent")
 BUY_WIN_START = os.getenv("ELIOS_BUY_WINDOW_START", "18:30")
-BUY_WIN_END   = os.getenv("ELIOS_BUY_WINDOW_END",   "21:00")
+BUY_WIN_END = os.getenv("ELIOS_BUY_WINDOW_END", "21:00")
 
 # --- Глобальные лимиты плеча/риска ---
 GROSS_CAP_PRIME = float(os.getenv("ELIOS_GROSS_CAP_PRIME", "1.5"))  # в окне 18:30–21:00
-GROSS_CAP_OFF   = float(os.getenv("ELIOS_GROSS_CAP_OFF",   "1.0"))  # вне окна
-DAILY_RISK_CAP_PCT      = float(os.getenv("ELIOS_DAILY_RISK_CAP_PCT", "0.03"))  # 3%
-BP_SAFETY_BUFFER_PCT    = float(os.getenv("ELIOS_BP_SAFETY_BUFFER_PCT", "0.05"))  # 5%
+GROSS_CAP_OFF = float(os.getenv("ELIOS_GROSS_CAP_OFF", "1.0"))  # вне окна
+DAILY_RISK_CAP_PCT = float(os.getenv("ELIOS_DAILY_RISK_CAP_PCT", "0.03"))  # 3%
+BP_SAFETY_BUFFER_PCT = float(os.getenv("ELIOS_BP_SAFETY_BUFFER_PCT", "0.05"))  # 5%
 
 # --- Slippage guard ---
-SLIPPAGE_REJECT_PCT = float(os.getenv("ELIOS_SLIPPAGE_REJECT_PCT", "1.25"))  # % от цены сигнала
-SLIPPAGE_WARN_PCT   = float(os.getenv("ELIOS_SLIPPAGE_WARN_PCT", "0.60"))    # предупреждение в телеге
-SLIPPAGE_DIRECTIONAL = os.getenv("ELIOS_SLIPPAGE_DIRECTIONAL","1").strip().lower() in ("1","true","yes")
-SLIPPAGE_WARN_FAVORABLE = os.getenv("ELIOS_SLIPPAGE_WARN_FAVORABLE","1").strip().lower() in ("1","true","yes")
+SLIPPAGE_REJECT_PCT = float(
+    os.getenv("ELIOS_SLIPPAGE_REJECT_PCT", "1.25")
+)  # % от цены сигнала
+SLIPPAGE_WARN_PCT = float(
+    os.getenv("ELIOS_SLIPPAGE_WARN_PCT", "0.60")
+)  # предупреждение в телеге
+SLIPPAGE_DIRECTIONAL = os.getenv("ELIOS_SLIPPAGE_DIRECTIONAL", "1").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+)
+SLIPPAGE_WARN_FAVORABLE = os.getenv(
+    "ELIOS_SLIPPAGE_WARN_FAVORABLE", "1"
+).strip().lower() in ("1", "true", "yes")
 
 # --- Squeeze-aware sizing / OCO ---
-SQUEEZE_SIZE_MULT          = float(os.getenv("ELIOS_SQUEEZE_LONG_RISK_SIZE_MULT", "0.5"))   # 50% размера при long_risk
-OCO_ENABLE                 = os.getenv("ELIOS_OCO_ENABLE","1").strip().lower() in ("1","true","yes")
-OCO_TIGHT_IF_LONG_RISK     = os.getenv("ELIOS_OCO_TIGHT_IF_LONG_RISK","1").strip().lower() in ("1","true","yes")
-OCO_USE_ATR                = os.getenv("ELIOS_OCO_USE_ATR","1").strip().lower() in ("1","true","yes")
+SQUEEZE_SIZE_MULT = float(
+    os.getenv("ELIOS_SQUEEZE_LONG_RISK_SIZE_MULT", "0.5")
+)  # 50% размера при long_risk
+OCO_ENABLE = os.getenv("ELIOS_OCO_ENABLE", "1").strip().lower() in ("1", "true", "yes")
+OCO_TIGHT_IF_LONG_RISK = os.getenv(
+    "ELIOS_OCO_TIGHT_IF_LONG_RISK", "1"
+).strip().lower() in ("1", "true", "yes")
+OCO_USE_ATR = os.getenv("ELIOS_OCO_USE_ATR", "1").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+)
 
 # базовые % (если ATR не используется или нет данных)
-TP_PCT_BASE                = float(os.getenv("ELIOS_TP_PCT","3.0"))   # +3.0% TP
-SL_PCT_BASE                = float(os.getenv("ELIOS_SL_PCT","1.6"))   # -1.6% SL
+TP_PCT_BASE = float(os.getenv("ELIOS_TP_PCT", "3.0"))  # +3.0% TP
+SL_PCT_BASE = float(os.getenv("ELIOS_SL_PCT", "1.6"))  # -1.6% SL
 # ужатые % для long_risk
-TP_PCT_TIGHT               = float(os.getenv("ELIOS_TP_PCT_TIGHT","2.2"))
-SL_PCT_TIGHT               = float(os.getenv("ELIOS_SL_PCT_TIGHT","1.0"))
+TP_PCT_TIGHT = float(os.getenv("ELIOS_TP_PCT_TIGHT", "2.2"))
+SL_PCT_TIGHT = float(os.getenv("ELIOS_SL_PCT_TIGHT", "1.0"))
 
 # ATR-мультипликаторы: TP/SL как доля дневного ATR%
-TP_ATR_MULT                = float(os.getenv("ELIOS_TP_ATR_MULT","0.90"))  # 0.9 * ATR%
-SL_ATR_MULT                = float(os.getenv("ELIOS_SL_ATR_MULT","0.60"))  # 0.6 * ATR%
-TP_ATR_MULT_TIGHT          = float(os.getenv("ELIOS_TP_ATR_MULT_TIGHT","0.70"))
-SL_ATR_MULT_TIGHT          = float(os.getenv("ELIOS_SL_ATR_MULT_TIGHT","0.45"))
+TP_ATR_MULT = float(os.getenv("ELIOS_TP_ATR_MULT", "0.90"))  # 0.9 * ATR%
+SL_ATR_MULT = float(os.getenv("ELIOS_SL_ATR_MULT", "0.60"))  # 0.6 * ATR%
+TP_ATR_MULT_TIGHT = float(os.getenv("ELIOS_TP_ATR_MULT_TIGHT", "0.70"))
+SL_ATR_MULT_TIGHT = float(os.getenv("ELIOS_SL_ATR_MULT_TIGHT", "0.45"))
 
 # --- АУДИТ АЛЛОКАЦИИ ---
-ELIOS_ALLOCATION_AUDIT = os.getenv("ELIOS_ALLOCATION_AUDIT","1").strip().lower() in ("1","true","yes")
+ELIOS_ALLOCATION_AUDIT = os.getenv("ELIOS_ALLOCATION_AUDIT", "1").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+)
 LAST_GPT_WEIGHTS = {}
 
 # === OpenAI (для GPT-аллокации) ===
 
 import os
-USE_GPT = os.getenv('ELIOS_USE_GPT','0') == '1'
+
+USE_GPT = os.getenv("ELIOS_USE_GPT", "0") == "1"
 OpenAI = None
 if USE_GPT:
     try:
@@ -151,23 +211,25 @@ if USE_GPT:
 client = None
 if USE_GPT and OpenAI is not None:
     try:
-        client = OpenAI(api_key=os.getenv('OPENAI_API_KEY',''))
+        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
     except Exception as _e:
         client = None
 GPT_MODEL = os.getenv("ELIOS_GPT_MODEL", "gpt-4o-mini")
 
 # === Paths ===
-SIGNALS_PATH         = Path("core/trading/signals.json")
-TRADE_LOG_PATH       = Path("core/trading/trade_log.json")
-OPEN_POSITIONS_PATH  = Path("core/trading/open_positions.json")
-ACCOUNT_PATH         = Path("core/trading/account_summary.json")
-POSITIONS_PATH       = Path("core/trading/open_positions.json")
-DEBUG_LOG_PATH       = Path("logs/executor_debug.json")
+SIGNALS_PATH = Path("core/trading/signals.json")
+TRADE_LOG_PATH = Path("core/trading/trade_log.json")
+OPEN_POSITIONS_PATH = Path("core/trading/open_positions.json")
+ACCOUNT_PATH = Path("core/trading/account_summary.json")
+POSITIONS_PATH = Path("core/trading/open_positions.json")
+DEBUG_LOG_PATH = Path("logs/executor_debug.json")
 
-from core.utils.telegram import send_telegram_message, escape_markdown
+from core.utils.telegram import escape_markdown, send_telegram_message
 
 # === Allocation settings ===
-ALLOCATION_MODE = os.getenv("ELIOS_ALLOCATION_MODE", "hybrid_gpt")  # proportional|capped_proportional|gpt|hybrid_gpt
+ALLOCATION_MODE = os.getenv(
+    "ELIOS_ALLOCATION_MODE", "hybrid_gpt"
+)  # proportional|capped_proportional|gpt|hybrid_gpt
 RESERVE_CASH_PCT = float(os.getenv("ELIOS_RESERVE_CASH_PCT", "0.10"))
 
 # До 100% целевого бюджета на тикер (далее ограничим gross-капом и BP):
@@ -177,20 +239,39 @@ MAX_POSITIONS_NEW = int(os.getenv("ELIOS_MAX_POSITIONS_NEW", "6"))
 MIN_QTY_PER_TRADE = int(os.getenv("ELIOS_MIN_QTY_PER_TRADE", "1"))
 MIN_USD_PER_TRADE = float(os.getenv("ELIOS_MIN_USD_PER_TRADE", "0.0"))
 W_SCORE = float(os.getenv("ELIOS_W_SCORE", "0.60"))
-W_CONF  = float(os.getenv("ELIOS_W_CONF",  "0.40"))
+W_CONF = float(os.getenv("ELIOS_W_CONF", "0.40"))
+
 
 def escape_num(n):
-    return str(n).replace(".", "\\.").replace("-", "\\-").replace("+", "\\+").replace("$", "\\$")
+    return (
+        str(n)
+        .replace(".", "\\.")
+        .replace("-", "\\-")
+        .replace("+", "\\+")
+        .replace("$", "\\$")
+    )
+
 
 # ---- Flexible signals loader ----
 def _normalize_signal_obj(obj: dict):
-    sym   = (obj.get("symbol") or obj.get("ticker") or obj.get("sym") or "").upper()
-    side  = (obj.get("side")   or obj.get("action") or "buy").lower()
-    qty   =  obj.get("qty")    or obj.get("quantity") or obj.get("size") or 0
-    score =  obj.get("score")  or obj.get("model_score") or obj.get("prob") or obj.get("confidence")
-    price =  obj.get("price")  or obj.get("entry") or obj.get("trigger") or obj.get("last")
-    out = dict(obj); out.update({"symbol": sym, "side": side, "qty": qty, "score": score, "price": price})
+    sym = (obj.get("symbol") or obj.get("ticker") or obj.get("sym") or "").upper()
+    side = (obj.get("side") or obj.get("action") or "buy").lower()
+    qty = obj.get("qty") or obj.get("quantity") or obj.get("size") or 0
+    score = (
+        obj.get("score")
+        or obj.get("model_score")
+        or obj.get("prob")
+        or obj.get("confidence")
+    )
+    price = (
+        obj.get("price") or obj.get("entry") or obj.get("trigger") or obj.get("last")
+    )
+    out = dict(obj)
+    out.update(
+        {"symbol": sym, "side": side, "qty": qty, "score": score, "price": price}
+    )
     return sym, out
+
 
 def _load_signals_flexible(path: Path) -> dict:
     try:
@@ -238,13 +319,25 @@ def _load_signals_flexible(path: Path) -> dict:
             signals[sym] = out
     return signals
 
+
 # ---------- Alpaca helpers ----------
 def _unique_coid(symbol: str, qty: int) -> str:
     return f"elios-{symbol}-{int(time.time()*1000)}-q{qty}"
 
-def submit_order_simple(symbol, qty, side="buy", type=ORDER_TYPE, time_in_force=ORDER_TIF):
+
+def submit_order_simple(
+    symbol, qty, side="buy", type=ORDER_TYPE, time_in_force=ORDER_TIF
+):
     if DRY_RUN:
-        return {"id": "dry-run", "status": "accepted", "symbol": symbol, "qty": qty, "side": side, "type": type, "order_class":"simple"}
+        return {
+            "id": "dry-run",
+            "status": "accepted",
+            "symbol": symbol,
+            "qty": qty,
+            "side": side,
+            "type": type,
+            "order_class": "simple",
+        }
     url = f"{ALPACA_BASE_URL}/v2/orders"
     order_data = {
         "symbol": symbol,
@@ -259,17 +352,30 @@ def submit_order_simple(symbol, qty, side="buy", type=ORDER_TYPE, time_in_force=
         r.raise_for_status()
         return r.json()
     except Exception as e:
-        raise Exception(f"Ошибка отправки ордера: {e}\n{r.text if 'r' in locals() and r is not None else ''}")
+        raise Exception(
+            f"Ошибка отправки ордера: {e}\n{r.text if 'r' in locals() and r is not None else ''}"
+        )
 
-def submit_order_bracket_market(symbol, qty, tp_price, sl_stop, sl_limit=None, time_in_force=ORDER_TIF):
+
+def submit_order_bracket_market(
+    symbol, qty, tp_price, sl_stop, sl_limit=None, time_in_force=ORDER_TIF
+):
     """
     Market parent + TP/SL дочерние (Alpaca bracket).
     """
     if DRY_RUN:
         return {
-            "id":"dry-run","status":"accepted","symbol":symbol,"qty":qty,"side":"buy",
-            "type":"market","time_in_force":time_in_force,"order_class":"bracket",
-            "tp":tp_price,"sl_stop":sl_stop,"sl_limit":sl_limit
+            "id": "dry-run",
+            "status": "accepted",
+            "symbol": symbol,
+            "qty": qty,
+            "side": "buy",
+            "type": "market",
+            "time_in_force": time_in_force,
+            "order_class": "bracket",
+            "tp": tp_price,
+            "sl_stop": sl_stop,
+            "sl_limit": sl_limit,
         }
     url = f"{ALPACA_BASE_URL}/v2/orders"
     payload = {
@@ -281,14 +387,20 @@ def submit_order_bracket_market(symbol, qty, tp_price, sl_stop, sl_limit=None, t
         "client_order_id": _unique_coid(symbol, qty),
         "order_class": "bracket",
         "take_profit": {"limit_price": round(float(tp_price), 2)},
-        "stop_loss": {"stop_price": round(float(sl_stop), 2), **({"limit_price": round(float(sl_limit),2)} if sl_limit else {})}
+        "stop_loss": {
+            "stop_price": round(float(sl_stop), 2),
+            **({"limit_price": round(float(sl_limit), 2)} if sl_limit else {}),
+        },
     }
     try:
         r = requests.post(url, json=payload, headers=HEADERS, timeout=10)
         r.raise_for_status()
         return r.json()
     except Exception as e:
-        raise Exception(f"Ошибка bracket-ордера: {e}\n{r.text if 'r' in locals() and r is not None else ''}")
+        raise Exception(
+            f"Ошибка bracket-ордера: {e}\n{r.text if 'r' in locals() and r is not None else ''}"
+        )
+
 
 def fetch_account_live():
     """Живые поля аккаунта: cash, equity, last_equity, (daytrading_)buying_power, long/short MV."""
@@ -296,9 +408,13 @@ def fetch_account_live():
         r = requests.get(f"{ALPACA_BASE_URL}/v2/account", headers=HEADERS, timeout=10)
         r.raise_for_status()
         a = r.json() or {}
+
         def f(x, d=0.0):
-            try: return float(x)
-            except: return d
+            try:
+                return float(x)
+            except:
+                return d
+
         out = {
             "cash": f(a.get("cash")),
             "equity": f(a.get("equity")),
@@ -312,8 +428,17 @@ def fetch_account_live():
         return out
     except Exception as e:
         print(f"[ERROR] /v2/account failed: {e}")
-        return {"cash":0.0,"equity":0.0,"last_equity":0.0,"buying_power":0.0,"dtbp":0.0,
-                "portfolio_value":0.0,"long_market_value":0.0,"short_market_value":0.0}
+        return {
+            "cash": 0.0,
+            "equity": 0.0,
+            "last_equity": 0.0,
+            "buying_power": 0.0,
+            "dtbp": 0.0,
+            "portfolio_value": 0.0,
+            "long_market_value": 0.0,
+            "short_market_value": 0.0,
+        }
+
 
 def fetch_live_positions_symbols():
     try:
@@ -324,6 +449,7 @@ def fetch_live_positions_symbols():
     except Exception as e:
         print(f"[WARN] fetch_live_positions_symbols: {e}")
     return set()
+
 
 def fetch_positions_total_value():
     """Возвращает суммарную абсолютную рыночную стоимость позиций (|long|+|short|)."""
@@ -343,6 +469,7 @@ def fetch_positions_total_value():
         print(f"[WARN] fetch_positions_total_value: {e}")
         return 0.0
 
+
 def is_tradable_safe(symbol: str):
     """
     Безопасная проверка:
@@ -353,7 +480,9 @@ def is_tradable_safe(symbol: str):
     if SKIP_ASSETS:
         return True, "skip_env"
     try:
-        r = requests.get(f"{ALPACA_BASE_URL}/v2/assets/{symbol}", headers=HEADERS, timeout=10)
+        r = requests.get(
+            f"{ALPACA_BASE_URL}/v2/assets/{symbol}", headers=HEADERS, timeout=10
+        )
         if r.status_code == 403:
             return True, "403_fallback"
         if r.status_code != 200:
@@ -367,6 +496,7 @@ def is_tradable_safe(symbol: str):
     except Exception as e:
         return True, f"assets error fail_open: {e}"
 
+
 def us_market_is_open() -> bool:
     try:
         r = requests.get(f"{ALPACA_BASE_URL}/v2/clock", headers=HEADERS, timeout=10)
@@ -376,24 +506,38 @@ def us_market_is_open() -> bool:
         print(f"[WARN] /v2/clock: {e}")
     return True  # fail-open
 
+
 def get_last_price(symbol: str) -> float:
     """Последняя цена (quotes→trades→bars) через Alpaca data (IEX feed)."""
     try:
-        rq = requests.get(f"{ALPACA_DATA_BASE}/stocks/{symbol}/quotes/latest",
-                          params={"feed":"iex"}, headers=HEADERS, timeout=10)
+        rq = requests.get(
+            f"{ALPACA_DATA_BASE}/stocks/{symbol}/quotes/latest",
+            params={"feed": "iex"},
+            headers=HEADERS,
+            timeout=10,
+        )
         if rq.status_code == 200:
             q = (rq.json() or {}).get("quote") or {}
-            ap = float(q.get("ap") or 0); bp = float(q.get("bp") or 0)
+            ap = float(q.get("ap") or 0)
+            bp = float(q.get("bp") or 0)
             if ap > 0 or bp > 0:
                 return ap if ap > 0 else bp
-        rt = requests.get(f"{ALPACA_DATA_BASE}/stocks/{symbol}/trades/latest",
-                          params={"feed":"iex"}, headers=HEADERS, timeout=10)
+        rt = requests.get(
+            f"{ALPACA_DATA_BASE}/stocks/{symbol}/trades/latest",
+            params={"feed": "iex"},
+            headers=HEADERS,
+            timeout=10,
+        )
         if rt.status_code == 200:
             p = float(((rt.json() or {}).get("trade") or {}).get("p") or 0)
             if p > 0:
                 return p
-        rb = requests.get(f"{ALPACA_DATA_BASE}/stocks/{symbol}/bars/latest",
-                          params={"feed":"iex"}, headers=HEADERS, timeout=10)
+        rb = requests.get(
+            f"{ALPACA_DATA_BASE}/stocks/{symbol}/bars/latest",
+            params={"feed": "iex"},
+            headers=HEADERS,
+            timeout=10,
+        )
         if rb.status_code == 200:
             c = float(((rb.json() or {}).get("bar") or {}).get("c") or 0)
             if c > 0:
@@ -401,6 +545,7 @@ def get_last_price(symbol: str) -> float:
     except Exception as e:
         print(f"[WARN] last price {symbol}: {e}")
     return 0.0
+
 
 # ---------- Local data ----------
 def load_account_data():
@@ -416,25 +561,30 @@ def load_account_data():
         positions = {}
     return account, positions
 
+
 # --- Coercion helpers ---
 def _coerce_trade_log(obj):
     out = {}
     try:
         if isinstance(obj, dict):
             for k, v in obj.items():
-                if isinstance(v, list): out[k] = v
-                elif v is None: out[k] = []
-                else: out[k] = [v]
+                if isinstance(v, list):
+                    out[k] = v
+                elif v is None:
+                    out[k] = []
+                else:
+                    out[k] = [v]
             return out
         elif isinstance(obj, list):
             for item in obj:
                 if isinstance(item, dict):
-                    sym = (item.get("symbol") or "UNKNOWN")
+                    sym = item.get("symbol") or "UNKNOWN"
                     out.setdefault(sym, []).append(item)
             return out
     except Exception:
         pass
     return {}
+
 
 def _coerce_positions(obj):
     if isinstance(obj, dict):
@@ -444,9 +594,11 @@ def _coerce_positions(obj):
         for p in obj:
             if isinstance(p, dict):
                 sym = (p.get("symbol") or "").upper()
-                if sym: out[sym] = p
+                if sym:
+                    out[sym] = p
         return out
     return {}
+
 
 # 🔧 Авто-синхронизация локальных «открытых позиций»
 def reconcile_local_positions(open_positions: dict) -> dict:
@@ -457,7 +609,7 @@ def reconcile_local_positions(open_positions: dict) -> dict:
             f"{ALPACA_BASE_URL}/v2/orders",
             headers=HEADERS,
             params={"status": "open", "limit": "200", "nested": "true"},
-            timeout=10
+            timeout=10,
         )
         if r.status_code == 200:
             keep |= set((o.get("symbol") or "").upper() for o in r.json())
@@ -470,96 +622,125 @@ def reconcile_local_positions(open_positions: dict) -> dict:
     removed = [s for s in (open_positions or {}).keys() if s.upper() not in keep]
     if removed:
         try:
-            msg = "🧹 Очищены локальные хвосты позиций:\n" + "\n".join(f"• {escape_markdown(s)}" for s in removed)
+            msg = "🧹 Очищены локальные хвосты позиций:\n" + "\n".join(
+                f"• {escape_markdown(s)}" for s in removed
+            )
             send_telegram_message(msg)
         except Exception:
             pass
     return pruned
 
+
 # ---------- Weights & allocation ----------
 def _priority_weight(info: dict) -> float:
     def f(x):
-        try: return float(x)
-        except: return 0.0
+        try:
+            return float(x)
+        except:
+            return 0.0
+
     score = f(info.get("score"))
-    conf  = f(info.get("confidence"))
+    conf = f(info.get("confidence"))
     conf_scaled = conf * 100.0 if conf <= 1.0 else conf
     return W_SCORE * score + W_CONF * conf_scaled
+
 
 def _normalized_weights_from_scores(signals: dict):
     arr, total = [], 0.0
     for sym, info in signals.items():
         price = float(info.get("price", 0) or 0)
-        if price <= 0: continue
+        if price <= 0:
+            continue
         w = _priority_weight(info)
         if w > 0:
-            arr.append((sym, price, w)); total += w
-    if total <= 0: return []
-    return [(sym, price, w/total) for sym, price, w in arr]
+            arr.append((sym, price, w))
+            total += w
+    if total <= 0:
+        return []
+    return [(sym, price, w / total) for sym, price, w in arr]
+
 
 def _apply_caps_and_build_qty(weighted, target_notional_total, per_ticker_cap):
     remaining = target_notional_total
     position_sizes = {}
     for sym, price, w in sorted(weighted, key=lambda x: x[2], reverse=True):
-        if remaining <= 0: break
+        if remaining <= 0:
+            break
         alloc = min(target_notional_total * w, per_ticker_cap)
         alloc = min(alloc, remaining)
         if MIN_USD_PER_TRADE > 0 and alloc < MIN_USD_PER_TRADE:
             continue
         qty = int(alloc // price)
         if qty < MIN_QTY_PER_TRADE:
-            if remaining >= price and (MIN_USD_PER_TRADE == 0 or price >= MIN_USD_PER_TRADE):
+            if remaining >= price and (
+                MIN_USD_PER_TRADE == 0 or price >= MIN_USD_PER_TRADE
+            ):
                 qty = 1
             else:
                 continue
         cost = qty * price
-        if cost <= 0 or cost > remaining: continue
+        if cost <= 0 or cost > remaining:
+            continue
         position_sizes[sym] = qty
         remaining -= cost
     return position_sizes
+
 
 def _weights_to_qty(weights_dict, prices_dict, target_notional_total, per_ticker_cap):
     s = sum(max(0.0, float(v)) for v in weights_dict.values()) or 1.0
     weighted = []
     for sym, w in weights_dict.items():
-        try: w = max(0.0, float(w)) / s
-        except: continue
+        try:
+            w = max(0.0, float(w)) / s
+        except:
+            continue
         price = float(prices_dict.get(sym, 0) or 0)
-        if price <= 0: continue
+        if price <= 0:
+            continue
         weighted.append((sym, price, w))
     return _apply_caps_and_build_qty(weighted, target_notional_total, per_ticker_cap)
+
 
 def _gpt_propose_weights(filtered_signals: dict, cash_after_reserve: float) -> dict:
     global LAST_GPT_WEIGHTS
     try:
         items = []
         for sym, info in filtered_signals.items():
-            items.append({
-                "symbol": sym,
-                "price": float(info.get("price", 0) or 0),
-                "score": float(info.get("score", 0) or 0),
-                "confidence": float(info.get("confidence", 0) or 0),
-                "atr_pct": float(info.get("atr_pct", 0) or 0),
-                "volatility": float(info.get("volatility", 0) or 0),
-                "volume_trend": float(info.get("volume_trend", 0) or 0),
-                "bullish_body": float(info.get("bullish_body", 0) or 0),
-                "gap_up": float(info.get("gap_up", 0) or 0),
-            })
+            items.append(
+                {
+                    "symbol": sym,
+                    "price": float(info.get("price", 0) or 0),
+                    "score": float(info.get("score", 0) or 0),
+                    "confidence": float(info.get("confidence", 0) or 0),
+                    "atr_pct": float(info.get("atr_pct", 0) or 0),
+                    "volatility": float(info.get("volatility", 0) or 0),
+                    "volume_trend": float(info.get("volume_trend", 0) or 0),
+                    "bullish_body": float(info.get("bullish_body", 0) or 0),
+                    "gap_up": float(info.get("gap_up", 0) or 0),
+                }
+            )
         system = (
             "Ты портфельный аллокатор. Верни ЧИСТЫЙ JSON без текста, "
-            "формата {\"weights\": {\"SYM\": 0.0..1.0, ...}}. Сумма весов ≤ 1.0. "
+            'формата {"weights": {"SYM": 0.0..1.0, ...}}. Сумма весов ≤ 1.0. '
             "Предпочитай высокий score/confidence, штрафуй высокий atr_pct/volatility."
         )
-        user = json.dumps({
-            "cash_after_reserve": cash_after_reserve,
-            "max_per_ticker_pct": MAX_ALLOC_PCT_PER_TICKER,
-            "max_positions": MAX_POSITIONS_NEW,
-            "signals": items
-        }, ensure_ascii=False)
+        user = json.dumps(
+            {
+                "cash_after_reserve": cash_after_reserve,
+                "max_per_ticker_pct": MAX_ALLOC_PCT_PER_TICKER,
+                "max_positions": MAX_POSITIONS_NEW,
+                "signals": items,
+            },
+            ensure_ascii=False,
+        )
         resp = client.chat.completions.create(
             model=GPT_MODEL,
-            messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
-            temperature=0.2, max_tokens=400
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+            temperature=0.2,
+            max_tokens=400,
         )
         raw = resp.choices[0].message.content.strip()
         try:
@@ -571,8 +752,10 @@ def _gpt_propose_weights(filtered_signals: dict, cash_after_reserve: float) -> d
 
         if ELIOS_ALLOCATION_AUDIT:
             try:
-                wf = {k: (round(float(v), 4) if isinstance(v, (int, float, str)) else v)
-                      for k, v in weights_raw.items()}
+                wf = {
+                    k: (round(float(v), 4) if isinstance(v, (int, float, str)) else v)
+                    for k, v in weights_raw.items()
+                }
                 considered = ", ".join(sorted(filtered_signals.keys()))
                 send_telegram_message(
                     "🧮 *GPT веса аллокации*:\n"
@@ -597,20 +780,24 @@ def _gpt_propose_weights(filtered_signals: dict, cash_after_reserve: float) -> d
         LAST_GPT_WEIGHTS = {}
         return {}
 
+
 # === Вспомогательные функции по времени и бюджетам ===
 def _parse_hhmm(s: str):
     h, m = s.split(":")
     return int(h), int(m)
 
+
 def within_buy_window(now_local: datetime) -> bool:
     sh, sm = _parse_hhmm(BUY_WIN_START)
     eh, em = _parse_hhmm(BUY_WIN_END)
     start = now_local.replace(hour=sh, minute=sm, second=0, microsecond=0)
-    end   = now_local.replace(hour=eh, minute=em, second=0, microsecond=0)
+    end = now_local.replace(hour=eh, minute=em, second=0, microsecond=0)
     return start <= now_local < end
+
 
 def determine_gross_cap(now_local: datetime) -> float:
     return GROSS_CAP_PRIME if within_buy_window(now_local) else GROSS_CAP_OFF
+
 
 def calc_available_budget_from_bp_and_gross(account: dict, gross_cap: float) -> float:
     """
@@ -629,7 +816,9 @@ def calc_available_budget_from_bp_and_gross(account: dict, gross_cap: float) -> 
     if equity <= 0.0 and bp_eff <= 0.0:
         return 0.0
 
-    if (last_equity and last_equity > 0.0) and (equity < (1.0 - DAILY_RISK_CAP_PCT) * last_equity):
+    if (last_equity and last_equity > 0.0) and (
+        equity < (1.0 - DAILY_RISK_CAP_PCT) * last_equity
+    ):
         send_telegram_message(
             f"🛑 *Дневной риск-кап сработал*\n"
             f"Equity: {equity:.2f} < {(1.0 - DAILY_RISK_CAP_PCT) * last_equity:.2f} "
@@ -638,6 +827,7 @@ def calc_available_budget_from_bp_and_gross(account: dict, gross_cap: float) -> 
         return 0.0
 
     return max(0.0, min(bp_eff, room))
+
 
 # ---------- Slippage helpers ----------
 def _slippage_info(sig_price: float, live_price: float):
@@ -651,8 +841,9 @@ def _slippage_info(sig_price: float, live_price: float):
         return 0.0, 0.0, False
     sp_signed = (live_price - sig_price) / sig_price * 100.0
     sp_abs = abs(sp_signed)
-    favorable = (sp_signed < 0.0)
+    favorable = sp_signed < 0.0
     return sp_abs, sp_signed, favorable
+
 
 def _slippage_ok(sig_price: float, live_price: float) -> (bool, float, float, bool):
     sp_abs, sp_signed, favorable = _slippage_info(sig_price, live_price)
@@ -664,6 +855,7 @@ def _slippage_ok(sig_price: float, live_price: float) -> (bool, float, float, bo
     sp = _slippage_pct(sig_price, live_price)
     return (sp <= SLIPPAGE_REJECT_PCT), sp
 
+
 # ---------- SQUEEZE helpers ----------
 def _squeeze_flags(info: dict):
     sq = info.get("squeeze") or {}
@@ -673,11 +865,13 @@ def _squeeze_flags(info: dict):
     short_opp = bool(sq.get("short_opportunity") or False)
     return score, long_risk, short_opp
 
+
 def _atr_pct(info: dict) -> float:
     try:
         return float(info.get("atr_pct") or 0.0)
     except Exception:
         return 0.0
+
 
 def _compute_tp_sl_prices(info: dict, live_price: float):
     """
@@ -685,53 +879,64 @@ def _compute_tp_sl_prices(info: dict, live_price: float):
     meta_str — для телеги: "%-режим" или "ATR%-режим"
     """
     score, long_risk, _ = _squeeze_flags(info)
-    use_tight = (OCO_TIGHT_IF_LONG_RISK and long_risk)
+    use_tight = OCO_TIGHT_IF_LONG_RISK and long_risk
 
     if OCO_USE_ATR and _atr_pct(info) > 0:
         atrp = _atr_pct(info)
         tp_pct = (TP_ATR_MULT_TIGHT if use_tight else TP_ATR_MULT) * atrp
         sl_pct = (SL_ATR_MULT_TIGHT if use_tight else SL_ATR_MULT) * atrp
-        tp_price = live_price * (1.0 + tp_pct/100.0)
-        sl_stop  = live_price * (1.0 - sl_pct/100.0)
+        tp_price = live_price * (1.0 + tp_pct / 100.0)
+        sl_stop = live_price * (1.0 - sl_pct / 100.0)
         sl_limit = sl_stop * 0.999  # чуть ниже
         meta = f"ATR% mode: TP {tp_pct:.2f}%, SL {sl_pct:.2f}% (ATR={atrp:.2f}%)"
     else:
         tp_pct = TP_PCT_TIGHT if use_tight else TP_PCT_BASE
         sl_pct = SL_PCT_TIGHT if use_tight else SL_PCT_BASE
-        tp_price = live_price * (1.0 + tp_pct/100.0)
-        sl_stop  = live_price * (1.0 - sl_pct/100.0)
+        tp_price = live_price * (1.0 + tp_pct / 100.0)
+        sl_stop = live_price * (1.0 - sl_pct / 100.0)
         sl_limit = sl_stop * 0.999
         meta = f"% mode: TP {tp_pct:.2f}%, SL {sl_pct:.2f}%"
     return round(tp_price, 2), round(sl_stop, 2), round(sl_limit, 2), meta
+
 
 # ---------- Allocation wrapper ----------
 def _priority_weight(info: dict) -> float:
     # (дублируется выше — оставлено намеренно для читабельности блока)
     def f(x):
-        try: return float(x)
-        except: return 0.0
+        try:
+            return float(x)
+        except:
+            return 0.0
+
     score = f(info.get("score"))
-    conf  = f(info.get("confidence"))
+    conf = f(info.get("confidence"))
     conf_scaled = conf * 100.0 if conf <= 1.0 else conf
     return W_SCORE * score + W_CONF * conf_scaled
 
-def calculate_position_sizes(signals: dict, available_notional: float, mode: str) -> dict:
-    if not signals: return {}
+
+def calculate_position_sizes(
+    signals: dict, available_notional: float, mode: str
+) -> dict:
+    if not signals:
+        return {}
     target_notional_total = max(0.0, available_notional * (1.0 - RESERVE_CASH_PCT))
     if target_notional_total <= 0.0:
-        print("[WARN] Нет доступного бюджета после резерва."); return {}
+        print("[WARN] Нет доступного бюджета после резерва.")
+        return {}
 
     # ТОП по приоритету
     scored = []
     for sym, info in signals.items():
         price = float(info.get("price", 0) or 0)
-        if price <= 0: continue
+        if price <= 0:
+            continue
         w = _priority_weight(info)
         # ↓ корректировка веса под squeeze long risk: просто уменьшаем итоговый alloc через post-фактор при сборке qty
         scored.append((sym, price, w))
-    if not scored: return {}
+    if not scored:
+        return {}
     scored.sort(key=lambda x: x[2], reverse=True)
-    top_syms = [s for s, _, _ in scored[:max(1, min(MAX_POSITIONS_NEW, len(scored)))]]
+    top_syms = [s for s, _, _ in scored[: max(1, min(MAX_POSITIONS_NEW, len(scored)))]]
     top_signals = {s: signals[s] for s in top_syms}
 
     per_ticker_cap = target_notional_total * MAX_ALLOC_PCT_PER_TICKER
@@ -744,22 +949,28 @@ def calculate_position_sizes(signals: dict, available_notional: float, mode: str
         remaining = target_notional_total
         position_sizes = {}
         for sym, price, w in sorted(weighted, key=lambda x: x[2], reverse=True):
-            if remaining <= 0: break
+            if remaining <= 0:
+                break
             base_alloc = min(target_notional_total * w, per_ticker_cap)
             info = top_signals.get(sym, {})
             _, long_risk, _ = _squeeze_flags(info)
-            alloc = base_alloc * (SQUEEZE_SIZE_MULT if long_risk and SQUEEZE_SIZE_MULT > 0 else 1.0)
+            alloc = base_alloc * (
+                SQUEEZE_SIZE_MULT if long_risk and SQUEEZE_SIZE_MULT > 0 else 1.0
+            )
             alloc = min(alloc, remaining)
             if MIN_USD_PER_TRADE > 0 and alloc < MIN_USD_PER_TRADE:
                 continue
             qty = int(alloc // price)
             if qty < MIN_QTY_PER_TRADE:
-                if remaining >= price and (MIN_USD_PER_TRADE == 0 or price >= MIN_USD_PER_TRADE):
+                if remaining >= price and (
+                    MIN_USD_PER_TRADE == 0 or price >= MIN_USD_PER_TRADE
+                ):
                     qty = 1
                 else:
                     continue
             cost = qty * price
-            if cost <= 0 or cost > remaining: continue
+            if cost <= 0 or cost > remaining:
+                continue
             position_sizes[sym] = qty
             remaining -= cost
         return position_sizes
@@ -777,10 +988,13 @@ def calculate_position_sizes(signals: dict, available_notional: float, mode: str
             s = sum(max(0.0, float(v)) for v in weights.values()) or 1.0
             weighted = []
             for sym, w in weights.items():
-                try: w = max(0.0, float(w)) / s
-                except: continue
+                try:
+                    w = max(0.0, float(w)) / s
+                except:
+                    continue
                 price = prices.get(sym, 0.0)
-                if price <= 0: continue
+                if price <= 0:
+                    continue
                 weighted.append((sym, price, w))
             position_sizes = _apply_with_squeeze_cap(weighted)
         else:
@@ -791,10 +1005,13 @@ def calculate_position_sizes(signals: dict, available_notional: float, mode: str
             s = sum(max(0.0, float(v)) for v in weights.values()) or 1.0
             weighted = []
             for sym, w in weights.items():
-                try: w = max(0.0, float(w)) / s
-                except: continue
+                try:
+                    w = max(0.0, float(w)) / s
+                except:
+                    continue
                 price = prices.get(sym, 0.0)
-                if price <= 0: continue
+                if price <= 0:
+                    continue
                 weighted.append((sym, price, w))
             position_sizes = _apply_with_squeeze_cap(weighted)
         else:
@@ -805,7 +1022,8 @@ def calculate_position_sizes(signals: dict, available_notional: float, mode: str
         items = []
         for sym, info in signals.items():
             price = float(info.get("price", 0) or 0)
-            if price <= 0: continue
+            if price <= 0:
+                continue
             w = _priority_weight(info)
             _, long_risk, _ = _squeeze_flags(info)
             # при спасении не занижаем агрессивно — и так 1 лот
@@ -821,12 +1039,15 @@ def calculate_position_sizes(signals: dict, available_notional: float, mode: str
             break
         if rescue:
             try:
-                send_telegram_message("🛟 *Rounding/BP rescue*: базовая аллокация дала 0 лотов. Взял 1 лот самого дешёвого тикера.")
+                send_telegram_message(
+                    "🛟 *Rounding/BP rescue*: базовая аллокация дала 0 лотов. Взял 1 лот самого дешёвого тикера."
+                )
             except Exception:
                 pass
             return rescue
 
     return position_sizes
+
 
 # ---------- Main ----------
 def main():
@@ -840,10 +1061,14 @@ def main():
         print("BUY window closed. Exiting.")
         return
     if CHECK_US_MARKET_OPEN and not us_market_is_open():
-        send_telegram_message("⛔️ Рынок США закрыт по Alpaca /v2/clock — пропускаю покупки.")
+        send_telegram_message(
+            "⛔️ Рынок США закрыт по Alpaca /v2/clock — пропускаю покупки."
+        )
         return
 
-    send_telegram_message("⚙️ Запущен модуль: TRADE EXECUTOR (BP+GrossCap, BUY окно 18:30–21:00, slippage-guard, squeeze-aware sizing, OCO для long_risk, выход 'sell' по умолчанию)")
+    send_telegram_message(
+        "⚙️ Запущен модуль: TRADE EXECUTOR (BP+GrossCap, BUY окно 18:30–21:00, slippage-guard, squeeze-aware sizing, OCO для long_risk, выход 'sell' по умолчанию)"
+    )
 
     # 1) Сигналы
     signals = _load_signals_flexible(SIGNALS_PATH)
@@ -863,7 +1088,8 @@ def main():
     local_positions_set = set(local_positions.keys())
 
     signals_no_dupes = {
-        s: info for s, info in signals.items()
+        s: info
+        for s, info in signals.items()
         if s not in live_positions_set and s not in local_positions_set
     }
     if not signals_no_dupes:
@@ -887,16 +1113,23 @@ def main():
 
     if not tradable_signals:
         if FAILOPEN_IF_EMPTY:
-            send_telegram_message("⚠️ Alpaca assets вернул 0 торгуемых — включён fail-open-if-empty. Продолжаю с исходным набором.")
+            send_telegram_message(
+                "⚠️ Alpaca assets вернул 0 торгуемых — включён fail-open-if-empty. Продолжаю с исходным набором."
+            )
             tradable_signals = dict(signals_no_dupes)
         else:
-            send_telegram_message("📭 Нет торгуемых сигналов после фильтра Alpaca (tradable=false/status!=active).")
+            send_telegram_message(
+                "📭 Нет торгуемых сигналов после фильтра Alpaca (tradable=false/status!=active)."
+            )
             return
 
     if skipped_nontradable:
         try:
             msg = "⛔️ Пропущены неторгуемые тикеры:\n" + "\n".join(
-                [f"• {escape_markdown(sym)} — {escape_markdown(why)}" for sym, why in skipped_nontradable]
+                [
+                    f"• {escape_markdown(sym)} — {escape_markdown(why)}"
+                    for sym, why in skipped_nontradable
+                ]
             )
             send_telegram_message(msg)
         except Exception as e:
@@ -908,7 +1141,9 @@ def main():
     available_budget = calc_available_budget_from_bp_and_gross(account, gross_cap)
 
     # 5) Аллокация
-    position_sizes = calculate_position_sizes(tradable_signals, available_budget, ALLOCATION_MODE)
+    position_sizes = calculate_position_sizes(
+        tradable_signals, available_budget, ALLOCATION_MODE
+    )
 
     # Сообщение о распределении (по сигнал-цене; позже будет live-пересчёт)
     try:
@@ -923,7 +1158,9 @@ def main():
             f"{'🔎 DRY_RUN: заказы НЕ отправляются.' if DRY_RUN else ''}",
         ]
         if not position_sizes:
-            dist_msg.append("_Подходящих позиций для покупки нет (после ограничений BP/Gross/Reserve)._")
+            dist_msg.append(
+                "_Подходящих позиций для покупки нет (после ограничений BP/Gross/Reserve)._"
+            )
         for symbol, qty in position_sizes.items():
             info = tradable_signals[symbol]
             price = float(info.get("price", 0))
@@ -936,7 +1173,9 @@ def main():
                 tail = f"  | squeeze: long_risk (x{SQUEEZE_SIZE_MULT:.2f})"
             elif sq_score > 0:
                 tail = f"  | squeeze_score={sq_score:.0f}"
-            dist_msg.append(f"• {escape_markdown(symbol)} x{qty} @ ${escape_num(price)}  (score={score:.1f}, conf={conf:.2f}, w={w:.1f}){tail}")
+            dist_msg.append(
+                f"• {escape_markdown(symbol)} x{qty} @ ${escape_num(price)}  (score={score:.1f}, conf={conf:.2f}, w={w:.1f}){tail}"
+            )
         send_telegram_message("\n".join(dist_msg))
     except Exception as e:
         print(f"[WARN] Ошибка при формировании сообщения о распределении: {e}")
@@ -954,21 +1193,33 @@ def main():
                 for s in missed:
                     w = None
                     try:
-                        w = float(LAST_GPT_WEIGHTS.get(s)) if s in LAST_GPT_WEIGHTS else None
+                        w = (
+                            float(LAST_GPT_WEIGHTS.get(s))
+                            if s in LAST_GPT_WEIGHTS
+                            else None
+                        )
                     except Exception:
                         w = None
                     price = float(tradable_signals.get(s, {}).get("price", 0) or 0)
                     if w is None or w <= 0:
-                        lines.append(f"• {escape_markdown(s)} — GPT вес {w if w is not None else '—'}")
+                        lines.append(
+                            f"• {escape_markdown(s)} — GPT вес {w if w is not None else '—'}"
+                        )
                     else:
                         alloc_guess = min(max(0.0, tct * w), per_cap)
                         if price <= 0:
                             lines.append(f"• {escape_markdown(s)} — price<=0")
                         elif alloc_guess < price:
-                            lines.append(f"• {escape_markdown(s)} — округление до 0 (alloc≈${alloc_guess:.2f} < price ${price:.2f})")
+                            lines.append(
+                                f"• {escape_markdown(s)} — округление до 0 (alloc≈${alloc_guess:.2f} < price ${price:.2f})"
+                            )
                         else:
-                            lines.append(f"• {escape_markdown(s)} — недостаток остатка/кап (alloc≈${alloc_guess:.2f})")
-                send_telegram_message("🔎 *Почему не купили (аллокация):*\n" + "\n".join(lines))
+                            lines.append(
+                                f"• {escape_markdown(s)} — недостаток остатка/кап (alloc≈${alloc_guess:.2f})"
+                            )
+                send_telegram_message(
+                    "🔎 *Почему не купили (аллокация):*\n" + "\n".join(lines)
+                )
         except Exception as e:
             print(f"[AUDIT] explain-missed error: {e}")
 
@@ -994,9 +1245,9 @@ def main():
 
     executed_any = False
     remaining_budget = available_budget
-    slippage_skips = []   # [(sym, sp, sig_p, live_p)]
-    budget_skips   = []   # [(sym, need, have)]
-    cap_skips      = []   # тикеры, упёрлись в per-ticker cap/округление
+    slippage_skips = []  # [(sym, sp, sig_p, live_p)]
+    budget_skips = []  # [(sym, need, have)]
+    cap_skips = []  # тикеры, упёрлись в per-ticker cap/округление
 
     # 6) Отправка ордеров (SIMPLE/BRACKET). Перед отправкой — slippage-guard + динамика qty
     for symbol, qty_plan in position_sizes.items():
@@ -1044,7 +1295,7 @@ def main():
         sq_score, sq_lr, sq_so = _squeeze_flags(info)
 
         # Решение: BRACKET или SIMPLE
-        use_bracket = (OCO_ENABLE and sq_lr)  # включаем OCO, когда риск squeeze для лонга
+        use_bracket = OCO_ENABLE and sq_lr  # включаем OCO, когда риск squeeze для лонга
         order_response = None
         order_class_str = "simple"
         exit_mode = "sell_engine"
@@ -1054,14 +1305,20 @@ def main():
             # вычисляем TP/SL
             tp_price, sl_stop, sl_limit, meta = _compute_tp_sl_prices(info, live_price)
             try:
-                order_response = submit_order_bracket_market(symbol, qty, tp_price, sl_stop, sl_limit, time_in_force=ORDER_TIF)
+                order_response = submit_order_bracket_market(
+                    symbol, qty, tp_price, sl_stop, sl_limit, time_in_force=ORDER_TIF
+                )
                 order_class_str = "bracket"
                 exit_mode = "oco"
-                bracket_info_tail = f"\n🎯 TP: ${tp_price:.2f} | 🛑 SL: ${sl_stop:.2f}  ({meta})"
+                bracket_info_tail = (
+                    f"\n🎯 TP: ${tp_price:.2f} | 🛑 SL: ${sl_stop:.2f}  ({meta})"
+                )
             except Exception as e:
                 # фоллбэк в SIMPLE
                 try:
-                    send_telegram_message(f"⚠️ BRACKET не удался по {escape_markdown(symbol)} — перехожу в SIMPLE.\nПричина: {escape_markdown(str(e)[:250])}")
+                    send_telegram_message(
+                        f"⚠️ BRACKET не удался по {escape_markdown(symbol)} — перехожу в SIMPLE.\nПричина: {escape_markdown(str(e)[:250])}"
+                    )
                 except Exception:
                     pass
                 order_response = None
@@ -1070,7 +1327,9 @@ def main():
         if not use_bracket:
             print(f"🚀 Покупка [SIMPLE]: {symbol} x{qty} @ {live_price}  -> exit: Sell")
             try:
-                order_response = submit_order_simple(symbol, qty, side="buy", type=ORDER_TYPE, time_in_force=ORDER_TIF)
+                order_response = submit_order_simple(
+                    symbol, qty, side="buy", type=ORDER_TYPE, time_in_force=ORDER_TIF
+                )
             except Exception as e:
                 error_msg = f"❌ Не удалось купить {symbol}: {e}"
                 send_telegram_message(escape_markdown(error_msg))
@@ -1080,23 +1339,41 @@ def main():
                     time.sleep(ORDER_THROTTLE_MS / 1000.0)
                 continue
 
-        status = order_response.get('status', '??') if isinstance(order_response, dict) else 'sent'
+        status = (
+            order_response.get("status", "??")
+            if isinstance(order_response, dict)
+            else "sent"
+        )
         print(f"✅ Ответ Alpaca: {status}")
         timestamp = datetime.now(timezone.utc).isoformat()
 
         log_entry = {
-            "symbol": symbol, "qty": qty, "price": live_price, "action": info.get("action", "BUY"),
-            "timestamp": timestamp, "order_class": order_class_str,
+            "symbol": symbol,
+            "qty": qty,
+            "price": live_price,
+            "action": info.get("action", "BUY"),
+            "timestamp": timestamp,
+            "order_class": order_class_str,
             "exit": {"mode": exit_mode},
-            "alpaca_response": order_response, "slippage_pct": sp, "sig_price": sig_price,
-            "squeeze": {"score": sq_score, "long_risk": sq_lr, "short_opportunity": sq_so}
+            "alpaca_response": order_response,
+            "slippage_pct": sp,
+            "sig_price": sig_price,
+            "squeeze": {
+                "score": sq_score,
+                "long_risk": sq_lr,
+                "short_opportunity": sq_so,
+            },
         }
         log.setdefault(symbol, []).append(log_entry)
 
         open_positions[symbol] = {
-            "symbol": symbol, "qty": qty, "entry_price": live_price, "timestamp": timestamp,
-            "managed_by": ("oco" if order_class_str == "bracket" else "sell"), "status": "active",
-            "confirmed_by_alpaca": (not DRY_RUN)
+            "symbol": symbol,
+            "qty": qty,
+            "entry_price": live_price,
+            "timestamp": timestamp,
+            "managed_by": ("oco" if order_class_str == "bracket" else "sell"),
+            "status": "active",
+            "confirmed_by_alpaca": (not DRY_RUN),
         }
 
         # Телега
@@ -1115,7 +1392,7 @@ def main():
         send_telegram_message(msg)
 
         executed_any = True
-        remaining_budget -= (live_price * qty)
+        remaining_budget -= live_price * qty
 
         # троттлинг
         if ORDER_THROTTLE_MS > 0:
@@ -1135,15 +1412,26 @@ def main():
     if slippage_skips or budget_skips or cap_skips:
         lines = []
         if slippage_skips:
-            lines.append("⛔️ *Пропуск из-за slippage ухудшения (>{:.2f}%):*".format(SLIPPAGE_REJECT_PCT))
+            lines.append(
+                "⛔️ *Пропуск из-за slippage ухудшения (>{:.2f}%):*".format(
+                    SLIPPAGE_REJECT_PCT
+                )
+            )
             for s, sp, sigp, livep in slippage_skips:
-                lines.append(f"• {escape_markdown(s)} — {sp_signed:.2f}% (sig ${sigp:.2f} → live ${livep:.2f})")
+                lines.append(
+                    f"• {escape_markdown(s)} — {sp_signed:.2f}% (sig ${sigp:.2f} → live ${livep:.2f})"
+                )
         if budget_skips:
             lines.append("⛔️ *Недостаточно бюджета на live-цене:*")
             for s, need, have in budget_skips:
-                lines.append(f"• {escape_markdown(s)} — нужно ${need:.2f}, остаток ${have:.2f}")
+                lines.append(
+                    f"• {escape_markdown(s)} — нужно ${need:.2f}, остаток ${have:.2f}"
+                )
         if cap_skips:
-            lines.append("⛔️ *Ниже минимума сделки/упёрлись в кап:* " + ", ".join(escape_markdown(x) for x in cap_skips))
+            lines.append(
+                "⛔️ *Ниже минимума сделки/упёрлись в кап:* "
+                + ", ".join(escape_markdown(x) for x in cap_skips)
+            )
         try:
             send_telegram_message("\n".join(lines))
         except Exception:
@@ -1154,6 +1442,7 @@ def main():
 
     print("\n✅ Все ордера обработаны. Лог:", TRADE_LOG_PATH)
     print("📌 Открытые позиции:", OPEN_POSITIONS_PATH)
+
 
 if __name__ == "__main__":
     main()
