@@ -5,10 +5,13 @@
 """
 from __future__ import annotations
 
+
 def main():
     # Импортируем «на лету», чтобы избежать циклических импортов при линтерах
     from core.trading.signal_engine import main as new_main
+
     return new_main()
+
 
 if __name__ == "__main__":
     main()
