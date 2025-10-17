@@ -1,7 +1,8 @@
-import pandas as pd
-import yfinance as yf
 import json
 import time
+
+import pandas as pd
+import yfinance as yf
 
 csv_path = "tickers_nasdaq.csv"
 output_path = "/core/trading/candidates.json"

@@ -1,4 +1,5 @@
 from core.utils.alpaca_headers import alpaca_headers
+
 ## -*- coding: utf-8 -*-
 """
 Elios v0.3.6 — signal_engine_short.py (Dux-style short)
@@ -18,8 +19,8 @@ Elios v0.3.6 — signal_engine_short.py (Dux-style short)
 - Safe logging (no broken f-strings)
 """
 
-import sys
 import os
+import sys
 
 
 # === OHLC normalizer ===
@@ -72,18 +73,17 @@ import warnings
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
+import shutil
+from collections import defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
+
+import requests
 import yfinance as yf
+from openai import OpenAI
 from ta.momentum import RSIIndicator
 from ta.trend import EMAIndicator
 from ta.volatility import AverageTrueRange
-from openai import OpenAI
-import shutil
-import numpy as np
-import requests
-from datetime import datetime, timezone
-from collections import defaultdict
-from pathlib import Path
-import csv
 
 # Optional project modules (fail-safe imports)
 try:
@@ -170,7 +170,7 @@ ALPACA_DATA_BASE = os.getenv("ALPACA_DATA_BASE", "https://data.alpaca.markets/v2
 
 OPENAI_API_KEY = os.getenv(
     "OPENAI_API_KEY",
-    os.getenv("OPENAI_API_KEY",""),
+    os.getenv("OPENAI_API_KEY", ""),
 )
 try:
     client = OpenAI(api_key=OPENAI_API_KEY)
