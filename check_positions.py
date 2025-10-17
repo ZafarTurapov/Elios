@@ -1,6 +1,8 @@
-from core.utils.alpaca_headers import alpaca_headers
 import os
+
 import requests
+
+from core.utils.alpaca_headers import alpaca_headers
 
 API_KEY = os.getenv("APCA_API_KEY_ID")
 SECRET_KEY = os.getenv("APCA_API_SECRET_KEY")
