@@ -5,6 +5,7 @@ from typing import Any, Dict, List
 
 REQ_FIELDS = ("symbol", "price", "action")
 
+
 def _as_list(payload: Any) -> List[Dict[str, Any]]:
     if isinstance(payload, dict):
         if isinstance(payload.get("signals"), list):
@@ -23,13 +24,21 @@ def _as_list(payload: Any) -> List[Dict[str, Any]]:
         return payload
     return []
 
+
 def _norm_row(row: Dict[str, Any]) -> Dict[str, Any]:
     sym = str(row.get("symbol", "")).strip().upper()
     price = float(row.get("price") or row.get("last") or row.get("close") or 0.0)
-    action = (str(row.get("action", "BUY")).strip().upper() or "BUY")
+    action = str(row.get("action", "BUY")).strip().upper() or "BUY"
     weight = float(row.get("weight") or 1.0)
     meta = row.get("meta") or {}
-    return {"symbol": sym, "price": price, "action": action, "weight": weight, "meta": meta}
+    return {
+        "symbol": sym,
+        "price": price,
+        "action": action,
+        "weight": weight,
+        "meta": meta,
+    }
+
 
 def normalize_payload(payload: Any) -> Dict[str, List[Dict[str, Any]]]:
     seq = _as_list(payload)
@@ -46,6 +55,7 @@ def normalize_payload(payload: Any) -> Dict[str, List[Dict[str, Any]]]:
         out.append(row)
     return {"signals": out}
 
+
 def main():
     src = Path("core/trading/signals.json")
     if not src.exists():
@@ -56,7 +66,10 @@ def main():
     Path("core/trading/signals.normalized.json").write_text(
         json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8"
     )
-    print(f"✅ Normalized: {len(out['signals'])} -> core/trading/signals.normalized.json")
+    print(
+        f"✅ Normalized: {len(out['signals'])} -> core/trading/signals.normalized.json"
+    )
+
 
 if __name__ == "__main__":
     main()
