@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import pandas as pd
 
 CUTOFF = "2012-01-01"
@@ -17,4 +18,6 @@ after = len(df)
 df.to_parquet(P, index=False)
 
 share = (df["date"] >= cut).mean()
-print(f"[enforce_cutoff] {CUTOFF}: {before} -> {after} | date_min={df['date'].min()} date_max={df['date'].max()} | share>={CUTOFF}={share:.3f}")
+print(
+    f"[enforce_cutoff] {CUTOFF}: {before} -> {after} | date_min={df['date'].min()} date_max={df['date'].max()} | share>={CUTOFF}={share:.3f}"
+)
