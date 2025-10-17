@@ -1,9 +1,12 @@
+import json
+import os
+
+import requests
+
 from core.utils.alpaca_headers import alpaca_headers
+
 # core/trading/execution_monitor.py
 
-import os
-import json
-import requests
 
 POSITIONS_PATH = "/core/trading/open_positions.json"
 
@@ -13,6 +16,7 @@ ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
 ALPACA_BASE_URL = "https://paper-api.alpaca.markets"
 
 HEADERS = alpaca_headers()
+
 
 def monitor_orders():
     url = f"{ALPACA_BASE_URL}/v2/orders?status=closed&limit=50"
@@ -49,6 +53,7 @@ def monitor_orders():
 
     except Exception as e:
         print(f"[ERROR] Ошибка проверки ордеров: {e}")
+
 
 if __name__ == "__main__":
     monitor_orders()
