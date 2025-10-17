@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+import os, sys
+THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.abspath(os.path.join(THIS_DIR, '..'))
+if REPO_ROOT not in sys.path:
+    sys.path.insert(0, REPO_ROOT)
+
 from tools.normalize_signals import normalize_payload
 
 samples = [
