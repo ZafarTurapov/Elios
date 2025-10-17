@@ -5,13 +5,14 @@ patch_training_atr_pct.py
 используя atr и цену (entry_price/price/close) -> atr_pct = atr/price*100
 Сохраняет резервную копию и обновлённый файл.
 """
-import json, os
+import json
 from pathlib import Path
 
 DATA_PATH = Path("core/trading/training_data.json")
 BACKUP_PATH = Path("core/trading/training_data.backup.before_atr_pct.json")
 
 PRICE_KEYS = ["entry_price", "price", "close", "close_at_entry"]
+
 
 def get_price(row):
     for k in PRICE_KEYS:
@@ -23,11 +24,13 @@ def get_price(row):
             pass
     return None
 
+
 def to_float(x):
     try:
         return float(x)
     except Exception:
         return None
+
 
 def main():
     if not DATA_PATH.exists():
@@ -64,8 +67,11 @@ def main():
         updated += 1
 
     DATA_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2))
-    print(f"✅ Готово. Добавлено atr_pct: {updated}, оставлено без изменений: {unchanged}, пропущено: {skipped}")
+    print(
+        f"✅ Готово. Добавлено atr_pct: {updated}, оставлено без изменений: {unchanged}, пропущено: {skipped}"
+    )
     print(f"↪️ Файл обновлён: {DATA_PATH}")
+
 
 if __name__ == "__main__":
     main()
