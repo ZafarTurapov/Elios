@@ -1,4 +1,5 @@
 import json
+
 from core.connectors.alpaca_connector import get_last_prices_batch
 
 with open("/root/stockbot/core/trading/open_positions.json", "r") as f:
@@ -15,4 +16,3 @@ if prices:
         print(f"{sym}: {price}")
 else:
     print("❌ Цены не получены.")
-
