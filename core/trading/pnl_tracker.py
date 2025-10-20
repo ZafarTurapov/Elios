@@ -1,9 +1,10 @@
-from core.utils.paths import TRADE_LOG_PATH
-# core/trading/pnl_tracker.py
-
-import os
 import json
+import os
+
+from core.utils.paths import TRADE_LOG_PATH
 from core.utils.telegram import send_telegram_message
+
+# core/trading/pnl_tracker.py
 
 
 def load_log():
@@ -18,16 +19,23 @@ def load_log():
         for trade in entries:
             if "exit_price" in trade and "entry_price" in trade:
                 try:
-                    change = (trade["exit_price"] - trade["entry_price"]) / trade["entry_price"] * 100
-                    trades.append({
-                        "symbol": trade["symbol"],
-                        "change_pct": round(change, 2),
-                        "reason": trade.get("reason", ""),
-                        "timestamp_exit": trade.get("timestamp_exit", "")
-                    })
+                    change = (
+                        (trade["exit_price"] - trade["entry_price"])
+                        / trade["entry_price"]
+                        * 100
+                    )
+                    trades.append(
+                        {
+                            "symbol": trade["symbol"],
+                            "change_pct": round(change, 2),
+                            "reason": trade.get("reason", ""),
+                            "timestamp_exit": trade.get("timestamp_exit", ""),
+                        }
+                    )
                 except:
                     continue
     return trades
+
 
 def analyze(trades):
     total = len(trades)
@@ -42,8 +50,9 @@ def analyze(trades):
         "wins": len(wins),
         "losses": len(losses),
         "total_pct": round(total_pct, 2),
-        "top": sorted_trades
+        "top": sorted_trades,
     }
+
 
 def send_report(stats):
     if stats["total"] == 0:
@@ -65,10 +74,12 @@ def send_report(stats):
 
     send_telegram_message(msg)
 
+
 def main():
     trades = load_log()
     stats = analyze(trades)
     send_report(stats)
+
 
 if __name__ == "__main__":
     main()
