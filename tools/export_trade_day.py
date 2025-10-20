@@ -13,7 +13,7 @@ import argparse
 import csv
 import json
 import re
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -23,39 +23,52 @@ from zoneinfo import ZoneInfo
 ROOT = Path("/root/stockbot")
 LOGS = ROOT / "logs"
 
-P_SIGNAL_LOG     = LOGS / "signal_log.json"
-P_REJECTED_CSV   = LOGS / "rejected.csv"
+P_SIGNAL_LOG = LOGS / "signal_log.json"
+P_REJECTED_CSV = LOGS / "rejected.csv"
 
-P_SIGNALS        = ROOT / "core" / "trading" / "signals.json"
-P_GPT_DECISIONS  = ROOT / "core" / "trading" / "gpt_decisions.json"
-P_REJECTED_JSON  = ROOT / "core" / "trading" / "rejected.json"
-P_PNL_TRACKER    = ROOT / "core" / "trading" / "pnl_tracker.json"   # list[{symbol, qty, entry, exit, ...}]
+P_SIGNALS = ROOT / "core" / "trading" / "signals.json"
+P_GPT_DECISIONS = ROOT / "core" / "trading" / "gpt_decisions.json"
+P_REJECTED_JSON = ROOT / "core" / "trading" / "rejected.json"
+P_PNL_TRACKER = (
+    ROOT / "core" / "trading" / "pnl_tracker.json"
+)  # list[{symbol, qty, entry, exit, ...}]
+
 
 # === Попытка использовать единый путь TRADE_LOG_PATH из проекта ===
 def resolve_trade_log_path() -> Path:
     try:
         import sys
+
         if str(ROOT) not in sys.path:
             sys.path.append(str(ROOT))
-        from core.utils.paths import TRADE_LOG_PATH as PROJECT_TRADE_LOG_PATH  # type: ignore
+        from core.utils.paths import (
+            TRADE_LOG_PATH as PROJECT_TRADE_LOG_PATH,
+        )  # type: ignore
+
         return Path(PROJECT_TRADE_LOG_PATH)
     except Exception:
         return ROOT / "trade_log.json"  # fallback
 
+
 TRADE_LOG_PATH = resolve_trade_log_path()
 
 # === Кандидаты путей trade_log (проверяем все) ===
-CANDIDATE_TRADE_LOGS = list(dict.fromkeys([  # dedup, сохраняем порядок
-    TRADE_LOG_PATH,
-    ROOT / "trade_log.json",
-    ROOT / "core" / "trading" / "trade_log.json",
-    ROOT / "logs" / "trade_log.json",
-    ROOT / "legacy_src" / "core" / "trading" / "trade_log.json",
-]))
+CANDIDATE_TRADE_LOGS = list(
+    dict.fromkeys(
+        [  # dedup, сохраняем порядок
+            TRADE_LOG_PATH,
+            ROOT / "trade_log.json",
+            ROOT / "core" / "trading" / "trade_log.json",
+            ROOT / "logs" / "trade_log.json",
+            ROOT / "legacy_src" / "core" / "trading" / "trade_log.json",
+        ]
+    )
+)
 
 # === Время/даты ===
 TZ_TASHKENT = ZoneInfo("Asia/Tashkent")
 TZ_UTC = ZoneInfo("UTC")
+
 
 def parse_iso_any(ts: Optional[str]) -> Optional[datetime]:
     if not ts:
@@ -69,6 +82,7 @@ def parse_iso_any(ts: Optional[str]) -> Optional[datetime]:
     except Exception:
         return None
 
+
 def mk_local_dt(date_str: str, hh=12, mm=0, ss=0) -> Optional[datetime]:
     try:
         d = datetime.strptime(date_str, "%Y-%m-%d")
@@ -77,8 +91,10 @@ def mk_local_dt(date_str: str, hh=12, mm=0, ss=0) -> Optional[datetime]:
     except Exception:
         return None
 
+
 def ymd(dt: datetime, tz=TZ_TASHKENT) -> str:
     return dt.astimezone(tz).strftime("%Y-%m-%d")
+
 
 # === IO ===
 def read_json(path: Path) -> Any:
@@ -90,6 +106,7 @@ def read_json(path: Path) -> Any:
         print(f"[WARN] cannot read {path}: {e}")
     return None
 
+
 def read_text(path: Path) -> Optional[str]:
     try:
         if path.exists():
@@ -97,6 +114,7 @@ def read_text(path: Path) -> Optional[str]:
     except Exception as e:
         print(f"[WARN] cannot read text {path}: {e}")
     return None
+
 
 def read_rejected_csv(path: Path) -> Dict[str, str]:
     res: Dict[str, str] = {}
@@ -116,12 +134,15 @@ def read_rejected_csv(path: Path) -> Dict[str, str]:
         print(f"[WARN] cannot read CSV {path}: {e}")
     return res
 
+
 # === Выход ===
 def ensure_logs_dir():
     LOGS.mkdir(parents=True, exist_ok=True)
 
+
 def out_paths(day_str: str):
     return (LOGS / f"trade_day_{day_str}.log", LOGS / f"trade_day_{day_str}.csv")
+
 
 # === Структура выходной строки ===
 @dataclass
@@ -138,9 +159,19 @@ class Row:
     reason: str
     extra: str
 
-def mk_row(ts_utc: datetime, module: str, side: str, symbol: str,
-           qty: Optional[float], entry: Optional[float], exitp: Optional[float],
-           pnl: Optional[float], reason: str = "", extra: str = "") -> Row:
+
+def mk_row(
+    ts_utc: datetime,
+    module: str,
+    side: str,
+    symbol: str,
+    qty: Optional[float],
+    entry: Optional[float],
+    exitp: Optional[float],
+    pnl: Optional[float],
+    reason: str = "",
+    extra: str = "",
+) -> Row:
     return Row(
         ts_utc=ts_utc.astimezone(TZ_UTC).isoformat(),
         ts_local=ts_utc.astimezone(TZ_TASHKENT).strftime("%Y-%m-%d %H:%M:%S"),
@@ -152,8 +183,9 @@ def mk_row(ts_utc: datetime, module: str, side: str, symbol: str,
         exit=round(exitp, 4) if isinstance(exitp, (int, float)) else None,
         pnl=round(pnl, 4) if isinstance(pnl, (int, float)) else None,
         reason=reason or "",
-        extra=extra or ""
+        extra=extra or "",
     )
+
 
 # === Парсинг TRADE из текстовых строк ===
 TRADE_RE = re.compile(
@@ -164,12 +196,12 @@ TRADE_RE = re.compile(
     \s+qty=(?P<qty>\d+)
     \s+entry=(?P<entry>[0-9]+(?:\.[0-9]+)?|None)
     \s+exit=(?P<exit>[0-9]+(?:\.[0-9]+)?|None)
-    """, re.VERBOSE
+    """,
+    re.VERBOSE,
 )
 
-TS_IN_LINE_RE = re.compile(
-    r'(?P<ts>\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2})'
-)
+TS_IN_LINE_RE = re.compile(r"(?P<ts>\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2})")
+
 
 def extract_ts_from_line(line: str, day_str: str) -> datetime:
     m = TS_IN_LINE_RE.search(line or "")
@@ -184,6 +216,7 @@ def extract_ts_from_line(line: str, day_str: str) -> datetime:
     # если таймстемпа в строке нет — ставим безопасный дефолт дня
     return mk_local_dt(day_str, 20, 0, 0)
 
+
 def parse_trade_text(ts_utc: datetime, text: str) -> Optional[Tuple[Row, str]]:
     m = TRADE_RE.search(text or "")
     if not m:
@@ -196,8 +229,22 @@ def parse_trade_text(ts_utc: datetime, text: str) -> Optional[Tuple[Row, str]]:
     pnl = None
     if (entry is not None) and (exitp is not None) and side == "SELL":
         pnl = (exitp - entry) * qty
-    return mk_row(ts_utc, module="trade", side=side, symbol=symbol,
-                  qty=qty, entry=entry, exitp=exitp, pnl=pnl, reason="", extra="text"), "text"
+    return (
+        mk_row(
+            ts_utc,
+            module="trade",
+            side=side,
+            symbol=symbol,
+            qty=qty,
+            entry=entry,
+            exitp=exitp,
+            pnl=pnl,
+            reason="",
+            extra="text",
+        ),
+        "text",
+    )
+
 
 # === Утилиты нормализации сделок (JSON/NDJSON) ===
 def _norm_list_from_maybe_dict(obj):
@@ -210,6 +257,7 @@ def _norm_list_from_maybe_dict(obj):
                 return v
     return None
 
+
 def _first_num(*vals):
     for v in vals:
         try:
@@ -220,6 +268,7 @@ def _first_num(*vals):
             continue
     return None
 
+
 def _first_str_upper(*vals):
     for v in vals:
         if v is None:
@@ -228,6 +277,7 @@ def _first_str_upper(*vals):
         if s:
             return s.upper()
     return ""
+
 
 # === Загрузка сделок из любого trade_log.json (JSON/NDJSON) ===
 def load_trades_any_json() -> List[dict]:
@@ -273,8 +323,11 @@ def load_trades_any_json() -> List[dict]:
                 records.extend(tmp)
         except Exception as e:
             print(f"[WARN] cannot read {p}: {e}")
-    print(f"[INFO] trade logs (JSON/NDJSON) loaded={len(records)} from {len(tried)} files")
+    print(
+        f"[INFO] trade logs (JSON/NDJSON) loaded={len(records)} from {len(tried)} files"
+    )
     return records
+
 
 def load_trade_text_rows_for_day(day_str: str) -> List[Row]:
     rows: List[Row] = []
@@ -299,7 +352,15 @@ def load_trade_text_rows_for_day(day_str: str) -> List[Row]:
                 continue
             row, _ = res
             # dedup по ключу
-            key = (row.ts_utc, row.module, row.side, row.symbol, row.qty, row.entry, row.exit)
+            key = (
+                row.ts_utc,
+                row.module,
+                row.side,
+                row.symbol,
+                row.qty,
+                row.entry,
+                row.exit,
+            )
             if key in seen_keys:
                 continue
             seen_keys.add(key)
@@ -309,9 +370,11 @@ def load_trade_text_rows_for_day(day_str: str) -> List[Row]:
     print(f"[INFO] trade logs (TEXT) checked={cnt_checked} | parsed_rows={len(rows)}")
     return rows
 
+
 # === Фильтр по дню (локальному) ===
 def same_local_day(dt_utc: datetime, target_day: str) -> bool:
     return ymd(dt_utc, TZ_TASHKENT) == target_day
+
 
 # === Основной сбор данных ===
 def collect_rows_for_day(day_str: str) -> List[Row]:
@@ -330,12 +393,16 @@ def collect_rows_for_day(day_str: str) -> List[Row]:
             qty = _first_num(t.get("qty"), t.get("quantity"), t.get("filled_qty"))
 
             entry = _first_num(
-                t.get("entry"), t.get("entry_price"), t.get("buy_price"),
-                (t.get("price") if side == "BUY" else None)
+                t.get("entry"),
+                t.get("entry_price"),
+                t.get("buy_price"),
+                (t.get("price") if side == "BUY" else None),
             )
             exitp = _first_num(
-                t.get("exit"), t.get("exit_price"), t.get("sell_price"),
-                (t.get("price") if side == "SELL" else None)
+                t.get("exit"),
+                t.get("exit_price"),
+                t.get("sell_price"),
+                (t.get("price") if side == "SELL" else None),
             )
             pnl = _first_num(t.get("pnl"))
             reason = str(t.get("reason", "") or t.get("note", "")).strip()
@@ -364,25 +431,31 @@ def collect_rows_for_day(day_str: str) -> List[Row]:
                 else:
                     side = "BUY"
 
-            if pnl is None and (isinstance(entry, (int, float)) and isinstance(exitp, (int, float)) and side == "SELL"):
+            if pnl is None and (
+                isinstance(entry, (int, float))
+                and isinstance(exitp, (int, float))
+                and side == "SELL"
+            ):
                 try:
                     q = float(qty) if qty is not None else 0.0
                     pnl = (float(exitp) - float(entry)) * q
                 except Exception:
                     pnl = None
 
-            rows.append(mk_row(
-                ts_utc=ts,
-                module="trade",
-                side=side,
-                symbol=symbol,
-                qty=float(qty) if qty is not None else None,
-                entry=float(entry) if entry is not None else None,
-                exitp=float(exitp) if exitp is not None else None,
-                pnl=float(pnl) if isinstance(pnl, (int, float)) else None,
-                reason=reason,
-                extra="json"
-            ))
+            rows.append(
+                mk_row(
+                    ts_utc=ts,
+                    module="trade",
+                    side=side,
+                    symbol=symbol,
+                    qty=float(qty) if qty is not None else None,
+                    entry=float(entry) if entry is not None else None,
+                    exitp=float(exitp) if exitp is not None else None,
+                    pnl=float(pnl) if isinstance(pnl, (int, float)) else None,
+                    reason=reason,
+                    extra="json",
+                )
+            )
         except Exception as e:
             print(f"[WARN] bad trade record: {t} | {e}")
 
@@ -397,34 +470,39 @@ def collect_rows_for_day(day_str: str) -> List[Row]:
                 symbol = _first_str_upper(r.get("symbol"))
                 if not symbol:
                     continue
-                qty   = _first_num(r.get("qty"), r.get("quantity"))
+                qty = _first_num(r.get("qty"), r.get("quantity"))
                 entry = _first_num(r.get("entry"), r.get("entry_price"))
-                exitp = _first_num(r.get("exit"),  r.get("exit_price"))
+                exitp = _first_num(r.get("exit"), r.get("exit_price"))
                 # время — из timestamp, иначе берём конец дня локального (логично для факта выхода)
-                ts = (parse_iso_any(r.get("timestamp"))
-                      or mk_local_dt(target_day, 23, 59, 0))
+                ts = parse_iso_any(r.get("timestamp")) or mk_local_dt(
+                    target_day, 23, 59, 0
+                )
                 if not ts or not same_local_day(ts, target_day):
                     continue
                 # PnL: если нет — досчитаем
                 pnl = _first_num(r.get("pnl"))
-                if pnl is None and all(isinstance(x, (int, float)) for x in (entry, exitp, qty)):
+                if pnl is None and all(
+                    isinstance(x, (int, float)) for x in (entry, exitp, qty)
+                ):
                     try:
                         pnl = (float(exitp) - float(entry)) * float(qty)
                     except Exception:
                         pnl = None
 
-                rows.append(mk_row(
-                    ts_utc=ts,
-                    module="trade",
-                    side="SELL",
-                    symbol=symbol,
-                    qty=float(qty) if qty is not None else None,
-                    entry=float(entry) if entry is not None else None,
-                    exitp=float(exitp) if exitp is not None else None,
-                    pnl=float(pnl) if isinstance(pnl, (int, float)) else None,
-                    reason="PNL_TRACKER",
-                    extra="pnl_tracker.json"
-                ))
+                rows.append(
+                    mk_row(
+                        ts_utc=ts,
+                        module="trade",
+                        side="SELL",
+                        symbol=symbol,
+                        qty=float(qty) if qty is not None else None,
+                        entry=float(entry) if entry is not None else None,
+                        exitp=float(exitp) if exitp is not None else None,
+                        pnl=float(pnl) if isinstance(pnl, (int, float)) else None,
+                        reason="PNL_TRACKER",
+                        extra="pnl_tracker.json",
+                    )
+                )
             except Exception as e:
                 print(f"[WARN] bad pnl record: {r} | {e}")
 
@@ -450,15 +528,20 @@ def collect_rows_for_day(day_str: str) -> List[Row]:
                 ts = when_by_symbol.get(symbol) or mk_local_dt(target_day, 18, 30, 0)
                 if not ts or not same_local_day(ts, target_day):
                     continue
-                rows.append(mk_row(
-                    ts_utc=ts,
-                    module="selected",
-                    side="N/A",
-                    symbol=symbol,
-                    qty=None, entry=None, exitp=None, pnl=None,
-                    reason="SELECTED",
-                    extra=""
-                ))
+                rows.append(
+                    mk_row(
+                        ts_utc=ts,
+                        module="selected",
+                        side="N/A",
+                        symbol=symbol,
+                        qty=None,
+                        entry=None,
+                        exitp=None,
+                        pnl=None,
+                        reason="SELECTED",
+                        extra="",
+                    )
+                )
             except Exception:
                 pass
 
@@ -470,7 +553,12 @@ def collect_rows_for_day(day_str: str) -> List[Row]:
         if isinstance(siglog, list):
             for ev in siglog:
                 try:
-                    if (ev or {}).get("event") in ("GPT", "GPT_DECISION", "ACCEPTED", "REJECTED"):
+                    if (ev or {}).get("event") in (
+                        "GPT",
+                        "GPT_DECISION",
+                        "ACCEPTED",
+                        "REJECTED",
+                    ):
                         sym = str(ev.get("symbol", "")).upper()
                         tss = parse_iso_any(ev.get("timestamp") or ev.get("ts"))
                         if sym and tss and same_local_day(tss, target_day):
@@ -481,18 +569,25 @@ def collect_rows_for_day(day_str: str) -> List[Row]:
         for sym, decision in gpt.items():
             try:
                 symbol = str(sym).upper()
-                ts = when_by_symbol_gpt.get(symbol) or mk_local_dt(target_day, 18, 31, 0)
+                ts = when_by_symbol_gpt.get(symbol) or mk_local_dt(
+                    target_day, 18, 31, 0
+                )
                 if not ts or not same_local_day(ts, target_day):
                     continue
-                rows.append(mk_row(
-                    ts_utc=ts,
-                    module="gpt",
-                    side="N/A",
-                    symbol=symbol,
-                    qty=None, entry=None, exitp=None, pnl=None,
-                    reason=str(decision),
-                    extra=""
-                ))
+                rows.append(
+                    mk_row(
+                        ts_utc=ts,
+                        module="gpt",
+                        side="N/A",
+                        symbol=symbol,
+                        qty=None,
+                        entry=None,
+                        exitp=None,
+                        pnl=None,
+                        reason=str(decision),
+                        extra="",
+                    )
+                )
             except Exception:
                 pass
 
@@ -524,15 +619,20 @@ def collect_rows_for_day(day_str: str) -> List[Row]:
             ts = ts_by_reject.get(symbol) or mk_local_dt(target_day, 18, 35, 0)
             if not ts or not same_local_day(ts, target_day):
                 continue
-            rows.append(mk_row(
-                ts_utc=ts,
-                module="rejected",
-                side="N/A",
-                symbol=symbol,
-                qty=None, entry=None, exitp=None, pnl=None,
-                reason=str(reason or ""),
-                extra=""
-            ))
+            rows.append(
+                mk_row(
+                    ts_utc=ts,
+                    module="rejected",
+                    side="N/A",
+                    symbol=symbol,
+                    qty=None,
+                    entry=None,
+                    exitp=None,
+                    pnl=None,
+                    reason=str(reason or ""),
+                    extra="",
+                )
+            )
 
     # Сортировка + дедуп
     rows.sort(key=lambda r: (r.ts_utc, r.module, r.symbol, r.side))
@@ -546,9 +646,22 @@ def collect_rows_for_day(day_str: str) -> List[Row]:
         uniq.append(r)
     return uniq
 
+
 # === Запись результатов ===
 def write_csv(path: Path, rows: List[Row]):
-    header = ["ts_utc", "ts_local", "module", "side", "symbol", "qty", "entry", "exit", "pnl", "reason", "extra"]
+    header = [
+        "ts_utc",
+        "ts_local",
+        "module",
+        "side",
+        "symbol",
+        "qty",
+        "entry",
+        "exit",
+        "pnl",
+        "reason",
+        "extra",
+    ]
     with path.open("w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(header)
@@ -556,9 +669,12 @@ def write_csv(path: Path, rows: List[Row]):
             d = asdict(r)
             w.writerow([d[h] for h in header])
 
+
 def write_log(path: Path, rows: List[Row]):
     with path.open("w", encoding="utf-8") as f:
-        f.write(f"📒 Trade Day Export — {rows[0].ts_local.split(' ')[0] if rows else ''}\n")
+        f.write(
+            f"📒 Trade Day Export — {rows[0].ts_local.split(' ')[0] if rows else ''}\n"
+        )
         for r in rows:
             line = (
                 f"[{r.ts_local}] {r.module.upper():8s} "
@@ -572,10 +688,15 @@ def write_log(path: Path, rows: List[Row]):
             )
             f.write(line + "\n")
 
+
 # === CLI ===
 def main():
     parser = argparse.ArgumentParser(description="Export trade day log + csv")
-    parser.add_argument("--date", help="YYYY-MM-DD (локальная Asia/Tashkent). По умолчанию — вчера.", default=None)
+    parser.add_argument(
+        "--date",
+        help="YYYY-MM-DD (локальная Asia/Tashkent). По умолчанию — вчера.",
+        default=None,
+    )
     args = parser.parse_args()
 
     now_loc = datetime.now(TZ_TASHKENT)
@@ -595,7 +716,10 @@ def main():
     selected = sum(1 for r in rows if r.module == "selected")
     gpt = sum(1 for r in rows if r.module == "gpt")
     rejected = sum(1 for r in rows if r.module == "rejected")
-    print(f"Σ BUY: {buys} | Σ SELL: {sells} | SELECTED: {selected} | GPT: {gpt} | REJECTED: {rejected} | Всего событий: {len(rows)}")
+    print(
+        f"Σ BUY: {buys} | Σ SELL: {sells} | SELECTED: {selected} | GPT: {gpt} | REJECTED: {rejected} | Всего событий: {len(rows)}"
+    )
+
 
 if __name__ == "__main__":
     main()

@@ -7,6 +7,7 @@ OUTPUT_PATH = Path("core/training/training_data_clean.json")
 
 REQUIRED_FIELDS = ["alpha_score", "rsi", "ema_dev", "vol_ratio"]
 
+
 def clean_training_data():
     with open(DATA_PATH, "r") as f:
         data = json.load(f)
@@ -23,6 +24,7 @@ def clean_training_data():
         json.dump(cleaned, f, indent=2)
 
     print(f"✅ Очищено: {len(cleaned)} из {len(data)} сделок сохранено в {OUTPUT_PATH}")
+
 
 if __name__ == "__main__":
     clean_training_data()
