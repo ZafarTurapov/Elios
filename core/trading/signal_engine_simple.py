@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
-import os, json, sys
+
+import json
+import os
 from pathlib import Path
-from datetime import datetime, timezone
+
 from core.trading.signals.ohlc_loader import fetch_history_ohlc
 
 CAND_PATHS = [
@@ -12,8 +14,9 @@ CAND_PATHS = [
 
 OUT_DIR = Path("core/trading")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
-SIGNALS_FP  = OUT_DIR / "signals.json"
+SIGNALS_FP = OUT_DIR / "signals.json"
 REJECTED_FP = OUT_DIR / "rejected.json"
+
 
 def load_candidates() -> list[str]:
     for p in CAND_PATHS:
@@ -29,6 +32,7 @@ def load_candidates() -> list[str]:
                 pass
     return []
 
+
 def main():
     print("[SAFE] signal_engine_simple start")
     offline = os.getenv("ELIOS_OFFLINE", "0") == "1"
@@ -38,7 +42,7 @@ def main():
     if not syms:
         print("[SAFE] candidates.json не найден или пуст — ничего не делаем.")
         SIGN_FP = OUT_DIR / "signals.json"
-        REJ_FP  = OUT_DIR / "rejected.json"
+        REJ_FP = OUT_DIR / "rejected.json"
         SIGN_FP.write_text("[]", encoding="utf-8")
         REJ_FP.write_text("{}", encoding="utf-8")
         return
@@ -59,12 +63,17 @@ def main():
             rejected[symbol] = {"reason": f"loader_error:{type(e).__name__}"}
 
     # Итог: пока безопасно — без сигналов, только диагностика
-    SIGNALS_FP.write_text(json.dumps(signals, ensure_ascii=False, indent=2), encoding="utf-8")
-    REJECTED_FP.write_text(json.dumps(rejected, ensure_ascii=False, indent=2), encoding="utf-8")
+    SIGNALS_FP.write_text(
+        json.dumps(signals, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    REJECTED_FP.write_text(
+        json.dumps(rejected, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
 
     print(f"[SAFE] Готово. signals={len(signals)}, rejected={len(rejected)}")
     print(f"[SAFE] → {SIGNALS_FP}")
     print(f"[SAFE] → {REJECTED_FP}")
+
 
 if __name__ == "__main__":
     main()
