@@ -1,10 +1,8 @@
 name: Codex Autofix
-
 on:
   workflow_dispatch: {}
   schedule:
     - cron: "*/30 13-20 * * 1-5"  # 18:00–01:00 Asia/Tashkent
-
 permissions:
   contents: write
   pull-requests: write
@@ -17,7 +15,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.ref_name }}
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -29,18 +26,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install black==24.8.0 ruff==0.6.9 isort==5.13.2
 
-      - name: Apply fixes (tolerant)
-        shell: bash
+      - name: Apply fixes (never fail)
         run: |
           set +e
           ruff check . --fix
           isort .
           black .
-          # Никогда не валим job на этом шаге
           exit 0
 
       - name: Quick sanity (log-only)
-        shell: bash
         run: |
           set +e
           python -m py_compile $(git ls-files "*.py") 2>&1 | tee /tmp/sanity.log
@@ -51,8 +45,19 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet; then
+            echo "changed=0" >> $GITHUB_OUTPUT
+            echo "No changes"
+          else
+            echo "changed=1" >> $GITHUB_OUTPUT
+            echo "Has changes"
+          fi
+
       - name: Create PR with changes
-        id: cpr
+        if: steps.diff.outputs.changed == '1'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -69,9 +74,7 @@ jobs:
           labels: "autofix, bot"
           delete-branch: true
           signoff: true
-        continue-on-error: true
 
-      - name: PR result
+      - name: Summary
         run: |
-          echo "created: ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "url:     ${{ steps.cpr.outputs.pull-request-url }}"
+          echo "Changed: ${{ steps.diff.outputs.changed }}"
