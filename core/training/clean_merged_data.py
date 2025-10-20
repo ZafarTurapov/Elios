@@ -1,17 +1,19 @@
 import pandas as pd
-import os
 
 RAW_PATH = "/root/stockbot/data/merged_sp500_fundamentals.csv"
 STOCKS_PATH = "/root/stockbot/data/sp500_stocks.csv"
 CLEANED_PATH = "/root/stockbot/data/merged_sp500_fundamentals_clean.csv"
 
+
 def clean_merged_data():
     print(f"📂 Загружаем {RAW_PATH} батчами...")
 
     cleaned_chunks = []
-    for i, chunk in enumerate(pd.read_csv(RAW_PATH, chunksize=50000, low_memory=False), start=1):
+    for i, chunk in enumerate(
+        pd.read_csv(RAW_PATH, chunksize=50000, low_memory=False), start=1
+    ):
         print(f"🧹 Обработка пакета {i}, строк: {len(chunk)}")
-        
+
         # Удаляем пустые строки
         chunk.dropna(how="all", inplace=True)
 
@@ -34,7 +36,9 @@ def clean_merged_data():
     if len(unique_symbols) == 0:
         raise ValueError("⚠️ В файле sp500_stocks.csv не найдены тикеры.")
 
-    repeated_symbols = (unique_symbols * (len(df_clean) // len(unique_symbols) + 1))[:len(df_clean)]
+    repeated_symbols = (unique_symbols * (len(df_clean) // len(unique_symbols) + 1))[
+        : len(df_clean)
+    ]
     df_clean["symbol"] = repeated_symbols
 
     # === Добавляем колонку year
@@ -57,6 +61,7 @@ def clean_merged_data():
     # Сохраняем очищенные данные
     df_clean.to_csv(CLEANED_PATH, index=False)
     print(f"✅ Очищенные данные сохранены: {CLEANED_PATH}")
+
 
 if __name__ == "__main__":
     clean_merged_data()
