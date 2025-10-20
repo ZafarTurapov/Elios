@@ -1,16 +1,17 @@
 import ast
-from pathlib import Path
 import importlib.metadata as imd
+from pathlib import Path
 
 ROOT = Path("/root/stockbot")
-PKG_ROOTS = [ROOT/"core", ROOT/"tools"]
+PKG_ROOTS = [ROOT / "core", ROOT / "tools"]
 ENTRY_FILES = [
-    ROOT/"core/trading/signal_engine.py",
-    ROOT/"core/trading/trade_executor.py",
-    ROOT/"core/trading/sell_engine.py",
-    ROOT/"core/trading/positions_sync.py",
+    ROOT / "core/trading/signal_engine.py",
+    ROOT / "core/trading/trade_executor.py",
+    ROOT / "core/trading/sell_engine.py",
+    ROOT / "core/trading/positions_sync.py",
 ]
 ENTRY_FILES = [p for p in ENTRY_FILES if p.exists()]
+
 
 def file_to_mod(p: Path) -> str | None:
     try:
@@ -25,10 +26,12 @@ def file_to_mod(p: Path) -> str | None:
         parts = parts[:-1]
     return ".".join(parts)
 
+
 # индекс файлов проекта
 all_py = [p for base in PKG_ROOTS if base.exists() for p in base.rglob("*.py")]
 mod_by_file = {p: file_to_mod(p) for p in all_py if file_to_mod(p)}
 file_by_mod = {m: f for f, m in mod_by_file.items()}
+
 
 def resolve_relative(base_mod: str, level: int, name: str | None) -> str:
     """Преобразуем from ..foo import bar относительно base_mod в абсолютный модуль."""
@@ -41,6 +44,7 @@ def resolve_relative(base_mod: str, level: int, name: str | None) -> str:
     else:
         parent = []
     return ".".join([*parent, *(name.split(".") if name else [])]).strip(".")
+
 
 def parse_imports(p: Path, src_mod: str) -> set[str]:
     try:
@@ -69,11 +73,14 @@ def parse_imports(p: Path, src_mod: str) -> set[str]:
                         out.add(parent)
     return out
 
+
 def is_internal(m: str) -> bool:
     return m.startswith("core.") or m.startswith("tools.")
 
+
 def top_level(m: str) -> str:
-    return (m.split(".")[0] if m else "")
+    return m.split(".")[0] if m else ""
+
 
 # строим граф импортов (только имена модулей)
 imports_by_mod = {}
@@ -123,12 +130,14 @@ for name in sorted(ext_used):
     else:
         stdlib_guess.append(name)
 
+
 def rel(m: str) -> str:
     p = file_by_mod.get(m)
     try:
         return str(p.relative_to(ROOT)) if p else "—"
     except Exception:
         return str(p) if p else "—"
+
 
 print("# Elios — активные Python-модули (AST, с относит. импортами)\n")
 print("## Entry points")
