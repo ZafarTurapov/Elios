@@ -1,37 +1,62 @@
 name: Codex Autofix
+
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: "*/30 13-20 * * 1-5"  # ~18:00–01:00 Asia/Tashkent; подгони по желанию
+    - cron: "*/30 13-20 * * 1-5"  # 18:00–01:00 Asia/Tashkent
+
 permissions:
   contents: write
   pull-requests: write
+
 jobs:
   autofix:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.11" }
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - name: Install tooling
         run: |
           python -m pip install --upgrade pip
           pip install black==24.8.0 ruff==0.6.9 isort==5.13.2
-      - name: Apply fixes
-        run: |
-          ruff check . --fix || true
-          isort . || true
-          black . || true
-      - name: Quick sanity (log-only)
+
+      - name: Apply fixes (tolerant)
+        shell: bash
         run: |
           set +e
-          python -m py_compile $(git ls-files "*.py") 2>&1 | tee /tmp/sanity.log || true
+          ruff check . --fix
+          isort .
+          black .
+          # Никогда не валим job на этом шаге
+          exit 0
+
+      - name: Quick sanity (log-only)
+        shell: bash
+        run: |
+          set +e
+          python -m py_compile $(git ls-files "*.py") 2>&1 | tee /tmp/sanity.log
+          exit 0
+
+      - name: Git identity
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Create PR with changes
+        id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore(autofix): ruff/black/isort + sanity"
-          branch: "codex/autofix-${{ github.run_id }}"
           title: "Codex Autofix ${{ github.run_id }}"
           body: |
             Авто-PR: форматирование и мелкие правки.
@@ -39,5 +64,14 @@ jobs:
             - isort
             - black
             - py_compile (лог в /tmp/sanity.log)
-          labels: autofix, bot
+          branch: "codex/autofix-${{ github.run_id }}"
+          base: "main"
+          labels: "autofix, bot"
           delete-branch: true
+          signoff: true
+        continue-on-error: true
+
+      - name: PR result
+        run: |
+          echo "created: ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "url:     ${{ steps.cpr.outputs.pull-request-url }}"
