@@ -1,9 +1,16 @@
-from core.utils.alpaca_headers import alpaca_headers
 import os
-BASE_URL = os.getenv("APCA_API_BASE_URL") or os.getenv("ALPACA_BASE_URL") or "https://paper-api.alpaca.markets"
+
+from core.utils.alpaca_headers import alpaca_headers
+
+BASE_URL = (
+    os.getenv("APCA_API_BASE_URL")
+    or os.getenv("ALPACA_BASE_URL")
+    or "https://paper-api.alpaca.markets"
+)
 # core/connectors/alpaca_connector.py
 
 import os
+
 import requests
 import yfinance as yf
 
@@ -13,6 +20,7 @@ APCA_SEC = os.getenv("APCA_API_SECRET_KEY") or os.getenv("ALPACA_SECRET_KEY") or
 BASE_URL = "https://paper-api.alpaca.markets"
 
 HEADERS = alpaca_headers()
+
 
 def submit_order(symbol, qty, side, type="market", time_in_force="gtc"):
     url = f"{BASE_URL}/v2/orders"
@@ -63,7 +71,7 @@ def get_positions_with_pnl():
             "entry_price": entry,
             "current_price": current,
             "pnl_pct": pnl_pct,
-            "pnl_usd": pnl_usd
+            "pnl_usd": pnl_usd,
         }
     return result
 
@@ -77,7 +85,6 @@ def close_position(symbol):
 
 
 def get_last_prices(symbols, days=15):
-    import pandas as pd
     prices = {}
 
     for symbol in symbols:
@@ -85,7 +92,9 @@ def get_last_prices(symbols, days=15):
             data = yf.download(symbol, period=f"{days}d", interval="1d", progress=False)
             if data is not None and not data.empty:
                 close_data = data["Close"].dropna().squeeze()
-                price = close_data.iloc[-1] if hasattr(close_data, "iloc") else close_data
+                price = (
+                    close_data.iloc[-1] if hasattr(close_data, "iloc") else close_data
+                )
                 prices[symbol] = float(price)
             else:
                 print(f"[WARN] Нет данных по {symbol}")
