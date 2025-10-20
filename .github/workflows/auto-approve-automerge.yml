@@ -1,0 +1,38 @@
+name: Auto-Approve & Auto-Merge (Bots)
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+permissions:
+  pull-requests: write
+  contents: write
+jobs:
+  approve-and-automerge:
+    if: github.actor == 'dependabot[bot]' || startsWith(github.head_ref, 'codex/autofix-')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Approve PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            await github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              event: 'APPROVE'
+            });
+
+      - name: Enable Auto-Merge (squash)
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const mutation = `
+              mutation EnableAutoMerge($pullRequestId: ID!) {
+                enablePullRequestAutoMerge(input: { pullRequestId: $pullRequestId, mergeMethod: SQUASH }) {
+                  clientMutationId
+                }
+              }`;
+            await github.graphql(mutation, { pullRequestId: pr.node_id });
