@@ -8,21 +8,20 @@ strategy_trainer.py — обучение модели Искры с контро
 - Сохраняет модель в core/training/trained_model.pkl, если прошла гейт по метрикам
 """
 
-import os
 import csv
 import json
 import math
+import os
 import random
-from pathlib import Path
+from collections import defaultdict
 from datetime import datetime, timezone
-from collections import defaultdict, Counter
+from pathlib import Path
 
-import numpy as np
-
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import GroupKFold, GroupShuffleSplit, cross_validate
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import joblib
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from sklearn.model_selection import GroupKFold, GroupShuffleSplit, cross_validate
 
 DATA_PATH = Path("core/trading/training_data.json")
 MODEL_PATH = Path("core/training/trained_model.pkl")
@@ -31,33 +30,38 @@ MODEL_BACKUP_DIR = Path("core/training/model_backups")
 
 # Ограничения/настройки
 RANDOM_STATE = 42
-MAX_PER_SYMBOL = 12              # даунсэмплинг на тикер
+MAX_PER_SYMBOL = 12  # даунсэмплинг на тикер
 MIN_ROWS_FOR_TRAIN = 200
 MIN_GROUPS_FOR_KFOLD = 5
-KFOLD_SPLITS = 5                 # уменьшится до 3, если групп меньше
-FALLBACK_TEST_SIZE = 0.2         # если групп мало — GroupShuffleSplit
-IMPROVEMENT_TOL = 0.005          # насколько новая F1 должна быть не хуже старой (или лучше)
-ABS_MIN_F1_TO_SAVE = 0.62        # минимальный порог качества, чтобы вообще сохранить модель
+KFOLD_SPLITS = 5  # уменьшится до 3, если групп меньше
+FALLBACK_TEST_SIZE = 0.2  # если групп мало — GroupShuffleSplit
+IMPROVEMENT_TOL = 0.005  # насколько новая F1 должна быть не хуже старой (или лучше)
+ABS_MIN_F1_TO_SAVE = 0.62  # минимальный порог качества, чтобы вообще сохранить модель
 
 # Базовый набор признаков (остальные добавим, если присутствуют у всех)
 BASE_FEATURES = ["alpha_score", "rsi", "ema_dev", "vol_ratio", "atr_pct"]
 EXTRA_FEATURES = ["bullish_body", "gap_up", "volume_trend", "volatility"]
 
+
 def _normalize_label(y):
     if isinstance(y, str):
         y = y.strip().lower()
-        if y in ("win","1","true","yes","profit","pos"): return 1
-        if y in ("loss","0","false","no","neg"): return 0
+        if y in ("win", "1", "true", "yes", "profit", "pos"):
+            return 1
+        if y in ("loss", "0", "false", "no", "neg"):
+            return 0
     try:
         return int(y)
     except Exception:
         return None
+
 
 def _to_float(x):
     try:
         return float(x)
     except Exception:
         return None
+
 
 def _load_data():
     if not DATA_PATH.exists():
@@ -66,6 +70,7 @@ def _load_data():
     if not isinstance(data, list) or not data:
         raise ValueError("training_data.json empty or not a list")
     return data
+
 
 def _available_features(rows, feat_list):
     """Вернёт подсписок фичей, которые присутствуют И валидны (не NaN) хотя бы у ~95% строк."""
@@ -82,6 +87,7 @@ def _available_features(rows, feat_list):
             keep.append(f)
     return keep
 
+
 def _downsample_by_symbol(rows, max_per_symbol=MAX_PER_SYMBOL):
     by = defaultdict(list)
     for r in rows:
@@ -96,19 +102,21 @@ def _downsample_by_symbol(rows, max_per_symbol=MAX_PER_SYMBOL):
     rng.shuffle(out)
     return out
 
+
 def _build_matrix(rows, feature_list):
     X, y, groups = [], [], []
     for r in rows:
         label = _normalize_label(r.get("label"))
         sym = r.get("symbol")
-        if label not in (0,1) or not isinstance(sym, str):
+        if label not in (0, 1) or not isinstance(sym, str):
             continue
         vec = []
         ok = True
         for f in feature_list:
             v = _to_float(r.get(f))
             if v is None or math.isnan(v) or math.isinf(v):
-                ok = False; break
+                ok = False
+                break
             vec.append(v)
         if not ok:
             continue
@@ -116,6 +124,7 @@ def _build_matrix(rows, feature_list):
         y.append(label)
         groups.append(sym)
     return np.array(X, dtype=float), np.array(y, dtype=int), np.array(groups)
+
 
 def _read_last_f1():
     if not METRICS_CSV.exists():
@@ -130,20 +139,39 @@ def _read_last_f1():
     except Exception:
         return None
 
+
 def _append_metrics(ts, n_rows, n_groups, feats, cv_res):
     newfile = not METRICS_CSV.exists()
     with METRICS_CSV.open("a", newline="") as f:
         w = csv.writer(f)
         if newfile:
-            w.writerow(["timestamp","rows","groups","features","folds","accuracy_mean","precision_mean","recall_mean","f1_mean"])
-        w.writerow([
-            ts, n_rows, n_groups, "|".join(feats),
-            cv_res.get("folds",""),
-            round(cv_res["accuracy_mean"],6),
-            round(cv_res["precision_mean"],6),
-            round(cv_res["recall_mean"],6),
-            round(cv_res["f1_mean"],6),
-        ])
+            w.writerow(
+                [
+                    "timestamp",
+                    "rows",
+                    "groups",
+                    "features",
+                    "folds",
+                    "accuracy_mean",
+                    "precision_mean",
+                    "recall_mean",
+                    "f1_mean",
+                ]
+            )
+        w.writerow(
+            [
+                ts,
+                n_rows,
+                n_groups,
+                "|".join(feats),
+                cv_res.get("folds", ""),
+                round(cv_res["accuracy_mean"], 6),
+                round(cv_res["precision_mean"], 6),
+                round(cv_res["recall_mean"], 6),
+                round(cv_res["f1_mean"], 6),
+            ]
+        )
+
 
 def _do_cv(X, y, groups):
     uniq_groups = len(set(groups))
@@ -151,13 +179,21 @@ def _do_cv(X, y, groups):
         splits = min(KFOLD_SPLITS, uniq_groups)
         cv = GroupKFold(n_splits=splits)
         clf = RandomForestClassifier(
-            n_estimators=500, max_depth=None, min_samples_leaf=1,
-            random_state=RANDOM_STATE, n_jobs=-1
+            n_estimators=500,
+            max_depth=None,
+            min_samples_leaf=1,
+            random_state=RANDOM_STATE,
+            n_jobs=-1,
         )
         scores = cross_validate(
-            clf, X, y, cv=cv, groups=groups,
-            scoring=["accuracy","precision","recall","f1"],
-            n_jobs=-1, error_score="raise"
+            clf,
+            X,
+            y,
+            cv=cv,
+            groups=groups,
+            scoring=["accuracy", "precision", "recall", "f1"],
+            n_jobs=-1,
+            error_score="raise",
         )
         return {
             "folds": int(cv.get_n_splits()),
@@ -167,11 +203,16 @@ def _do_cv(X, y, groups):
             "f1_mean": float(np.mean(scores["test_f1"])),
         }
     # Fallback: одно случайное групповое разбиение
-    gss = GroupShuffleSplit(n_splits=1, test_size=FALLBACK_TEST_SIZE, random_state=RANDOM_STATE)
+    gss = GroupShuffleSplit(
+        n_splits=1, test_size=FALLBACK_TEST_SIZE, random_state=RANDOM_STATE
+    )
     train_idx, test_idx = next(gss.split(X, y, groups))
     clf = RandomForestClassifier(
-        n_estimators=400, max_depth=None, min_samples_leaf=1,
-        random_state=RANDOM_STATE, n_jobs=-1
+        n_estimators=400,
+        max_depth=None,
+        min_samples_leaf=1,
+        random_state=RANDOM_STATE,
+        n_jobs=-1,
     )
     clf.fit(X[train_idx], y[train_idx])
     y_pred = clf.predict(X[test_idx])
@@ -182,6 +223,7 @@ def _do_cv(X, y, groups):
         "recall_mean": float(recall_score(y[test_idx], y_pred, zero_division=0)),
         "f1_mean": float(f1_score(y[test_idx], y_pred, zero_division=0)),
     }
+
 
 def main():
     print("🚀 Training start")
@@ -202,7 +244,9 @@ def main():
 
     # CV
     cv_res = _do_cv(X, y, groups)
-    print(f"CV folds={cv_res['folds']} | F1={cv_res['f1_mean']:.4f} | Acc={cv_res['accuracy_mean']:.4f}")
+    print(
+        f"CV folds={cv_res['folds']} | F1={cv_res['f1_mean']:.4f} | Acc={cv_res['accuracy_mean']:.4f}"
+    )
 
     # Лог метрик
     ts = datetime.now(timezone.utc).isoformat()
@@ -211,16 +255,22 @@ def main():
     # Гейт сохранения модели
     last_f1 = _read_last_f1()
     new_f1 = cv_res["f1_mean"]
-    can_save = (new_f1 >= ABS_MIN_F1_TO_SAVE) and (last_f1 is None or (new_f1 + 1e-9) >= (last_f1 - IMPROVEMENT_TOL))
+    can_save = (new_f1 >= ABS_MIN_F1_TO_SAVE) and (
+        last_f1 is None or (new_f1 + 1e-9) >= (last_f1 - IMPROVEMENT_TOL)
+    )
     print(f"Gate: last_f1={last_f1}, new_f1={new_f1:.4f}, save={can_save}")
 
     if not can_save:
-        print("⛔️ Model not saved (quality gate)."); return
+        print("⛔️ Model not saved (quality gate).")
+        return
 
     # Обучаем на всём (на тех же фичах)
     model = RandomForestClassifier(
-        n_estimators=600, max_depth=None, min_samples_leaf=1,
-        random_state=RANDOM_STATE, n_jobs=-1
+        n_estimators=600,
+        max_depth=None,
+        min_samples_leaf=1,
+        random_state=RANDOM_STATE,
+        n_jobs=-1,
     )
     model.fit(X, y)
 
@@ -228,7 +278,10 @@ def main():
     try:
         if MODEL_PATH.exists():
             os.makedirs(MODEL_BACKUP_DIR, exist_ok=True)
-            backup_path = MODEL_BACKUP_DIR / f"trained_model_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.pkl"
+            backup_path = (
+                MODEL_BACKUP_DIR
+                / f"trained_model_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.pkl"
+            )
             MODEL_PATH.replace(backup_path)
             print(f"🗄️ backup: {backup_path}")
     except Exception as e:
@@ -237,6 +290,7 @@ def main():
     # Сохраняем новую
     joblib.dump({"model": model, "features": feats}, MODEL_PATH)
     print(f"✅ saved model → {MODEL_PATH}")
+
 
 if __name__ == "__main__":
     main()
