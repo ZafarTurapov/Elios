@@ -10,10 +10,15 @@ PARTIAL_TAKE_PROFIT = 0.03  # частичная фиксация
 # added_days — сколько дней держим позицию
 test_positions = {
     "AAPL": {"qty": 10, "entry_price": 100, "current_price": 107, "days_held": 5},
-    "TSLA": {"qty": 20, "entry_price": 200, "current_price": 190, "days_held": 1},  # early stop
+    "TSLA": {
+        "qty": 20,
+        "entry_price": 200,
+        "current_price": 190,
+        "days_held": 1,
+    },  # early stop
     "MSFT": {"qty": 15, "entry_price": 150, "current_price": 154.5, "days_held": 4},
     "NVDA": {"qty": 5, "entry_price": 400, "current_price": 420, "days_held": 3},
-    "AMZN": {"qty": 30, "entry_price": 150, "current_price": 145.5, "days_held": 2}
+    "AMZN": {"qty": 30, "entry_price": 150, "current_price": 145.5, "days_held": 2},
 }
 
 print(f"=== Тест логики SELL ENGINE — {datetime.now().isoformat()} ===")
@@ -46,5 +51,7 @@ for symbol, pos in test_positions.items():
         action = "SELL"
         reason = "STOP_LOSS_-3%"
 
-    print(f"{symbol}: {reason or 'HOLD'} | Δ%={round(change_pct*100,2)} | "
-          f"PnL={pnl}$ | SELL={action} | Qty to sell={qty_to_sell}")
+    print(
+        f"{symbol}: {reason or 'HOLD'} | Δ%={round(change_pct*100,2)} | "
+        f"PnL={pnl}$ | SELL={action} | Qty to sell={qty_to_sell}"
+    )
