@@ -1,7 +1,6 @@
 name: PR Auto-Sync
 on:
-  schedule:
-    - cron: "0 * * * *"   # каждый час
+  schedule: [{ cron: "0 * * * *" }]  # каждый час (UTC)
   workflow_dispatch: {}
 permissions:
   contents: write
@@ -10,27 +9,32 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: List open PRs
-        id: list
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr list --state open --json number,mergeStateStatus,baseRefName \
-            -q '.[] | "\(.number)\t\(.mergeStateStatus)\t\(.baseRefName)"' > prs.txt
-          echo "PRs:"
-          cat prs.txt || true
+      - name: List & Update PRs with Octokit
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
 
-      - name: Update BEHIND/DIRTY branches
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          updated=0
-          while IFS=$'\t' read -r num state base; do
-            [ -z "$num" ] && continue
-            if [ "$state" = "BEHIND" ] || [ "$state" = "DIRTY" ]; then
-              echo "→ Updating PR #$num vs $base"
-              gh api -X PUT "repos/${{ github.repository }}/pulls/$num/update-branch" || true
-              updated=$((updated+1))
-            fi
-          done < prs.txt
-          echo "Updated: $updated PR(s)"
+            // Получаем до 100 открытых PR
+            const { data: prs } = await github.rest.pulls.list({
+              owner, repo, state: 'open', per_page: 100
+            });
+
+            let updated = 0;
+            for (const pr of prs) {
+              // mergeable_state в REST может быть null без re-eval; ориентируемся на update-branch
+              try {
+                // PUT /repos/{owner}/{repo}/pulls/{pull_number}/update-branch
+                await github.request('PUT /repos/{owner}/{repo}/pulls/{pull_number}/update-branch', {
+                  owner, repo, pull_number: pr.number
+                });
+                core.info(`Updated PR #${pr.number} (${pr.head.ref} → ${pr.base.ref})`);
+                updated++;
+              } catch (e) {
+                // 422/404/409 — не валим job, просто лог
+                core.info(`Skip PR #${pr.number}: ${e.status || 'err'} ${e.message}`);
+              }
+            }
+            core.summary.addRaw(`Updated: ${updated} PR(s)`).write();
