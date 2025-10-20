@@ -1,18 +1,23 @@
-from core.utils.alpaca_headers import alpaca_headers
 import os
-import time
 import subprocess
+import time
+from datetime import datetime
+from datetime import time as dtime
+from datetime import timedelta
 from pathlib import Path
-from datetime import datetime, time as dtime, timedelta
 from zoneinfo import ZoneInfo
 
 # .env bootstrap
-from dotenv import load_dotenv, find_dotenv
+from dotenv import find_dotenv, load_dotenv
+
+from core.utils import (
+    env_keys as _envkeys,
+)  # noqa: F401  (подтягивает env-ключи в рантайме)
+from core.utils.alpaca_headers import alpaca_headers
 
 # === прогреть ключи/утилиты ===
 from core.utils.market_calendar import is_market_open_today
 from core.utils.telegram import send_telegram_message
-from core.utils import env_keys as _envkeys  # noqa: F401  (подтягивает env-ключи в рантайме)
 
 # ----------------- ENV / .env -----------------
 try:
@@ -33,15 +38,15 @@ os.environ.setdefault("ALPACA_NEWS_BASE", "https://data.alpaca.markets/v1beta1")
 # Торги: Пн–Пт 18:30–01:00
 MARKET_OPEN = dtime(18, 30)
 MARKET_CLOSE = dtime(1, 0)  # хвост до 01:00
-EOD_BUFFER_MIN = 5          # окно EOD-продаж за 5 минут до MARKET_CLOSE
+EOD_BUFFER_MIN = 5  # окно EOD-продаж за 5 минут до MARKET_CLOSE
 
 # BUY-окно внутри торговых часов
 BUY_WIN_START_STR = os.getenv("BUY_WINDOW_START", "18:30")  # локальное время Ташкент
 BUY_WIN_END_STR = os.getenv("BUY_WINDOW_END", "21:00")
 
 # Каденсы
-SELL_EVERY_MIN = int(os.getenv("SELL_EVERY_MIN", "5"))    # SELL из лупа (обычно выключен)
-BUY_EVERY_MIN = int(os.getenv("BUY_EVERY_MIN", "10"))     # сигнал/экзекутор
+SELL_EVERY_MIN = int(os.getenv("SELL_EVERY_MIN", "5"))  # SELL из лупа (обычно выключен)
+BUY_EVERY_MIN = int(os.getenv("BUY_EVERY_MIN", "10"))  # сигнал/экзекутор
 
 # Флаги SELL из лупа (по умолчанию SELL запускается таймером вне лупа)
 LOOP_SELL_ENABLED = os.getenv("LOOP_SELL_ENABLED", "0") == "1"
@@ -63,7 +68,9 @@ LOG_DIR.mkdir(parents=True, exist_ok=True)
 LOCK_DIR.mkdir(parents=True, exist_ok=True)
 
 # DEBUG: проверка наличия ключей в окружении (значение не печатаем)
-api_key_check = (os.getenv("APCA_API_KEY_ID") or os.getenv("ALPACA_API_KEY") or "").strip()
+api_key_check = (
+    os.getenv("APCA_API_KEY_ID") or os.getenv("ALPACA_API_KEY") or ""
+).strip()
 print(f"[DEBUG] ENV KEY: {'✅ Найден' if api_key_check else '❌ Не найден'}")
 
 
@@ -104,7 +111,9 @@ def in_eod_window(now_tz: datetime) -> bool:
     """True, если мы в EOD-окне за EOD_BUFFER_MIN минут до MARKET_CLOSE."""
     # MARKET_CLOSE у нас 01:00 локально — дата *сегодня*.
     # За 5 минут до 01:00 => 00:55..01:00
-    sell_start_dt = datetime.combine(now_tz.date(), MARKET_CLOSE) - timedelta(minutes=EOD_BUFFER_MIN)
+    sell_start_dt = datetime.combine(now_tz.date(), MARKET_CLOSE) - timedelta(
+        minutes=EOD_BUFFER_MIN
+    )
     end_dt = datetime.combine(now_tz.date(), MARKET_CLOSE)
     return sell_start_dt.time() <= now_tz.time() < end_dt.time()
 
@@ -153,7 +162,9 @@ def run_module(name: str, module_path: str):
     try:
         send_telegram_message(f"⚙️ Запущен модуль: {name}")
         # Разделим строку по пробелам и передадим аргументы python
-        subprocess.run([PYTHON] + module_path.split(), env=os.environ.copy(), check=False)
+        subprocess.run(
+            [PYTHON] + module_path.split(), env=os.environ.copy(), check=False
+        )
     except Exception as e:
         print(f"❌ Ошибка запуска {name}: {e}")
         send_telegram_message(f"⛔️ Ошибка запуска {name}: {e}")
@@ -185,13 +196,26 @@ def _fallback_flatten_all():
     import requests
 
     try:
-        key = (os.getenv("ALPACA_API_KEY") or os.getenv("APCA_API_KEY_ID") or "").strip()
-        sec = (os.getenv("ALPACA_SECRET_KEY") or os.getenv("APCA_API_SECRET_KEY") or "").strip()
-        base = (os.getenv("ALPACA_API_BASE_URL") or os.getenv("ALPACA_BASE_URL") or "https://paper-api.alpaca.markets").strip()
+        key = (
+            os.getenv("ALPACA_API_KEY") or os.getenv("APCA_API_KEY_ID") or ""
+        ).strip()
+        sec = (
+            os.getenv("ALPACA_SECRET_KEY") or os.getenv("APCA_API_SECRET_KEY") or ""
+        ).strip()
+        base = (
+            os.getenv("ALPACA_API_BASE_URL")
+            or os.getenv("ALPACA_BASE_URL")
+            or "https://paper-api.alpaca.markets"
+        ).strip()
         if not key or not sec:
             raise RuntimeError("ALPACA keys not set")
         h = alpaca_headers()
-        r = requests.delete(f"{base}/v2/positions", params={"cancel_orders": "true"}, headers=h, timeout=15)
+        r = requests.delete(
+            f"{base}/v2/positions",
+            params={"cancel_orders": "true"},
+            headers=h,
+            timeout=15,
+        )
         print(f"[EOD] fallback flatten: {r.status_code}")
         send_telegram_message(f"💣 Fallback flatten: {r.status_code}")
     except Exception as e:
@@ -209,8 +233,12 @@ def main_loop():
 
     global notified_off_hours, last_slot_buy_id, last_slot_sell_id, eod_done_ordinal, last_force_sell_date
 
-    print("🌀 Запуск торгового цикла Искры (SELL — внешний таймер; здесь: Signal/Executor)")
-    send_telegram_message("🚀 Торговый цикл Искры запущен (SELL — внешний таймер; здесь: Signal/Executor)")
+    print(
+        "🌀 Запуск торгового цикла Искры (SELL — внешний таймер; здесь: Signal/Executor)"
+    )
+    send_telegram_message(
+        "🚀 Торговый цикл Искры запущен (SELL — внешний таймер; здесь: Signal/Executor)"
+    )
 
     if not is_market_open_today():
         msg = "⛔️ Сегодня рынок закрыт. Искра завершает цикл."
@@ -232,7 +260,9 @@ def main_loop():
             and eod_done_ordinal != now.date().toordinal()
         ):
             print(f"[{datetime.now()}] ▶️ Запуск: EOD SELL (буфер {EOD_BUFFER_MIN}m)")
-            send_telegram_message(f"💼 EOD SELL: завершаем позиции за {EOD_BUFFER_MIN} мин до закрытия")
+            send_telegram_message(
+                f"💼 EOD SELL: завершаем позиции за {EOD_BUFFER_MIN} мин до закрытия"
+            )
             try:
                 run_module("EOD SELL", "-u -m core.trading.sell_engine")
             except Exception as e:
@@ -242,7 +272,9 @@ def main_loop():
 
         slot_buy_id = _slot_id(now, BUY_EVERY_MIN)
         slot_sell_id = _slot_id(now, SELL_EVERY_MIN)
-        print(f"⏱️ {now.strftime('%H:%M:%S')} (buy_slot={slot_buy_id}, sell_slot={slot_sell_id})")
+        print(
+            f"⏱️ {now.strftime('%H:%M:%S')} (buy_slot={slot_buy_id}, sell_slot={slot_sell_id})"
+        )
 
         # Вне торговых часов — спим и один раз уведомляем
         if not is_market_hours():
@@ -263,20 +295,26 @@ def main_loop():
             and (last_slot_sell_id != slot_sell_id)
             and not in_eod_window(now)
         ):
-            run_module_bg("SELL ENGINE", "-u -m core.trading.sell_engine", lock_name="sell")
+            run_module_bg(
+                "SELL ENGINE", "-u -m core.trading.sell_engine", lock_name="sell"
+            )
             last_slot_sell_id = slot_sell_id
 
         # === Каждые BUY_EVERY_MIN: сигналы → исполнение → синхронизация (ТОЛЬКО в BUY-окне)
         if (
             minute % BUY_EVERY_MIN == 0
             and last_slot_buy_id != slot_buy_id
-            and not (hour == MARKET_CLOSE.hour and minute == MARKET_CLOSE.minute)  # не в момент выхода
+            and not (
+                hour == MARKET_CLOSE.hour and minute == MARKET_CLOSE.minute
+            )  # не в момент выхода
             and not in_eod_window(now)
             and within_buy_window(now)
         ):
             run_module("SIGNAL ENGINE", "-u -m core.trading.signal_engine")
             run_module("TRADE EXECUTOR", "-u -m core.trading.trade_executor")
-            run_module("POSITIONS SYNC (после EXECUTOR)", "-u -m core.trading.positions_sync")
+            run_module(
+                "POSITIONS SYNC (после EXECUTOR)", "-u -m core.trading.positions_sync"
+            )
             last_slot_buy_id = slot_buy_id
 
         # Завершение торгового окна (в 01:00)
@@ -293,7 +331,10 @@ def main_loop():
             print(f"[{datetime.now()}] ▶️ Запуск: SELL ENGINE (EOD 00:55)")
             send_telegram_message("💣 FORCE SELL (за 5 минут до закрытия)")
             run_module("SELL ENGINE", "-u -m core.trading.sell_engine")
-            run_module("Финальная синхронизация (после SELL)", "-u -m core.trading.positions_sync")
+            run_module(
+                "Финальная синхронизация (после SELL)",
+                "-u -m core.trading.positions_sync",
+            )
             last_force_sell_date = now.date()
 
         time.sleep(2)

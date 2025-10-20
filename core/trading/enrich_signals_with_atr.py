@@ -4,22 +4,21 @@
 
 import json
 from pathlib import Path
-from typing import Any, Iterable, List, Optional, Dict
+from typing import Any, Dict, Iterable, List, Optional
 
 import numpy as np
 import pandas as pd
 import yfinance as yf
 
-
 SIGNALS_PATH = Path("/root/stockbot/core/trading/signals.json")
-OUTPUT_PATH  = Path("/root/stockbot/core/trading/signals_enriched.json")
+OUTPUT_PATH = Path("/root/stockbot/core/trading/signals_enriched.json")
 
 # --- Настройки индикаторов ---
-PERIOD_DAYS = 30           # историю берём ~ на месяц
-ATR_WINDOW  = 14
-VOL_SMA     = 5            # сглаживание объёма
-VOL_TREND_W = 3            # окно тренда объёма (последние N дней)
-VOLAT_WIN   = 3            # окно краткосрочной волатильности (стд. отклонение %изменений)
+PERIOD_DAYS = 30  # историю берём ~ на месяц
+ATR_WINDOW = 14
+VOL_SMA = 5  # сглаживание объёма
+VOL_TREND_W = 3  # окно тренда объёма (последние N дней)
+VOLAT_WIN = 3  # окно краткосрочной волатильности (стд. отклонение %изменений)
 
 
 def normalize_symbol(item: Any) -> Optional[str]:
@@ -77,7 +76,9 @@ def load_symbols_from_signals(path: Path) -> List[str]:
     if isinstance(data, list):
         candidates = data
     elif isinstance(data, dict):
-        candidates = data.get("signals") or data.get("tickers") or data.get("data") or []
+        candidates = (
+            data.get("signals") or data.get("tickers") or data.get("data") or []
+        )
     else:
         candidates = []
 
@@ -91,7 +92,9 @@ def load_symbols_from_signals(path: Path) -> List[str]:
     return symbols
 
 
-def download_history(symbol: str, period_days: int = PERIOD_DAYS) -> Optional[pd.DataFrame]:
+def download_history(
+    symbol: str, period_days: int = PERIOD_DAYS
+) -> Optional[pd.DataFrame]:
     """
     Скачивает дневные бары через yfinance, безопасно.
     """
@@ -101,8 +104,8 @@ def download_history(symbol: str, period_days: int = PERIOD_DAYS) -> Optional[pd
             period=f"{period_days}d",
             interval="1d",
             progress=False,
-            auto_adjust=True,     # избегаем предупреждения и получаем скорректированные цены
-            threads=False
+            auto_adjust=True,  # избегаем предупреждения и получаем скорректированные цены
+            threads=False,
         )
         if df is None or df.empty:
             print(f"[WARN] Нет данных по {symbol}")
@@ -139,14 +142,12 @@ def compute_atr(df: pd.DataFrame, window: int = ATR_WINDOW) -> pd.Series:
     close = df["Close"]
     prev_close = close.shift(1)
 
-    tr = pd.concat([
-        (high - low),
-        (high - prev_close).abs(),
-        (low - prev_close).abs()
-    ], axis=1).max(axis=1)
+    tr = pd.concat(
+        [(high - low), (high - prev_close).abs(), (low - prev_close).abs()], axis=1
+    ).max(axis=1)
 
     # классический Wilder smoothing можно заменить на простое SMA — оставим EMA(α=1/window*2) близко к классике
-    atr = tr.ewm(alpha=1/window, adjust=False).mean()
+    atr = tr.ewm(alpha=1 / window, adjust=False).mean()
     return atr
 
 
@@ -191,14 +192,16 @@ def enrich_symbols(symbols: List[str]) -> List[Dict[str, Any]]:
             last_close = float(df["Close"].iloc[-1])
             atr_pct = float(atr / last_close) if last_close else 0.0
 
-            enriched.append({
-                "symbol": sym,
-                "last_close": last_close,
-                "atr": float(atr),
-                "atr_pct": atr_pct,
-                "volume_trend": vol_trend,
-                "short_volatility": vol_short,
-            })
+            enriched.append(
+                {
+                    "symbol": sym,
+                    "last_close": last_close,
+                    "atr": float(atr),
+                    "atr_pct": atr_pct,
+                    "volume_trend": vol_trend,
+                    "short_volatility": vol_short,
+                }
+            )
         except Exception as e:
             print(f"[ERROR] calc({sym}): {e}")
             continue
