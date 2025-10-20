@@ -1,6 +1,6 @@
-name: PR Auto-Sync
+name: PR Auto-Sync (Octokit)
 on:
-  schedule: [{ cron: "0 * * * *" }]  # каждый час (UTC)
+  schedule: [{ cron: "0 * * * *" }]
   workflow_dispatch: {}
 permissions:
   contents: write
@@ -14,26 +14,17 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const owner = context.repo.owner;
-            const repo  = context.repo.repo;
-
-            // Получаем до 100 открытых PR
-            const { data: prs } = await github.rest.pulls.list({
-              owner, repo, state: 'open', per_page: 100
-            });
-
+            const {owner, repo} = context.repo;
+            const prs = await github.paginate(github.rest.pulls.list, {owner, repo, state:'open', per_page:100});
             let updated = 0;
             for (const pr of prs) {
-              // mergeable_state в REST может быть null без re-eval; ориентируемся на update-branch
               try {
-                // PUT /repos/{owner}/{repo}/pulls/{pull_number}/update-branch
                 await github.request('PUT /repos/{owner}/{repo}/pulls/{pull_number}/update-branch', {
                   owner, repo, pull_number: pr.number
                 });
                 core.info(`Updated PR #${pr.number} (${pr.head.ref} → ${pr.base.ref})`);
                 updated++;
               } catch (e) {
-                // 422/404/409 — не валим job, просто лог
                 core.info(`Skip PR #${pr.number}: ${e.status || 'err'} ${e.message}`);
               }
             }
