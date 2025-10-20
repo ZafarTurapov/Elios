@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-import pandas as pd
 import os
 
+import pandas as pd
+
 DATA_DIR = "/root/stockbot/data"
+
 
 def load_and_preview():
     files = [
@@ -28,6 +30,7 @@ def load_and_preview():
             print(df.head(3))
         except Exception as e:
             print(f"❌ Ошибка чтения {file}: {e}")
+
 
 if __name__ == "__main__":
     load_and_preview()
