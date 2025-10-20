@@ -1,6 +1,7 @@
-from core.utils.alpaca_headers import alpaca_headers
 # -*- coding: utf-8 -*-
 import sys
+
+from core.utils.alpaca_headers import alpaca_headers
 
 
 # === OHLC normalizer ===
@@ -48,11 +49,18 @@ def _extract_ohlc(df, symbol=None):
 
 if "/root/stockbot" not in sys.path:
     sys.path.insert(0, "/root/stockbot")
-import os, json, shutil, re, csv, hashlib, time
+import csv
+import hashlib
+import json
+import os
+import re
+import shutil
+import time
+from collections import defaultdict
+from datetime import datetime, timedelta, timezone
+
 import numpy as np
 import requests
-from datetime import datetime, timedelta, timezone
-from collections import defaultdict
 
 
 # --- .env autoload (simple) ---
@@ -80,25 +88,19 @@ def _load_env_from_files(paths=("/root/stockbot/.env", ".env")):
 
 
 from pathlib import Path
-from core.trading.signals.providers import get_default_providers
-from core.trading.signals.config import SignalsCfg
-from core.trading.signals.filters import (
-    rs_filter,
-    vwap_orh_reclaim,
-    tradable_guard,
-)
-from core.trading.signals.features import (
-    intraday_metrics as f_intraday_metrics,
-    long_upper_wick as f_long_upper_wick,
-    get_today_open_close_utc as f_today_open_close_utc,
-    smart_model_score,
-    compute_daily_features,
-)
+
 import yfinance as yf
-from ta.momentum import RSIIndicator
-from ta.trend import EMAIndicator
-from ta.volatility import AverageTrueRange
 from openai import OpenAI
+from ta.trend import EMAIndicator
+
+from core.trading.signals.config import SignalsCfg
+from core.trading.signals.features import compute_daily_features
+from core.trading.signals.features import (
+    get_today_open_close_utc as f_today_open_close_utc,
+)
+from core.trading.signals.features import intraday_metrics as f_intraday_metrics
+from core.trading.signals.features import long_upper_wick as f_long_upper_wick
+from core.trading.signals.providers import get_default_providers
 
 # === Runtime flags ===
 OFFLINE_MODE = (
@@ -124,7 +126,7 @@ def yf_download_safe(
     Возвращает DataFrame или None по таймауту/ошибке.
     """
     try:
-        from concurrent.futures import ThreadPoolExecutor, TimeoutError as _FTimeout
+        from concurrent.futures import ThreadPoolExecutor
 
         def _call():
             try:
@@ -153,7 +155,8 @@ def yf_download_safe(
 def run_with_timeout(
     fn, *, seconds=30, default=None, args=(), kwargs=None, name="task"
 ):
-    import threading, queue
+    import queue
+    import threading
 
     q = queue.Queue(maxsize=1)
 
@@ -202,7 +205,6 @@ except Exception:
 
 
 from core.trading.anomaly_detector import detect_anomalies
-from core.trading.alpha_utils import calculate_alpha_score
 from core.utils.telegram import send_telegram_message
 
 # ensure .env
@@ -223,7 +225,7 @@ def _alpaca_headers():
 client = OpenAI(
     api_key=os.getenv(
         "OPENAI_API_KEY",
-        os.getenv("OPENAI_API_KEY",""),
+        os.getenv("OPENAI_API_KEY", ""),
     )
 )
 GPT_SIGNAL_MODEL = os.getenv("ELIOS_SIGNAL_GPT_MODEL", "gpt-4o-mini")
@@ -650,7 +652,7 @@ def _fetch_history(symbol: str, days: int = 30):
     try:
         df, src = PROVIDERS.local.history_daily(symbol)
         if df is not None:
-            import pandas as pd, numpy as np
+            import pandas as pd
 
             ok = True
             try:
@@ -700,7 +702,7 @@ def _fetch_history(symbol: str, days: int = 30):
             print(f"[WARN] Yahoo history {symbol}: {e}")
     # 2) Alpaca fallback
     try:
-        from datetime import datetime, timezone, timedelta
+        from datetime import datetime, timedelta, timezone
 
         start = (
             datetime.now(timezone.utc) - timedelta(days=max(40, int(days * 2)))
@@ -1147,8 +1149,9 @@ def adjust_thresholds_v2(cfg: dict, count: int, reasons_count: dict, macro_regim
     - Cooldown: не чаще, чем раз в 20 минут.
     - Приоритеты по причинам отказов.
     """
+    import json
+    import os
     from datetime import datetime, timezone
-    import time, math, json, os
 
     # базовые
     th = dict(cfg.get("thresholds") or {})
@@ -2263,7 +2266,7 @@ def main():
             except Exception:
                 pass
             summary_lines = [
-                f"📊 Новый сигнал (BUY)",
+                "📊 Новый сигнал (BUY)",
                 f"📌 ${symbol} @ {alpaca_price:.2f}",
                 f"∆%={percent_change:.2f}% | RSI={rsi:.2f} | EMA dev={ema_deviation:.2f}%",
                 f"ATR%={atr_pct:.2f} | Vol={volatility:.2f}%",
