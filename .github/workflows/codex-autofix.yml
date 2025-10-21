@@ -35,20 +35,18 @@ jobs:
 
       - name: Run ruff & black
         run: |
-          ruff --version || true
           ruff check . --fix || true
-          black --version || true
           black . || true
 
-      - name: Git status & detect changes
+      - name: Detect changes
         id: diff
         run: |
-          git status --porcelain
           if [ -z "$(git status --porcelain)" ]; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
+          git status -s
 
       - name: Set bot identity
         if: steps.diff.outputs.changed == 'true'
@@ -60,15 +58,39 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         run: |
           git add -A
-          git commit -m "ci: codex autofix (ruff/black)"
+          git commit -m "ci: codex autofix (ruff/black)" || true
 
-      - name: Create PR
-        if: steps.diff.outputs.changed == 'true'
+      # Если есть PAT (секрет BOT_PAT) — создаём PR им (разрешён)
+      - name: Create PR with BOT_PAT
+        if: steps.diff.outputs.changed == 'true' && secrets.BOT_PAT != ''
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.BOT_PAT }}
           branch: codex/autofix-${{ github.run_id }}
           title: "ci: codex autofix"
           commit-message: "ci: codex autofix"
           body: "Automated ruff/black formatting."
           labels: autofix
           delete-branch: true
+
+      # Если PAT нет — пробуем GITHUB_TOKEN (может быть запрещён); не валим job
+      - name: Create PR with GITHUB_TOKEN (best-effort)
+        if: steps.diff.outputs.changed == 'true' && secrets.BOT_PAT == ''
+        uses: peter-evans/create-pull-request@v6
+        continue-on-error: true
+        with:
+          token: ${{ github.token }}
+          branch: codex/autofix-${{ github.run_id }}
+          title: "ci: codex autofix"
+          commit-message: "ci: codex autofix"
+          body: "Automated ruff/black formatting."
+          labels: autofix
+          delete-branch: true
+
+      # Fallback: если PR нельзя — тупо пушим ветку, job остаётся зелёным
+      - name: Push branch fallback (no PR)
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          set -x
+          git push -u origin "HEAD:refs/heads/codex/autofix-${GITHUB_RUN_ID}" || true
+          echo "::notice title=Codex Autofix::PR creation restricted. Branch pushed: codex/autofix-${GITHUB_RUN_ID}"
