@@ -41,8 +41,8 @@ propcache==0.3.2
 protobuf==6.31.1
 pyarrow==21.0.0
 pycparser==2.22
-pydantic==2.12.3
-pydantic_core==2.33.2
+pydantic==2.12.2
+pydantic_core==2.41.4
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.1
 python-slugify==8.0.4
