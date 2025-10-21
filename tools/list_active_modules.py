@@ -1,19 +1,20 @@
-import ast, sys
+import ast
 from pathlib import Path
 import importlib.metadata as imd
 
 ROOT = Path("/root/stockbot")
-PKG_ROOTS = [ROOT/"core", ROOT/"tools"]
+PKG_ROOTS = [ROOT / "core", ROOT / "tools"]
 
 ENTRY_FILES = [
-    ROOT/"core/trading/signal_engine.py",
-    ROOT/"core/trading/trade_executor.py",
-    ROOT/"core/trading/sell_engine.py",
-    ROOT/"core/trading/positions_sync.py",
+    ROOT / "core/trading/signal_engine.py",
+    ROOT / "core/trading/trade_executor.py",
+    ROOT / "core/trading/sell_engine.py",
+    ROOT / "core/trading/positions_sync.py",
 ]
 ENTRY_FILES = [p for p in ENTRY_FILES if p.exists()]
 
-def file_to_mod(p: Path) -> str|None:
+
+def file_to_mod(p: Path) -> str | None:
     try:
         rel = p.relative_to(ROOT)
     except ValueError:
@@ -25,6 +26,7 @@ def file_to_mod(p: Path) -> str|None:
     if parts[-1] == "__init__":
         parts = parts[:-1]
     return ".".join(parts)
+
 
 def parse_imports(p: Path) -> set[str]:
     try:
@@ -41,7 +43,7 @@ def parse_imports(p: Path) -> set[str]:
             for a in n.names:
                 out.add(a.name)
         elif isinstance(n, ast.ImportFrom):
-            base = (n.module or "")
+            base = n.module or ""
             if base:
                 for a in n.names:
                     nm = a.name
@@ -51,11 +53,14 @@ def parse_imports(p: Path) -> set[str]:
                     out.add(a.name)
     return out
 
+
 def is_internal(m: str) -> bool:
     return m.startswith("core.") or m.startswith("tools.")
 
+
 def top_level(m: str) -> str:
-    return (m.split(".")[0] if m else "")
+    return m.split(".")[0] if m else ""
+
 
 # Индексация проекта
 all_py = [p for base in PKG_ROOTS if base.exists() for p in base.rglob("*.py")]

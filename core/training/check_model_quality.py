@@ -1,5 +1,6 @@
 from core.utils.alpaca_headers import alpaca_headers
 from core.utils.paths import TRADE_LOG_PATH
+
 # /root/stockbot/core/training/check_model_quality.py
 # -*- coding: utf-8 -*-
 """
@@ -40,9 +41,10 @@ from core.utils.telegram import send_telegram_message
 
 # --- параметры окна и пороги ---
 DAYS_LOOKBACK = int(os.getenv("QUALITY_LOOKBACK_DAYS", "7"))
-MIN_WIN_RATE = float(os.getenv("QUALITY_MIN_WINRATE", "0.55"))     # 55%+
-MIN_F1 = float(os.getenv("QUALITY_MIN_F1", "0.65"))                # 0.65+
-MIN_AVG_PNL = float(os.getenv("QUALITY_MIN_AVG_PNL", "0.0"))       # >= 0
+MIN_WIN_RATE = float(os.getenv("QUALITY_MIN_WINRATE", "0.55"))  # 55%+
+MIN_F1 = float(os.getenv("QUALITY_MIN_F1", "0.65"))  # 0.65+
+MIN_AVG_PNL = float(os.getenv("QUALITY_MIN_AVG_PNL", "0.0"))  # >= 0
+
 
 def log(msg: str):
     ts = datetime.now(timezone.utc).isoformat()
@@ -52,14 +54,19 @@ def log(msg: str):
     with LOG_PATH.open("a", encoding="utf-8") as f:
         f.write(line + "\n")
 
+
 def _alpaca_headers():
     return alpaca_headers()
+
 
 def latest_price(symbol: str) -> float:
     # quotes -> trades -> bars -> yfinance close
     try:
-        r = requests.get(f"{ALPACA_BASE_URL}/stocks/{symbol}/quotes/latest",
-                         headers=_alpaca_headers(), timeout=8)
+        r = requests.get(
+            f"{ALPACA_BASE_URL}/stocks/{symbol}/quotes/latest",
+            headers=_alpaca_headers(),
+            timeout=8,
+        )
         if r.status_code == 200:
             q = (r.json() or {}).get("quote") or {}
             ap, bp = q.get("ap") or 0.0, q.get("bp") or 0.0
@@ -68,8 +75,11 @@ def latest_price(symbol: str) -> float:
     except Exception:
         pass
     try:
-        r = requests.get(f"{ALPACA_BASE_URL}/stocks/{symbol}/trades/latest",
-                         headers=_alpaca_headers(), timeout=8)
+        r = requests.get(
+            f"{ALPACA_BASE_URL}/stocks/{symbol}/trades/latest",
+            headers=_alpaca_headers(),
+            timeout=8,
+        )
         if r.status_code == 200:
             p = ((r.json() or {}).get("trade") or {}).get("p") or 0.0
             if p:
@@ -77,8 +87,11 @@ def latest_price(symbol: str) -> float:
     except Exception:
         pass
     try:
-        r = requests.get(f"{ALPACA_BASE_URL}/stocks/{symbol}/bars/latest",
-                         headers=_alpaca_headers(), timeout=8)
+        r = requests.get(
+            f"{ALPACA_BASE_URL}/stocks/{symbol}/bars/latest",
+            headers=_alpaca_headers(),
+            timeout=8,
+        )
         if r.status_code == 200:
             c = ((r.json() or {}).get("bar") or {}).get("c") or 0.0
             if c:
@@ -93,6 +106,7 @@ def latest_price(symbol: str) -> float:
         pass
     return 0.0
 
+
 def read_trade_log():
     if not TRADE_LOG_PATH.exists():
         return {}
@@ -101,6 +115,7 @@ def read_trade_log():
     except Exception as e:
         log(f"[WARN] read_trade_log: {e}")
         return {}
+
 
 def read_open_positions():
     if not OPEN_POSITIONS_PATH.exists():
@@ -111,11 +126,13 @@ def read_open_positions():
         log(f"[WARN] read_open_positions: {e}")
         return {}
 
+
 def parse_iso(ts: str):
     try:
         return datetime.fromisoformat(ts.replace("Z", "+00:00"))
     except Exception:
         return None
+
 
 def last_f1_from_csv() -> float | None:
     if not TRAINING_METRICS_CSV.exists():
@@ -130,6 +147,7 @@ def last_f1_from_csv() -> float | None:
     except Exception as e:
         log(f"[WARN] last_f1_from_csv: {e}")
         return None
+
 
 def pair_trades_by_symbol(trades: list[dict]) -> list[dict]:
     """
@@ -151,6 +169,7 @@ def pair_trades_by_symbol(trades: list[dict]) -> list[dict]:
                 pass
     # Оставшиеся buys — открытые
     return closed, buys
+
 
 def compute_realized_stats(trade_log: dict, since: datetime):
     closed_pairs = []
@@ -177,20 +196,24 @@ def compute_realized_stats(trade_log: dict, since: datetime):
 
     realized = []
     for p in closed_pairs:
-        b = p["buy"]; s = p["sell"]; sym = p["symbol"]
+        b = p["buy"]
+        s = p["sell"]
+        sym = p["symbol"]
         qty = float(b.get("qty") or 0)
         buy_price = float(b.get("price") or 0)
         sell_price = float(s.get("price") or 0)
         pnl = (sell_price - buy_price) * qty
-        realized.append({
-            "symbol": sym,
-            "qty": qty,
-            "buy_price": buy_price,
-            "sell_price": sell_price,
-            "pnl": pnl,
-            "buy_time": b.get("timestamp"),
-            "sell_time": s.get("timestamp")
-        })
+        realized.append(
+            {
+                "symbol": sym,
+                "qty": qty,
+                "buy_price": buy_price,
+                "sell_price": sell_price,
+                "pnl": pnl,
+                "buy_time": b.get("timestamp"),
+                "sell_time": s.get("timestamp"),
+            }
+        )
 
     # Нереализованный pnl по открытым
     unrealized = []
@@ -201,14 +224,16 @@ def compute_realized_stats(trade_log: dict, since: datetime):
         mkt = latest_price(sym)
         if qty > 0 and buy_price > 0 and mkt > 0:
             pnl = (mkt - buy_price) * qty
-            unrealized.append({
-                "symbol": sym,
-                "qty": qty,
-                "buy_price": buy_price,
-                "mkt_price": mkt,
-                "unrealized_pnl": pnl,
-                "buy_time": b.get("timestamp")
-            })
+            unrealized.append(
+                {
+                    "symbol": sym,
+                    "qty": qty,
+                    "buy_price": buy_price,
+                    "mkt_price": mkt,
+                    "unrealized_pnl": pnl,
+                    "buy_time": b.get("timestamp"),
+                }
+            )
 
     # сводные метрики по закрытым
     wins = sum(1 for r in realized if r["pnl"] > 0)
@@ -231,8 +256,9 @@ def compute_realized_stats(trade_log: dict, since: datetime):
         "avg_pnl": round(avg_pnl, 2),
         "unrealized_sum_pnl": round(sum_unreal, 2),
         "realized": realized,
-        "unrealized": unrealized
+        "unrealized": unrealized,
     }
+
 
 def main():
     log("📈 MODEL QUALITY CHECK START")
@@ -247,14 +273,19 @@ def main():
     reasons = []
 
     if last_f1 is not None and last_f1 < MIN_F1:
-        status = "WARN"; reasons.append(f"F1 {last_f1:.3f} < {MIN_F1:.3f}")
+        status = "WARN"
+        reasons.append(f"F1 {last_f1:.3f} < {MIN_F1:.3f}")
     if stats["total_closed"] > 0:
         if stats["win_rate"] < MIN_WIN_RATE:
-            status = "WARN"; reasons.append(f"WinRate {stats['win_rate']:.2f} < {MIN_WIN_RATE:.2f}")
+            status = "WARN"
+            reasons.append(f"WinRate {stats['win_rate']:.2f} < {MIN_WIN_RATE:.2f}")
         if stats["avg_pnl"] < MIN_AVG_PNL:
-            status = "WARN"; reasons.append(f"AvgPnL {stats['avg_pnl']:.2f} < {MIN_AVG_PNL:.2f}")
+            status = "WARN"
+            reasons.append(f"AvgPnL {stats['avg_pnl']:.2f} < {MIN_AVG_PNL:.2f}")
     else:
-        reasons.append("Нет закрытых сделок в окне — оцениваем только F1/нереализованный PnL")
+        reasons.append(
+            "Нет закрытых сделок в окне — оцениваем только F1/нереализованный PnL"
+        )
 
     report = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -264,11 +295,11 @@ def main():
             "MIN_F1": MIN_F1,
             "MIN_WIN_RATE": MIN_WIN_RATE,
             "MIN_AVG_PNL": MIN_AVG_PNL,
-            "DAYS_LOOKBACK": DAYS_LOOKBACK
+            "DAYS_LOOKBACK": DAYS_LOOKBACK,
         },
         "last_f1": last_f1,
         "trade_stats": stats,
-        "open_positions_count": len(open_pos or {})
+        "open_positions_count": len(open_pos or {}),
     }
 
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -282,12 +313,18 @@ def main():
         lines.append(f"• F1 (последняя): *{last_f1:.3f}* (порог {MIN_F1:.2f})")
     lines.append(f"• Окно: *{DAYS_LOOKBACK}d*, закрыто: *{stats['total_closed']}*")
     lines.append(f"• Win‑rate: *{stats['win_rate']:.2f}* (порог {MIN_WIN_RATE:.2f})")
-    lines.append(f"• ΣPnL: *{stats['sum_pnl']:.2f}* | Avg: *{stats['avg_pnl']:.2f}* (порог {MIN_AVG_PNL:.2f})")
-    lines.append(f"• Нереализованный ΣPnL (открытые): *{stats['unrealized_sum_pnl']:.2f}*")
+    lines.append(
+        f"• ΣPnL: *{stats['sum_pnl']:.2f}* | Avg: *{stats['avg_pnl']:.2f}* (порог {MIN_AVG_PNL:.2f})"
+    )
+    lines.append(
+        f"• Нереализованный ΣPnL (открытые): *{stats['unrealized_sum_pnl']:.2f}*"
+    )
     if reasons:
         lines.append("• Причины: " + ", ".join(reasons))
     if status == "WARN":
-        lines.append("⚠️ *ВНИМАНИЕ:* качество ниже порогов. Рекомендуется проверить сигналы/датасет.")
+        lines.append(
+            "⚠️ *ВНИМАНИЕ:* качество ниже порогов. Рекомендуется проверить сигналы/датасет."
+        )
 
     try:
         send_telegram_message("\n".join(lines))
@@ -295,6 +332,7 @@ def main():
         log(f"[WARN] telegram send failed: {e}")
 
     log("🏁 MODEL QUALITY CHECK END")
+
 
 if __name__ == "__main__":
     main()

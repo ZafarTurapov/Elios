@@ -2,7 +2,10 @@ import json
 import os
 from datetime import datetime
 
-TRAINING_DATA_PATH = os.path.join(os.path.dirname(__file__), "../trading/training_data.json")
+TRAINING_DATA_PATH = os.path.join(
+    os.path.dirname(__file__), "../trading/training_data.json"
+)
+
 
 def append_to_training_data(entry):
     try:

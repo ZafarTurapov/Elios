@@ -1,4 +1,5 @@
 from core.utils.alpaca_headers import alpaca_headers
+
 # list_marginable.py
 
 import os
@@ -12,6 +13,7 @@ API_SECRET = os.getenv("ALPACA_SECRET_KEY")
 BASE_URL = os.getenv("ALPACA_API_BASE_URL", "https://paper-api.alpaca.markets")
 
 HEADERS = alpaca_headers(content_json=True)
+
 
 def main():
     url = f"{BASE_URL}/v2/positions"
@@ -35,6 +37,7 @@ def main():
     print("\n🧨 Исключённые тикеры (not marginable):")
     for sym in not_marginable:
         print(f"  - {sym}")
+
 
 if __name__ == "__main__":
     main()

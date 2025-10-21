@@ -31,37 +31,41 @@ ROOT = Path("/root/stockbot")
 
 # Скрипты пайплайна
 BUILDER = ROOT / "core" / "trading" / "training_data_builder.py"
-PATCH_ATR = ROOT / "core" / "training" / "patch_training_atr_pct.py"   # optional
-VERIFY   = ROOT / "core" / "training" / "verify_dataset.py"
-TRAINER  = ROOT / "core" / "training" / "strategy_trainer.py"
+PATCH_ATR = ROOT / "core" / "training" / "patch_training_atr_pct.py"  # optional
+VERIFY = ROOT / "core" / "training" / "verify_dataset.py"
+TRAINER = ROOT / "core" / "training" / "strategy_trainer.py"
 
 # Артефакты
 TRAINING_JSON = ROOT / "core" / "trading" / "training_data.json"
-BACKUP_DIR    = ROOT / "core" / "training" / "backups"
+BACKUP_DIR = ROOT / "core" / "training" / "backups"
 VERIFY_REPORT = ROOT / "core" / "training" / "verify_report.json"
-METRICS_CSV   = ROOT / "core" / "training" / "training_metrics.csv"
-MODEL_PATH    = ROOT / "core" / "training" / "trained_model.pkl"
+METRICS_CSV = ROOT / "core" / "training" / "training_metrics.csv"
+MODEL_PATH = ROOT / "core" / "training" / "trained_model.pkl"
 
 # Логи/состояния
-LOG_PATH   = ROOT / "logs" / "daily_training_update.log"
+LOG_PATH = ROOT / "logs" / "daily_training_update.log"
 STATE_PATH = ROOT / "core" / "training" / "daily_training_state.json"
-LOCK_PATH  = ROOT / "core" / "training" / "daily_training_update.lock"
+LOCK_PATH = ROOT / "core" / "training" / "daily_training_update.lock"
 
 # Python интерпретатор
 PREFER_VENV = ROOT / "venv" / "bin" / "python"
-PYTHON_BIN  = str(PREFER_VENV if PREFER_VENV.exists() else Path("/usr/bin/python3"))
+PYTHON_BIN = str(PREFER_VENV if PREFER_VENV.exists() else Path("/usr/bin/python3"))
 
 # Telegram (мягкий импорт)
 try:
     from core.utils.telegram import send_telegram_message, escape_markdown
 except Exception:
+
     def send_telegram_message(msg: str):  # fallback в лог
         print("[TG MOCK]\n" + msg)
+
     def escape_markdown(s: str) -> str:
         return s
 
+
 def now_utc() -> datetime:
     return datetime.now(timezone.utc)
+
 
 def logln(msg: str):
     ts = now_utc().isoformat()
@@ -70,6 +74,7 @@ def logln(msg: str):
     LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
     with LOG_PATH.open("a") as f:
         f.write(line + "\n")
+
 
 def load_json_safe(p: Path, default):
     if not p.exists():
@@ -80,6 +85,7 @@ def load_json_safe(p: Path, default):
         logln(f"[ERROR] load_json {p}: {e}")
         return default
 
+
 def save_json_safe(p: Path, obj) -> bool:
     try:
         p.parent.mkdir(parents=True, exist_ok=True)
@@ -88,6 +94,7 @@ def save_json_safe(p: Path, obj) -> bool:
     except Exception as e:
         logln(f"[ERROR] save_json {p}: {e}")
         return False
+
 
 def make_backup(src: Path) -> Path | None:
     BACKUP_DIR.mkdir(parents=True, exist_ok=True)
@@ -102,9 +109,11 @@ def make_backup(src: Path) -> Path | None:
             logln(f"[ERROR] backup {src}: {e}")
     return None
 
+
 def merge_dedup(old_list: list, new_list: list) -> tuple[list, int]:
     seen = set()
     merged = []
+
     def key_of(d):
         return (
             d.get("symbol"),
@@ -112,6 +121,7 @@ def merge_dedup(old_list: list, new_list: list) -> tuple[list, int]:
             d.get("timestamp") or d.get("timestamp_entry"),
             d.get("timestamp_exit"),
         )
+
     for d in old_list:
         k = key_of(d)
         if k not in seen:
@@ -126,7 +136,10 @@ def merge_dedup(old_list: list, new_list: list) -> tuple[list, int]:
             appended += 1
     return merged, appended
 
-def run_py(script: Path, desc: str, timeout_s: int = 1800, env_extra: dict | None = None) -> subprocess.CompletedProcess:
+
+def run_py(
+    script: Path, desc: str, timeout_s: int = 1800, env_extra: dict | None = None
+) -> subprocess.CompletedProcess:
     if not script.exists():
         raise FileNotFoundError(f"{desc}: {script} not found")
     env = os.environ.copy()
@@ -135,7 +148,9 @@ def run_py(script: Path, desc: str, timeout_s: int = 1800, env_extra: dict | Non
         env.update(env_extra)
     cmd = [PYTHON_BIN, str(script)]
     logln(f"[RUN] {desc}: {' '.join(cmd)}")
-    proc = subprocess.run(cmd, cwd=str(ROOT), capture_output=True, text=True, timeout=timeout_s, env=env)
+    proc = subprocess.run(
+        cmd, cwd=str(ROOT), capture_output=True, text=True, timeout=timeout_s, env=env
+    )
     logln(f"[RET] {desc}: code={proc.returncode}")
     if proc.stdout:
         logln(f"[STDOUT] {proc.stdout.strip()[:4000]}")
@@ -144,6 +159,7 @@ def run_py(script: Path, desc: str, timeout_s: int = 1800, env_extra: dict | Non
     if proc.returncode != 0:
         raise RuntimeError(f"{desc} failed with code {proc.returncode}")
     return proc
+
 
 def already_ran_today() -> bool:
     st = load_json_safe(STATE_PATH, {})
@@ -156,8 +172,10 @@ def already_ran_today() -> bool:
         return False
     return last_dt.date() == now_utc().date()
 
+
 def update_state_ok():
     save_json_safe(STATE_PATH, {"last_run_utc": now_utc().isoformat()})
+
 
 def main():
     # anti-parallel
@@ -179,7 +197,9 @@ def main():
 
         # 2) build fresh
         try:
-            run_py(BUILDER, "Build training_data", env_extra={"ALLOW_DIRECT_BUILDER": "1"})
+            run_py(
+                BUILDER, "Build training_data", env_extra={"ALLOW_DIRECT_BUILDER": "1"}
+            )
         except Exception as e:
             logln(f"[FATAL] builder failed: {e}")
             send_telegram_message(escape_markdown(f"❌ Builder failed: {e}"))
@@ -191,10 +211,14 @@ def main():
         merged, appended = merge_dedup(old_list, new_list)
         if save_json_safe(TRAINING_JSON, merged):
             merged_bak = make_backup(TRAINING_JSON)
-            logln(f"[MERGE] merged total={len(merged)}, appended_new={appended}, merged_backup={merged_bak}")
+            logln(
+                f"[MERGE] merged total={len(merged)}, appended_new={appended}, merged_backup={merged_bak}"
+            )
         else:
             logln("[ERROR] failed to save merged training_data")
-            send_telegram_message(escape_markdown("❌ Failed to save merged training_data"))
+            send_telegram_message(
+                escape_markdown("❌ Failed to save merged training_data")
+            )
             return
 
         # 4) (optional) patch atr_pct
@@ -262,6 +286,7 @@ def main():
             LOCK_PATH.unlink(missing_ok=True)
         except Exception:
             pass
+
 
 if __name__ == "__main__":
     main()

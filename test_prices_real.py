@@ -15,4 +15,3 @@ if prices:
         print(f"{sym}: {price}")
 else:
     print("❌ Цены не получены.")
-

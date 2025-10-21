@@ -25,6 +25,7 @@ import numpy as np
 try:
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.model_selection import GroupKFold, cross_validate
+
     HAVE_SKLEARN = True
 except Exception:
     HAVE_SKLEARN = False
@@ -33,38 +34,36 @@ DATA_PATH = Path("core/trading/training_data.json")
 REPORT_PATH = Path("core/training/verify_report.json")
 
 # Ожидаемые фичи (минимальный набор); остальные — как есть
-EXPECTED_FEATURES = [
-    "alpha_score", "rsi", "ema_dev", "vol_ratio", "atr_pct"
-]
+EXPECTED_FEATURES = ["alpha_score", "rsi", "ema_dev", "vol_ratio", "atr_pct"]
 # Расширенные (если есть — проверим диапазоны)
-OPTIONAL_FEATURES = [
-    "bullish_body", "gap_up", "volume_trend", "volatility"
-]
+OPTIONAL_FEATURES = ["bullish_body", "gap_up", "volume_trend", "volatility"]
 # Обязательные служебные поля
 META_FIELDS = [
-    "symbol",         # тикер
-    "timestamp",      # ISO дата/время входа или бара
-    "label"           # 1/0 или "WIN"/"LOSS"
+    "symbol",  # тикер
+    "timestamp",  # ISO дата/время входа или бара
+    "label",  # 1/0 или "WIN"/"LOSS"
 ]
 
 # Диапазоны sanity для фич (soft-границы; если выходит — warning)
 RANGES = {
-    "rsi":            (0, 100),
-    "vol_ratio":      (0.0, 20.0),
-    "atr_pct":        (0.0, 50.0),
-    "ema_dev":        (-50.0, 50.0),
-    "bullish_body":   (-50.0, 50.0),
-    "gap_up":         (-50.0, 50.0),
-    "volume_trend":   (0.0, 10.0),
-    "volatility":     (0.0, 50.0),
-    "alpha_score":    (-1e6, 1e6),  # модельная величина — только проверка на NaN/inf
+    "rsi": (0, 100),
+    "vol_ratio": (0.0, 20.0),
+    "atr_pct": (0.0, 50.0),
+    "ema_dev": (-50.0, 50.0),
+    "bullish_body": (-50.0, 50.0),
+    "gap_up": (-50.0, 50.0),
+    "volume_trend": (0.0, 10.0),
+    "volatility": (0.0, 50.0),
+    "alpha_score": (-1e6, 1e6),  # модельная величина — только проверка на NaN/inf
 }
+
 
 def is_nanlike(x):
     try:
         return x is None or (isinstance(x, float) and (math.isnan(x) or math.isinf(x)))
     except Exception:
         return False
+
 
 def to_float_or_none(x):
     try:
@@ -73,6 +72,7 @@ def to_float_or_none(x):
         return float(x)
     except Exception:
         return None
+
 
 def normalize_label(y):
     if isinstance(y, str):
@@ -86,11 +86,13 @@ def normalize_label(y):
     except Exception:
         return None
 
+
 def parse_dt(s):
     try:
         return datetime.fromisoformat(s.replace("Z", "+00:00"))
     except Exception:
         return None
+
 
 def main():
     report = {
@@ -106,7 +108,7 @@ def main():
         "duplicates": 0,
         "per_symbol_stats": {},
         "notes": [],
-        "sklearn_cv": None
+        "sklearn_cv": None,
     }
 
     if not DATA_PATH.exists():
@@ -144,7 +146,7 @@ def main():
     dup_count = 0
 
     # Пер-символьная статистика
-    per_symbol = defaultdict(lambda: {"n":0, "wins":0, "losses":0})
+    per_symbol = defaultdict(lambda: {"n": 0, "wins": 0, "losses": 0})
 
     rows_clean_for_ml = []
     y_clean = []
@@ -237,7 +239,7 @@ def main():
         report["class_balance"] = {
             "WIN": labels_counter.get(1, 0),
             "LOSS": labels_counter.get(0, 0),
-            "WIN_share": round(share_win, 4)
+            "WIN_share": round(share_win, 4),
         }
 
     # Пер-символьная статистика (win rate по тикеру)
@@ -245,7 +247,7 @@ def main():
         n = st["n"]
         w = st["wins"]
         l = st["losses"]
-        wr = (w / max(1, w + l))
+        wr = w / max(1, w + l)
         st["win_rate"] = round(wr, 4)
     # Сохраним первые 20 для отчета
     sample_sym_stats = dict(list(per_symbol.items())[:20])
@@ -269,9 +271,14 @@ def main():
                 n_estimators=200, max_depth=None, random_state=42, n_jobs=-1
             )
             scores = cross_validate(
-                clf, X, y, cv=cv, groups=groups,
+                clf,
+                X,
+                y,
+                cv=cv,
+                groups=groups,
                 scoring=["accuracy", "precision", "recall", "f1"],
-                n_jobs=-1, error_score="raise"
+                n_jobs=-1,
+                error_score="raise",
             )
             report["sklearn_cv"] = {
                 "folds": int(cv.get_n_splits()),
@@ -298,12 +305,16 @@ def main():
 
     # Короткая консольная сводка
     print("==== VERIFY DATASET REPORT (short) ====")
-    print(f"rows: {report['count']}, symbols: {report['unique_symbols']}, dups: {report['duplicates']}")
+    print(
+        f"rows: {report['count']}, symbols: {report['unique_symbols']}, dups: {report['duplicates']}"
+    )
     if report["time_range"]:
         print(f"time_range: {report['time_range'][0]} → {report['time_range'][1]}")
     if report["class_balance"]:
         cb = report["class_balance"]
-        print(f"class_balance: WIN={cb['WIN']} LOSS={cb['LOSS']} (share_win={cb['WIN_share']})")
+        print(
+            f"class_balance: WIN={cb['WIN']} LOSS={cb['LOSS']} (share_win={cb['WIN_share']})"
+        )
     if report["missing_fields"]:
         print("missing_fields:", report["missing_fields"])
     if report["nan_counts"]:
@@ -314,6 +325,7 @@ def main():
         print("cv:", report["sklearn_cv"])
     if report["notes"]:
         print("notes:", report["notes"])
+
 
 if __name__ == "__main__":
     main()

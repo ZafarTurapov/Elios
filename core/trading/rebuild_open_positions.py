@@ -1,11 +1,11 @@
 from core.utils.paths import TRADE_LOG_PATH
-import os
 import json
 from datetime import datetime
 
 
 DEFAULT_TP = 0.05
 DEFAULT_SL = -0.03
+
 
 def rebuild_positions():
     with open(TRADE_LOG_PATH, "r") as f:
@@ -31,11 +31,12 @@ def rebuild_positions():
                     "entry_price": price,
                     "timestamp": timestamp,
                     "take_profit": round(price * (1 + DEFAULT_TP), 2),
-                    "stop_loss": round(price * (1 + DEFAULT_SL), 2)
+                    "stop_loss": round(price * (1 + DEFAULT_SL), 2),
                 }
                 break  # одна позиция на тикер
 
     return positions
+
 
 if __name__ == "__main__":
     result = rebuild_positions()

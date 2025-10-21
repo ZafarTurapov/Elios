@@ -1,9 +1,9 @@
 from core.utils.paths import TRADE_LOG_PATH
+
 # core/training/enrich_trade_log.py
 
 import json
 import os
-from datetime import datetime
 import yfinance as yf
 from ta.momentum import RSIIndicator
 from ta.trend import EMAIndicator
@@ -11,6 +11,7 @@ from ta.trend import EMAIndicator
 from core.trading.alpha_utils import calculate_alpha_score
 
 OUTPUT_PATH = str(TRADE_LOG_PATH)  # перезаписываем
+
 
 def get_metrics(symbol):
     try:
@@ -27,7 +28,7 @@ def get_metrics(symbol):
         ema_dev = ((df["Close"] - ema) / ema).iloc[-1] * 100
 
         # Volume Ratio
-        vol_ratio = (df["Volume"].iloc[-1] / df["Volume"].rolling(5).mean().iloc[-1])
+        vol_ratio = df["Volume"].iloc[-1] / df["Volume"].rolling(5).mean().iloc[-1]
 
         # Alpha Score
         alpha_score = calculate_alpha_score(vol_ratio, rsi, ema_dev)
@@ -36,12 +37,13 @@ def get_metrics(symbol):
             "rsi": round(rsi, 2),
             "ema_dev": round(ema_dev, 2),
             "vol_ratio": round(vol_ratio, 2),
-            "alpha_score": round(alpha_score, 3)
+            "alpha_score": round(alpha_score, 3),
         }
 
     except Exception as e:
         print(f"[ERROR] Ошибка расчёта метрик для {symbol}: {e}")
         return None
+
 
 def enrich_trade(trade, symbol):
     if all(k in trade for k in ["rsi", "ema_dev", "vol_ratio", "alpha_score", "pnl"]):
@@ -58,6 +60,7 @@ def enrich_trade(trade, symbol):
 
     trade.setdefault("pnl", 0.0)
     return trade
+
 
 def main():
     if not os.path.exists(TRADE_LOG_PATH):
@@ -88,6 +91,7 @@ def main():
 
     except Exception as e:
         print(f"[ERROR] Ошибка при обогащении trade_log.json: {e}")
+
 
 if __name__ == "__main__":
     main()

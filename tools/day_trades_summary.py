@@ -1,17 +1,20 @@
 # /root/stockbot/tools/day_trades_summary.py
 # -*- coding: utf-8 -*-
-import argparse, json
+import argparse
+import json
 from pathlib import Path
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 TRADE_LOG = Path("/root/stockbot/core/trading/trade_log.json")
-LOCAL_TZ  = ZoneInfo("Asia/Tashkent")
-UTC_TZ    = ZoneInfo("UTC")
+LOCAL_TZ = ZoneInfo("Asia/Tashkent")
+UTC_TZ = ZoneInfo("UTC")
+
 
 def parse_iso(ts):
-    if not ts: return None
-    s = str(ts).strip().replace("Z","+00:00")
+    if not ts:
+        return None
+    s = str(ts).strip().replace("Z", "+00:00")
     try:
         dt = datetime.fromisoformat(s)
         if dt.tzinfo is None:
@@ -20,17 +23,30 @@ def parse_iso(ts):
     except Exception:
         return None
 
+
 def best_ts(item: dict):
-    ts = item.get("timestamp") or item.get("created_at") or item.get("updated_at") or item.get("submitted_at")
+    ts = (
+        item.get("timestamp")
+        or item.get("created_at")
+        or item.get("updated_at")
+        or item.get("submitted_at")
+    )
     if not ts and isinstance(item.get("alpaca_response"), dict):
         ar = item["alpaca_response"]
-        ts = ar.get("created_at") or ar.get("updated_at") or ar.get("submitted_at") or ar.get("filled_at")
+        ts = (
+            ar.get("created_at")
+            or ar.get("updated_at")
+            or ar.get("submitted_at")
+            or ar.get("filled_at")
+        )
     return parse_iso(ts) if ts else None
+
 
 def iter_trade_records(d):
     if isinstance(d, list):
         for r in d:
-            if isinstance(r, dict): yield r
+            if isinstance(r, dict):
+                yield r
     elif isinstance(d, dict):
         for sym, arr in d.items():
             if isinstance(arr, list):
@@ -39,13 +55,20 @@ def iter_trade_records(d):
                         r.setdefault("symbol", sym)
                         yield r
 
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--date", help="YYYY-MM-DD локальная (Asia/Tashkent). По умолчанию — вчера.")
+    ap.add_argument(
+        "--date", help="YYYY-MM-DD локальная (Asia/Tashkent). По умолчанию — вчера."
+    )
     args = ap.parse_args()
 
     today_local = datetime.now(LOCAL_TZ).date()
-    target_date = datetime.strptime(args.date, "%Y-%m-%d").date() if args.date else (today_local - timedelta(days=1))
+    target_date = (
+        datetime.strptime(args.date, "%Y-%m-%d").date()
+        if args.date
+        else (today_local - timedelta(days=1))
+    )
 
     if not TRADE_LOG.exists():
         print("❌ trade_log.json не найден:", TRADE_LOG)
@@ -60,7 +83,7 @@ def main():
 
     for it in iter_trade_records(data):
         ts = best_ts(it)
-        if not ts: 
+        if not ts:
             continue
         if ts.astimezone(LOCAL_TZ).date() != target_date:
             continue
@@ -68,7 +91,11 @@ def main():
         act = (it.get("action") or it.get("module") or "").upper()
         qty = None
         # qty может быть строкой в alpaca_response
-        qty = it.get("qty") or it.get("quantity") or (it.get("alpaca_response") or {}).get("qty")
+        qty = (
+            it.get("qty")
+            or it.get("quantity")
+            or (it.get("alpaca_response") or {}).get("qty")
+        )
         try:
             qty = float(qty) if qty is not None else None
         except Exception:
@@ -95,14 +122,15 @@ def main():
 
     print(f"📅 {target_date} (Asia/Tashkent)")
     print(f"BUY: {len(buys)}  SELL: {len(sells)}  OTHER: {len(other)}")
-    print(f"🧾 Пример первых 10 BUY:")
+    print("🧾 Пример первых 10 BUY:")
     for r in buys[:10]:
         print("  ", r)
     if sells:
-        print(f"🧾 Пример первых 10 SELL:")
+        print("🧾 Пример первых 10 SELL:")
         for r in sells[:10]:
             print("  ", r)
     print(f"💵 Грязный оборот покупок (оценка): ${gross_buy_notional:,.2f}")
+
 
 if __name__ == "__main__":
     main()

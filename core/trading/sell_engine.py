@@ -1,6 +1,10 @@
 from core.utils.alpaca_headers import alpaca_headers
+
 # -*- coding: utf-8 -*-
-import sys, os, json, time
+import sys
+import os
+import json
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -8,8 +12,9 @@ from typing import Optional
 import requests
 from openai import OpenAI
 
+
 def _get_openai_client():
-    key=os.getenv('OPENAI_API_KEY')
+    key = os.getenv("OPENAI_API_KEY")
     if not key:
         return None
     try:
@@ -21,6 +26,7 @@ def _get_openai_client():
 from core.utils.paths import TRADE_LOG_PATH
 from core.connectors.alpaca_connector import get_positions_with_pnl, submit_order
 from core.utils.telegram import send_telegram_message
+
 # === OpenAI client bootstrap (ENV-driven, safe) ===
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 try:
@@ -32,6 +38,7 @@ except NameError:
         _tmp = None
     client = _tmp  # global fallback
 
+
 def _get_openai_client():
     """Lazily return OpenAI client or None if not configured."""
     global client
@@ -41,20 +48,28 @@ def _get_openai_client():
         except Exception:
             client = None
     return client
+
+
 # === end OpenAI bootstrap ===
 
 
 # ==========================
 # Константы / пути
 # ==========================
-APCA_KEY  = os.getenv("APCA_API_KEY_ID") or os.getenv("ALPACA_API_KEY") or ""
-APCA_SEC  = os.getenv("APCA_API_SECRET_KEY") or os.getenv("ALPACA_SECRET_KEY") or ""
+APCA_KEY = os.getenv("APCA_API_KEY_ID") or os.getenv("ALPACA_API_KEY") or ""
+APCA_SEC = os.getenv("APCA_API_SECRET_KEY") or os.getenv("ALPACA_SECRET_KEY") or ""
 HEADERS = alpaca_headers()
+
 
 def _alpaca_headers():
     return dict(HEADERS)
 
-ALPACA_BASE_URL = os.getenv("ALPACA_BASE_URL") or os.getenv("APCA_API_BASE_URL") or "https://paper-api.alpaca.markets"
+
+ALPACA_BASE_URL = (
+    os.getenv("ALPACA_BASE_URL")
+    or os.getenv("APCA_API_BASE_URL")
+    or "https://paper-api.alpaca.markets"
+)
 ALPACA_DATA_URL = os.getenv("ALPACA_DATA_URL") or "https://data.alpaca.markets/v2"
 
 DEBUG = True
@@ -77,8 +92,8 @@ HEARTBEAT = LOGS_DIR / "sell.heartbeat"
 
 FORCE_CLOSE = "--force" in sys.argv or os.environ.get("FORCE_SELL") == "1"
 SELL_DRY_RUN = os.getenv("ELIOS_SELL_DRY_RUN", "0") == "1"
-DEFAULT_TAKE_PROFIT = 0.05   # +5% (фракция)
-DEFAULT_STOP_LOSS  = -0.03   # -3% (фракция)
+DEFAULT_TAKE_PROFIT = 0.05  # +5% (фракция)
+DEFAULT_STOP_LOSS = -0.03  # -3% (фракция)
 
 # ==========================
 # Grace-window (удержание молодых)
@@ -109,12 +124,14 @@ MICRO_PNL_MAX_PCT = float(os.getenv("MICRO_PNL_MAX_PCT", "12.0"))
 # Силовые признаки
 MICRO_RSI_FLOOR = float(os.getenv("MICRO_RSI_FLOOR", "55"))
 MICRO_VOL_RATIO = float(os.getenv("MICRO_VOL_RATIO", "1.20"))
-MICRO_BODY_PCT  = float(os.getenv("MICRO_BODY_PCT", "0.20"))
+MICRO_BODY_PCT = float(os.getenv("MICRO_BODY_PCT", "0.20"))
 MICRO_RULES_REQUIRE = int(os.getenv("MICRO_RULES_REQUIRE", "3"))
 
 # Трейл-безопасность
 TRAIL_LOOKBACK_BARS = int(os.getenv("TRAIL_LOOKBACK_BARS", "20"))
-TRAIL_MAX_DRAWDOWN_PCT = float(os.getenv("TRAIL_MAX_DRAWDOWN_PCT", "1.8"))  # 1.8% от локального макс.
+TRAIL_MAX_DRAWDOWN_PCT = float(
+    os.getenv("TRAIL_MAX_DRAWDOWN_PCT", "1.8")
+)  # 1.8% от локального макс.
 
 # ==========================
 # GPT: мягкие правила для минусовых продаж
@@ -136,17 +153,20 @@ except Exception:
     EMAIndicator = None
     AverageTrueRange = None
 
+
 # ==========================
 # Утилиты
 # ==========================
 def _iso_utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
+
 def _safe_round(x, n=2):
     try:
         return round(float(x), n)
     except Exception:
         return None
+
 
 def _ensure_logs_dir():
     try:
@@ -155,16 +175,21 @@ def _ensure_logs_dir():
     except Exception:
         pass
 
+
 def _write_heartbeat(stage: str = "tick"):
     try:
         LOGS_DIR.mkdir(parents=True, exist_ok=True)
         data = {"ts": time.time(), "iso": _iso_utc_now(), "stage": stage}
-        HEARTBEAT.write_text(json.dumps(data, ensure_ascii=False) + "\n", encoding="utf-8")
+        HEARTBEAT.write_text(
+            json.dumps(data, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
     except Exception as e:
         print(f"[HB WARN] {e}")
 
+
 def _headers():
     return alpaca_headers(content_json=True)
+
 
 def _load_json(path: Path, default):
     try:
@@ -172,6 +197,7 @@ def _load_json(path: Path, default):
             return json.load(f)
     except Exception:
         return default
+
 
 def _save_json(path: Path, data):
     try:
@@ -181,6 +207,7 @@ def _save_json(path: Path, data):
         tmp.replace(path)
     except Exception as e:
         print(f"[sell_engine] WARN: save_json({path}) failed: {e}")
+
 
 def _get_bars(symbol: str, timeframe: str, limit: int):
     if pd is None:
@@ -195,11 +222,15 @@ def _get_bars(symbol: str, timeframe: str, limit: int):
         if not bars:
             return None
         df = pd.DataFrame(bars)
-        df.rename(columns={"o":"open","h":"high","l":"low","c":"close","v":"volume"}, inplace=True)
+        df.rename(
+            columns={"o": "open", "h": "high", "l": "low", "c": "close", "v": "volume"},
+            inplace=True,
+        )
         return df
     except Exception as e:
         print(f"[sell_engine] WARN: get_bars({symbol}) failed: {e}")
         return None
+
 
 def _calc_age_minutes(first_seen_iso: str) -> float:
     try:
@@ -207,6 +238,7 @@ def _calc_age_minutes(first_seen_iso: str) -> float:
         return (datetime.now(timezone.utc) - dt).total_seconds() / 60.0
     except Exception:
         return 9999.0
+
 
 def log_debug(symbol, data):
     if not DEBUG:
@@ -218,6 +250,7 @@ def log_debug(symbol, data):
             f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
     except Exception as e:
         print(f"[DEBUG LOG ERROR] {e}")
+
 
 # cooldown helpers
 def _cooldown_ok(symbol: str) -> bool:
@@ -233,14 +266,27 @@ def _cooldown_ok(symbol: str) -> bool:
     except Exception:
         return True
 
-def _mark_cooldown(symbol: str, qty: int, reason: str = "", order_id: str | None = None):
+
+def _mark_cooldown(
+    symbol: str, qty: int, reason: str = "", order_id: str | None = None
+):
     """Фиксируем попытку продажи, чтобы соседний тик не отправил второй ордер."""
     try:
         COOLDOWN_DIR.mkdir(parents=True, exist_ok=True)
-        data = {"ts": time.time(), "iso": _iso_utc_now(), "symbol": symbol, "qty": int(qty), "reason": reason or "", "order_id": order_id}
-        (COOLDOWN_DIR / f"{symbol.upper()}.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        data = {
+            "ts": time.time(),
+            "iso": _iso_utc_now(),
+            "symbol": symbol,
+            "qty": int(qty),
+            "reason": reason or "",
+            "order_id": order_id,
+        }
+        (COOLDOWN_DIR / f"{symbol.upper()}.json").write_text(
+            json.dumps(data, ensure_ascii=False), encoding="utf-8"
+        )
     except Exception as e:
         print(f"[CD WARN] {e}")
+
 
 # ==========================
 # Grace логика
@@ -276,13 +322,18 @@ def should_hold_by_grace(symbol: str, age_min: float) -> bool:
     rsi_prev = float(rsi14.iloc[-3] or rsi_last)
 
     strength = 0
-    if ema_ok: strength += 1
-    if rsi_last >= RSI_HOLD_FLOOR and (rsi_last - rsi_prev) >= -1.0: strength += 1
-    if vol_ratio >= MIN_VOL_RATIO_HOLD: strength += 1
-    if body_pct >= MIN_BODY_PCT_HOLD: strength += 1
+    if ema_ok:
+        strength += 1
+    if rsi_last >= RSI_HOLD_FLOOR and (rsi_last - rsi_prev) >= -1.0:
+        strength += 1
+    if vol_ratio >= MIN_VOL_RATIO_HOLD:
+        strength += 1
+    if body_pct >= MIN_BODY_PCT_HOLD:
+        strength += 1
 
     weakness = False
-    if rsi_last < 40: weakness = True
+    if rsi_last < 40:
+        weakness = True
     try:
         if last_close < float(df["close"].iloc[-3] or last_close) * 0.985:
             weakness = True
@@ -293,6 +344,7 @@ def should_hold_by_grace(symbol: str, age_min: float) -> bool:
         return False
 
     return strength >= HOLD_RULES_REQUIRE
+
 
 # ==========================
 # Микро-паттерн удержания
@@ -315,7 +367,13 @@ def should_hold_by_micro(symbol: str, pnl_pct: float) -> bool:
     try:
         ema20 = EMAIndicator(close=df["close"], window=20).ema_indicator()
         rsi14 = RSIIndicator(close=df["close"], window=14).rsi()
-        atr14 = AverageTrueRange(high=df["high"], low=df["low"], close=df["close"], window=14).average_true_range() if AverageTrueRange else None
+        atr14 = (
+            AverageTrueRange(
+                high=df["high"], low=df["low"], close=df["close"], window=14
+            ).average_true_range()
+            if AverageTrueRange
+            else None
+        )
     except Exception:
         return False
 
@@ -336,11 +394,16 @@ def should_hold_by_micro(symbol: str, pnl_pct: float) -> bool:
     new_high = last_close >= float(df["close"].rolling(15).max().iloc[-1] or last_close)
 
     strength = 0
-    if ema_ok: strength += 1
-    if rsi_up: strength += 1
-    if vol_ratio >= MICRO_VOL_RATIO: strength += 1
-    if body_pct >= MICRO_BODY_PCT: strength += 1
-    if new_high: strength += 1
+    if ema_ok:
+        strength += 1
+    if rsi_up:
+        strength += 1
+    if vol_ratio >= MICRO_VOL_RATIO:
+        strength += 1
+    if body_pct >= MICRO_BODY_PCT:
+        strength += 1
+    if new_high:
+        strength += 1
 
     # защита: локальная просадка от пика за N баров
     try:
@@ -352,6 +415,7 @@ def should_hold_by_micro(symbol: str, pnl_pct: float) -> bool:
         pass
 
     return strength >= MICRO_RULES_REQUIRE
+
 
 # ==========================
 # Мягкий гард минусовых GPT-продаж
@@ -380,14 +444,18 @@ def gpt_negative_guard(symbol: str, pnl_pct: float, age_min: float) -> bool:
     last = df.iloc[-1]
     prev = df.iloc[-2] if len(df) >= 2 else last
 
-    last_close = float(last["close"]); prev_close = float(prev["close"])
-    last_high  = float(last["high"]);  prev_high = float(prev["high"])
-    last_low   = float(last["low"]);   prev_low  = float(prev["low"])
-    last_vol   = float(last["volume"] or 0.0)
-    vol_ma20   = float(df["volume"].tail(20).mean() or 0.0)
+    last_close = float(last["close"])
+    prev_close = float(prev["close"])
+    last_high = float(last["high"])
+    prev_high = float(prev["high"])
+    last_low = float(last["low"])
+    prev_low = float(prev["low"])
+    last_vol = float(last["volume"] or 0.0)
+    vol_ma20 = float(df["volume"].tail(20).mean() or 0.0)
 
-    cond1 = last_close < float(ema20.iloc[-1] or last_close+1)
-    rsi_last = float(rsi14.iloc[-1] or 50.0); rsi_prev = float(rsi14.iloc[-2] or rsi_last)
+    cond1 = last_close < float(ema20.iloc[-1] or last_close + 1)
+    rsi_last = float(rsi14.iloc[-1] or 50.0)
+    rsi_prev = float(rsi14.iloc[-2] or rsi_last)
     cond2 = (rsi_last < 48.0) and (rsi_last <= rsi_prev + 0.1)
     cond3 = last_close <= prev_low * 0.998
     cond4 = (last_high < prev_high) and (last_low < prev_low)
@@ -395,6 +463,7 @@ def gpt_negative_guard(symbol: str, pnl_pct: float, age_min: float) -> bool:
 
     score = sum([cond1, cond2, cond3, cond4, cond5])
     return score >= GPT_NEG_RULES_REQUIRE
+
 
 # ==========================
 # Логи/репортинг
@@ -410,19 +479,23 @@ def append_to_pnl_tracker(symbol, qty, entry_price, exit_price):
                         pnl_data = []
                 except Exception:
                     pnl_data = []
-        pnl_data.append({
-            "timestamp": _iso_utc_now(),
-            "symbol": symbol, "qty": qty,
-            "entry": _safe_round(entry_price, 2),
-            "exit": _safe_round(exit_price, 2),
-            "invested": _safe_round(entry_price * qty, 2),
-            "revenue": _safe_round(exit_price * qty, 2)
-        })
+        pnl_data.append(
+            {
+                "timestamp": _iso_utc_now(),
+                "symbol": symbol,
+                "qty": qty,
+                "entry": _safe_round(entry_price, 2),
+                "exit": _safe_round(exit_price, 2),
+                "invested": _safe_round(entry_price * qty, 2),
+                "revenue": _safe_round(exit_price * qty, 2),
+            }
+        )
         with PNL_TRACKER_PATH.open("w") as f:
             json.dump(pnl_data, f, indent=2)
         print(f"📈 Записано в pnl_tracker: {symbol}")
     except Exception as e:
         print(f"[ERROR] Не удалось записать в pnl_tracker: {e}")
+
 
 def append_to_trade_log(symbol, qty, entry_price, exit_price, reason):
     try:
@@ -435,25 +508,39 @@ def append_to_trade_log(symbol, qty, entry_price, exit_price, reason):
                         trade_log = []
                 except Exception:
                     trade_log = []
-        trade_log.append({
-            "timestamp": _iso_utc_now(),
-            "side": "SELL",
-            "action": "SELL",
-            "symbol": symbol, "qty": qty,
-            "entry": _safe_round(entry_price, 2),
-            "exit": _safe_round(exit_price, 2),
-            "pnl": _safe_round((exit_price - entry_price) * qty, 2),
-            "entry_date": datetime.now().strftime("%Y-%m-%d"),
-            "exit_date": datetime.now().strftime("%Y-%m-%d"),
-            "reason": reason or ""
-        })
+        trade_log.append(
+            {
+                "timestamp": _iso_utc_now(),
+                "side": "SELL",
+                "action": "SELL",
+                "symbol": symbol,
+                "qty": qty,
+                "entry": _safe_round(entry_price, 2),
+                "exit": _safe_round(exit_price, 2),
+                "pnl": _safe_round((exit_price - entry_price) * qty, 2),
+                "entry_date": datetime.now().strftime("%Y-%m-%d"),
+                "exit_date": datetime.now().strftime("%Y-%m-%d"),
+                "reason": reason or "",
+            }
+        )
         with TRADE_LOG_PATH.open("w") as f:
             json.dump(trade_log, f, indent=2)
         print(f"📝 Записано в trade_log (list JSON): {symbol}")
     except Exception as e:
         print(f"[ERROR] Не удалось записать в trade_log: {e}")
 
-def append_trade_event_ndjson(side, symbol, qty, entry_price, exit_price, pnl, reason, order_id=None, source="sell_engine"):
+
+def append_trade_event_ndjson(
+    side,
+    symbol,
+    qty,
+    entry_price,
+    exit_price,
+    pnl,
+    reason,
+    order_id=None,
+    source="sell_engine",
+):
     try:
         rec = {
             "timestamp": _iso_utc_now(),
@@ -466,7 +553,7 @@ def append_trade_event_ndjson(side, symbol, qty, entry_price, exit_price, pnl, r
             "reason": reason or "",
             "order_id": order_id,
             "source": source,
-            "module": "sell_engine"
+            "module": "sell_engine",
         }
         with open(CANON_TRADE_LOG_NDJSON, "a", encoding="utf-8") as f:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
@@ -475,6 +562,7 @@ def append_trade_event_ndjson(side, symbol, qty, entry_price, exit_price, pnl, r
         print(f"📒 NDJSON trade_log +1: {rec['symbol']} {rec['side']} qty={qty}")
     except Exception as e:
         print(f"[ERROR] Не удалось записать в NDJSON trade_log: {e}")
+
 
 # ==========================
 # GPT-подтверждение
@@ -496,7 +584,7 @@ PnL: {pnl:+.2f}$
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.2,
-            max_tokens=50
+            max_tokens=50,
         )
         reply = response.choices[0].message.content.strip().upper()
         print(f"[GPT] {reply}")
@@ -504,6 +592,7 @@ PnL: {pnl:+.2f}$
     except Exception as e:
         print(f"[GPT ERROR] {e}")
         return False
+
 
 # ==========================
 # Основной цикл
@@ -545,7 +634,7 @@ def main():
                 pos_side = "long"
 
         qty_abs = abs(int(qty_num)) if qty_num else 0
-        entry_price   = float(pos["entry_price"])
+        entry_price = float(pos["entry_price"])
         current_price = float(pos["current_price"])
 
         # Фракционный профит
@@ -558,14 +647,17 @@ def main():
 
         pnl_pct = change_pct * 100.0
 
-        log_debug(symbol, {
-            "pos_side": pos_side,
-            "qty": qty_abs,
-            "entry_price": entry_price,
-            "current_price": current_price,
-            "change_pct%": round(pnl_pct, 2),
-            "pnl_preview$": pnl_preview
-        })
+        log_debug(
+            symbol,
+            {
+                "pos_side": pos_side,
+                "qty": qty_abs,
+                "entry_price": entry_price,
+                "current_price": current_price,
+                "change_pct%": round(pnl_pct, 2),
+                "pnl_preview$": pnl_preview,
+            },
+        )
 
         # Метаданные (для возраста)
         m = meta.get(symbol, {})
@@ -577,37 +669,68 @@ def main():
 
         # Базовое решение
         if FORCE_CLOSE:
-            sell = True; reason = "FORCE_CLOSE"
+            sell = True
+            reason = "FORCE_CLOSE"
         elif change_pct >= DEFAULT_TAKE_PROFIT:
-            sell = True; reason = "TAKE_PROFIT_5%"
+            sell = True
+            reason = "TAKE_PROFIT_5%"
         elif change_pct <= DEFAULT_STOP_LOSS:
-            sell = True; reason = "STOP_LOSS_-3%"
-        elif gpt_confirm_sell(symbol, entry_price, current_price, change_pct, pnl_preview):
+            sell = True
+            reason = "STOP_LOSS_-3%"
+        elif gpt_confirm_sell(
+            symbol, entry_price, current_price, change_pct, pnl_preview
+        ):
             if change_pct < 0:
                 if gpt_negative_guard(symbol, pnl_pct, age_min):
-                    sell = True; reason = "GPT_CONFIRM_NEG"
+                    sell = True
+                    reason = "GPT_CONFIRM_NEG"
                 else:
-                    sell = False; reason = None; note = "NEG_GUARD"
+                    sell = False
+                    reason = None
+                    note = "NEG_GUARD"
             else:
-                sell = True; reason = "GPT_CONFIRM"
+                sell = True
+                reason = "GPT_CONFIRM"
         else:
-            sell = False; reason = None
+            sell = False
+            reason = None
 
         # Grace: молодая и сильная — удерживаем (только для мягких причин TP/GPT)
-        if sell and reason in {"TAKE_PROFIT_5%", "GPT_CONFIRM"} and should_hold_by_grace(symbol, age_min):
-            print(f"[sell_engine] HOLD(grace): {symbol} age={age_min:.1f}m pnl={pnl_preview:+.2f}$")
-            sell = False; reason = None; note = "GRACE_HOLD"
+        if (
+            sell
+            and reason in {"TAKE_PROFIT_5%", "GPT_CONFIRM"}
+            and should_hold_by_grace(symbol, age_min)
+        ):
+            print(
+                f"[sell_engine] HOLD(grace): {symbol} age={age_min:.1f}m pnl={pnl_preview:+.2f}$"
+            )
+            sell = False
+            reason = None
+            note = "GRACE_HOLD"
 
         # Микро: сильный импульс — удерживаем (только для TP/GPT)
-        if sell and reason in {"TAKE_PROFIT_5%", "GPT_CONFIRM"} and should_hold_by_micro(symbol, pnl_pct):
-            print(f"[sell_engine] HOLD(micro):  {symbol} pnl={pnl_pct:.2f}% (структура сильная)")
-            sell = False; reason = None; note = "MICRO_HOLD"
+        if (
+            sell
+            and reason in {"TAKE_PROFIT_5%", "GPT_CONFIRM"}
+            and should_hold_by_micro(symbol, pnl_pct)
+        ):
+            print(
+                f"[sell_engine] HOLD(micro):  {symbol} pnl={pnl_pct:.2f}% (структура сильная)"
+            )
+            sell = False
+            reason = None
+            note = "MICRO_HOLD"
 
         if sell and qty_abs > 0:
             # cooldown — не дублируем SELL по тикеру в пределах окна
             if not _cooldown_ok(symbol):
                 print(f"[sell_engine] SKIP by cooldown: {symbol}")
-                updated[symbol] = {"qty": qty_abs, "entry_price": entry_price, "current_price": current_price, "side": pos_side}
+                updated[symbol] = {
+                    "qty": qty_abs,
+                    "entry_price": entry_price,
+                    "current_price": current_price,
+                    "side": pos_side,
+                }
                 meta[symbol] = m
                 continue
 
@@ -618,14 +741,24 @@ def main():
                 try:
                     latest = get_positions_with_pnl()
                     pos_live = latest.get(symbol)
-                    live_qty = int(abs(float(pos_live["qty"]))) if pos_live and "qty" in pos_live else 0
+                    live_qty = (
+                        int(abs(float(pos_live["qty"])))
+                        if pos_live and "qty" in pos_live
+                        else 0
+                    )
                 except Exception:
                     live_qty = qty_abs
 
                 if live_qty <= 0:
                     print(f"[sell_engine] ABORT: no live qty for {symbol}")
-                    sell = False; reason = None
-                    updated[symbol] = {"qty": 0, "entry_price": entry_price, "current_price": current_price, "side": pos_side}
+                    sell = False
+                    reason = None
+                    updated[symbol] = {
+                        "qty": 0,
+                        "entry_price": entry_price,
+                        "current_price": current_price,
+                        "side": pos_side,
+                    }
                     meta[symbol] = m
                     continue
 
@@ -633,21 +766,39 @@ def main():
                     print(f"[sell_engine] Adjust qty: {symbol} {qty_abs} -> {live_qty}")
                 qty_abs = live_qty
 
-                submit_resp = submit_order(symbol=symbol, qty=qty_abs, side=side_out, type="market", time_in_force="gtc")
+                submit_resp = submit_order(
+                    symbol=symbol,
+                    qty=qty_abs,
+                    side=side_out,
+                    type="market",
+                    time_in_force="gtc",
+                )
                 # отмечаем кулдаун сразу (даже если fill ещё не пришёл)
                 try:
-                    tmp_order_id = submit_resp.get("id") if isinstance(submit_resp, dict) else getattr(submit_resp, "id", None)
+                    tmp_order_id = (
+                        submit_resp.get("id")
+                        if isinstance(submit_resp, dict)
+                        else getattr(submit_resp, "id", None)
+                    )
                 except Exception:
                     tmp_order_id = None
                 _mark_cooldown(symbol, qty_abs, reason or "SELL_ATTEMPT", tmp_order_id)
 
                 # читаем fill
                 try:
-                    order_id = submit_resp.get("id") if isinstance(submit_resp, dict) else getattr(submit_resp, "id", None)
+                    order_id = (
+                        submit_resp.get("id")
+                        if isinstance(submit_resp, dict)
+                        else getattr(submit_resp, "id", None)
+                    )
                 except Exception:
                     order_id = None
 
-                fill_info = {"status": "unknown", "filled_qty": 0.0, "filled_avg_price": 0.0}
+                fill_info = {
+                    "status": "unknown",
+                    "filled_qty": 0.0,
+                    "filled_avg_price": 0.0,
+                }
                 if order_id:
                     fill_info = wait_for_fill(order_id, timeout_s=90, poll_interval=1.5)
 
@@ -662,21 +813,41 @@ def main():
                         pnl = round((exec_price - entry_price) * filled_qty, 2)
 
                     append_to_pnl_tracker(symbol, filled_qty, entry_price, exec_price)
-                    append_to_trade_log(symbol, filled_qty, entry_price, exec_price, reason)
+                    append_to_trade_log(
+                        symbol, filled_qty, entry_price, exec_price, reason
+                    )
                     append_trade_event_ndjson(
                         side="SELL" if pos_side == "long" else "BUY_TO_COVER",
-                        symbol=symbol, qty=filled_qty,
-                        entry_price=entry_price, exit_price=exec_price,
-                        pnl=pnl, reason=reason, order_id=order_id, source="sell_engine"
+                        symbol=symbol,
+                        qty=filled_qty,
+                        entry_price=entry_price,
+                        exit_price=exec_price,
+                        pnl=pnl,
+                        reason=reason,
+                        order_id=order_id,
+                        source="sell_engine",
                     )
-                    msg = format_position_message(symbol, filled_qty, entry_price, exec_price, change_pct, pnl, reason)
+                    msg = format_position_message(
+                        symbol,
+                        filled_qty,
+                        entry_price,
+                        exec_price,
+                        change_pct,
+                        pnl,
+                        reason,
+                    )
                     send_telegram_message(msg)
                     sold_any = True
 
                     # частичное исполнение — оставляем остаток
                     remaining = max(qty_abs - filled_qty, 0)
                     if remaining > 0:
-                        updated[symbol] = {"qty": remaining, "entry_price": entry_price, "current_price": current_price, "side": pos_side}
+                        updated[symbol] = {
+                            "qty": remaining,
+                            "entry_price": entry_price,
+                            "current_price": current_price,
+                            "side": pos_side,
+                        }
                     # если остатка нет — позиция локально удаляется до следующего sync
                 else:
                     msg = (
@@ -688,7 +859,12 @@ def main():
                     )
                     send_telegram_message(msg)
                     print(msg)
-                    updated[symbol] = {"qty": qty_abs, "entry_price": entry_price, "current_price": current_price, "side": pos_side}
+                    updated[symbol] = {
+                        "qty": qty_abs,
+                        "entry_price": entry_price,
+                        "current_price": current_price,
+                        "side": pos_side,
+                    }
 
             except Exception as e:
                 msg = (
@@ -702,9 +878,22 @@ def main():
 
         else:
             # Удерживаем позицию
-            msg = format_position_message(symbol, qty_abs, entry_price, current_price, change_pct, pnl_preview, note=note)
+            msg = format_position_message(
+                symbol,
+                qty_abs,
+                entry_price,
+                current_price,
+                change_pct,
+                pnl_preview,
+                note=note,
+            )
             send_telegram_message(msg)
-            updated[symbol] = {"qty": qty_abs, "entry_price": entry_price, "current_price": current_price, "side": pos_side}
+            updated[symbol] = {
+                "qty": qty_abs,
+                "entry_price": entry_price,
+                "current_price": current_price,
+                "side": pos_side,
+            }
 
         meta[symbol] = m
 
@@ -722,6 +911,7 @@ def main():
         send_telegram_message("📊 Все позиции удерживаются. Продаж не выполнено.")
     _write_heartbeat("end")
 
+
 # ==========================
 # Вспомогательная: ожидание fill
 # ==========================
@@ -732,13 +922,18 @@ def get_order_status(order_id: str) -> dict:
         if 200 <= resp.status_code < 300:
             return resp.json()
         else:
-            print(f"[WARN] get_order_status {order_id}: HTTP {resp.status_code} {resp.text}")
+            print(
+                f"[WARN] get_order_status {order_id}: HTTP {resp.status_code} {resp.text}"
+            )
             return {}
     except Exception as e:
         print(f"[WARN] get_order_status error: {e}")
         return {}
 
-def wait_for_fill(order_id: str, timeout_s: int = 90, poll_interval: float = 1.5) -> dict:
+
+def wait_for_fill(
+    order_id: str, timeout_s: int = 90, poll_interval: float = 1.5
+) -> dict:
     start = time.time()
     last_status = None
     while True:
@@ -748,11 +943,21 @@ def wait_for_fill(order_id: str, timeout_s: int = 90, poll_interval: float = 1.5
             print(f"[ORDER] {order_id} status → {status}")
             last_status = status
         if status == "filled":
-            fq  = float(od.get("filled_qty", 0) or 0)
+            fq = float(od.get("filled_qty", 0) or 0)
             fav = float(od.get("filled_avg_price", 0) or 0)
-            return {"status": status, "filled_qty": fq, "filled_avg_price": fav, "raw": od}
+            return {
+                "status": status,
+                "filled_qty": fq,
+                "filled_avg_price": fav,
+                "raw": od,
+            }
         if status in {"canceled", "expired", "rejected", "stopped", "suspended"}:
-            return {"status": status, "filled_qty": 0.0, "filled_avg_price": 0.0, "raw": od}
+            return {
+                "status": status,
+                "filled_qty": 0.0,
+                "filled_avg_price": 0.0,
+                "raw": od,
+            }
         if time.time() - start > timeout_s:
             return {
                 "status": "timeout",
@@ -762,10 +967,20 @@ def wait_for_fill(order_id: str, timeout_s: int = 90, poll_interval: float = 1.5
             }
         time.sleep(poll_interval)
 
+
 # ==========================
 # Формирование сообщений
 # ==========================
-def format_position_message(symbol, qty, entry_price, current_price, change_pct, pnl, reason=None, note: Optional[str] = None):
+def format_position_message(
+    symbol,
+    qty,
+    entry_price,
+    current_price,
+    change_pct,
+    pnl,
+    reason=None,
+    note: Optional[str] = None,
+):
     if reason:
         return (
             f"💰 Продажа: {symbol} x{qty} @ ${current_price:.2f}\n"
@@ -780,6 +995,7 @@ def format_position_message(symbol, qty, entry_price, current_price, change_pct,
             f"📊 Изменение: {round(change_pct * 100, 2)}% | PnL: {pnl:+.2f}$\n"
             f"🤖 GPT/Правила: удержание" + (f" — {note}" if note else "")
         )
+
 
 if __name__ == "__main__":
     main()

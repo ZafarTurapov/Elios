@@ -1,18 +1,23 @@
 from core.utils.paths import TRADE_LOG_PATH
+
 # core/training/from_trade_log_to_training.py
 
 import json
 import os
 from datetime import datetime
 
-TRAINING_DATA_PATH = os.path.join(os.path.dirname(__file__), "../trading/training_data.json")
+TRAINING_DATA_PATH = os.path.join(
+    os.path.dirname(__file__), "../trading/training_data.json"
+)
 
 
 def append_to_training_data(entry):
     try:
         # Строгая фильтрация по причине FORCE_CLOSE
         if entry.get("reason") == "FORCE_CLOSE":
-            print(f"[SKIP] Пропущена сделка по {entry.get('symbol')} — причина FORCE_CLOSE.")
+            print(
+                f"[SKIP] Пропущена сделка по {entry.get('symbol')} — причина FORCE_CLOSE."
+            )
             return
 
         if not os.path.exists(TRAINING_DATA_PATH):
@@ -31,6 +36,7 @@ def append_to_training_data(entry):
         print(f"[📚] Обучающая запись добавлена: {entry.get('symbol')}")
     except Exception as e:
         print(f"[ERROR] Не удалось сохранить обучающие данные: {e}")
+
 
 def main():
     if not os.path.exists(TRADE_LOG_PATH):
@@ -54,6 +60,7 @@ def main():
 
     except Exception as e:
         print(f"[ERROR] Ошибка при обработке trade_log.json: {e}")
+
 
 if __name__ == "__main__":
     main()
