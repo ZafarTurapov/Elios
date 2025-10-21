@@ -1,33 +1,74 @@
 ---
+# yamllint disable rule:truthy
 name: Codex Autofix
 on:
   workflow_dispatch:
   schedule:
     - cron: "0 * * * *"
+
 permissions:
   contents: write
   pull-requests: write
+
+concurrency:
+  group: codex-autofix
+  cancel-in-progress: true
+
 jobs:
   autofix:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Run ruff & black (no fail on change)
+
+      - name: Install formatters (best-effort)
         run: |
-          python -m pip install -U ruff black
+          python -m pip install -U pip || true
+          python -m pip install -U ruff black || true
+
+      - name: Run ruff & black
+        run: |
+          ruff --version || true
           ruff check . --fix || true
+          black --version || true
           black . || true
+
+      - name: Git status & detect changes
+        id: diff
+        run: |
+          git status --porcelain
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set bot identity
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit changes
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git add -A
+          git commit -m "ci: codex autofix (ruff/black)"
+
       - name: Create PR
+        if: steps.diff.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           branch: codex/autofix-${{ github.run_id }}
           title: "ci: codex autofix"
           commit-message: "ci: codex autofix"
-          body: "Automated formatting/lint fixes."
+          body: "Automated ruff/black formatting."
           labels: autofix
           delete-branch: true
