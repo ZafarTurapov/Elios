@@ -57,3 +57,4 @@ data/history/
 core/trading/account_summary.json
 core/trading/signals.normalized.json
 core/trading/candidates_active.json
+_backup_*
