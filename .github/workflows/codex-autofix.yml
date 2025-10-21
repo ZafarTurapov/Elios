@@ -1,80 +1,33 @@
+---
 name: Codex Autofix
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
   schedule:
-    - cron: "*/30 13-20 * * 1-5"  # 18:00–01:00 Asia/Tashkent
+    - cron: "0 * * * *"
 permissions:
   contents: write
   pull-requests: write
-
 jobs:
   autofix:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
-      - name: Install tooling
+      - name: Run ruff & black (no fail on change)
         run: |
-          python -m pip install --upgrade pip
-          pip install black==24.8.0 ruff==0.6.9 isort==5.13.2
-
-      - name: Apply fixes (never fail)
-        run: |
-          set +e
-          ruff check . --fix
-          isort .
-          black .
-          exit 0
-
-      - name: Quick sanity (log-only)
-        run: |
-          set +e
-          python -m py_compile $(git ls-files "*.py") 2>&1 | tee /tmp/sanity.log
-          exit 0
-
-      - name: Git identity
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: Detect changes
-        id: diff
-        run: |
-          if git diff --quiet; then
-            echo "changed=0" >> $GITHUB_OUTPUT
-            echo "No changes"
-          else
-            echo "changed=1" >> $GITHUB_OUTPUT
-            echo "Has changes"
-          fi
-
-      - name: Create PR with changes
-        if: steps.diff.outputs.changed == '1'
+          python -m pip install -U ruff black
+          ruff check . --fix || true
+          black . || true
+      - name: Create PR
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(autofix): ruff/black/isort + sanity"
-          title: "Codex Autofix ${{ github.run_id }}"
-          body: |
-            Авто-PR: форматирование и мелкие правки.
-            - ruff --fix
-            - isort
-            - black
-            - py_compile (лог в /tmp/sanity.log)
-          branch: "codex/autofix-${{ github.run_id }}"
-          base: "main"
-          labels: "autofix, bot"
+          branch: codex/autofix-${{ github.run_id }}
+          title: "ci: codex autofix"
+          commit-message: "ci: codex autofix"
+          body: "Automated formatting/lint fixes."
+          labels: autofix
           delete-branch: true
-          signoff: true
-
-      - name: Summary
-        run: |
-          echo "Changed: ${{ steps.diff.outputs.changed }}"
