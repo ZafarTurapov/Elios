@@ -4,6 +4,7 @@ import numpy as np
 
 MODEL_PATH = "/core/trading/strategy_model.json"
 
+
 def load_strategy_model():
     if not os.path.exists(MODEL_PATH):
         return None
@@ -17,6 +18,7 @@ def load_strategy_model():
     except Exception as e:
         print(f"[ERROR] Не удалось загрузить модель стратегии: {e}")
         return None
+
 
 def apply_model(model, percent_change, volume_ratio, rsi, ema_dev):
     try:

@@ -1,7 +1,8 @@
 # /root/stockbot/core/utils/trade_log.py
 # -*- coding: utf-8 -*-
 from __future__ import annotations
-import json, os
+import json
+import os
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any
@@ -12,20 +13,27 @@ LOGS.mkdir(parents=True, exist_ok=True)
 
 CANON_PATH = LOGS / "trade_log.json"  # NDJSON: одна запись JSON в строке
 
-def _iso_utc(dt: Optional[datetime]=None) -> str:
+
+def _iso_utc(dt: Optional[datetime] = None) -> str:
     dt = dt or datetime.now(timezone.utc)
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=timezone.utc)
     return dt.astimezone(timezone.utc).isoformat()
 
-def append_trade_event(*, side: str, symbol: str, qty: float,
-                       entry_price: Optional[float]=None,
-                       exit_price: Optional[float]=None,
-                       pnl: Optional[float]=None,
-                       reason: str="",
-                       source: str="",
-                       timestamp: Optional[str]=None,
-                       extra: Optional[Dict[str, Any]]=None) -> None:
+
+def append_trade_event(
+    *,
+    side: str,
+    symbol: str,
+    qty: float,
+    entry_price: Optional[float] = None,
+    exit_price: Optional[float] = None,
+    pnl: Optional[float] = None,
+    reason: str = "",
+    source: str = "",
+    timestamp: Optional[str] = None,
+    extra: Optional[Dict[str, Any]] = None,
+) -> None:
     """
     Пишет атомарно событие сделки в NDJSON-журнал (/logs/trade_log.json).
     side: "BUY" | "SELL" | "CLOSE" ...

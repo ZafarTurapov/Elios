@@ -13,11 +13,7 @@ BASE_URL = "https://data.alpaca.markets/v2/stocks/bars"
 
 HEADERS = alpaca_headers()
 
-params = {
-    "symbols": "AAPL",
-    "timeframe": "1Day",
-    "limit": 5
-}
+params = {"symbols": "AAPL", "timeframe": "1Day", "limit": 5}
 
 response = requests.get(BASE_URL, headers=HEADERS, params=params)
 

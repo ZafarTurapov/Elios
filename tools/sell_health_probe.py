@@ -1,10 +1,15 @@
-import os, sys, json, time, pathlib
+import os
+import sys
+import json
+import time
+import pathlib
 
 ROOT = pathlib.Path("/root/stockbot")
-HB   = ROOT / "logs/sell.heartbeat"
-POS  = ROOT / "core/trading/open_positions.json"
+HB = ROOT / "logs/sell.heartbeat"
+POS = ROOT / "core/trading/open_positions.json"
 
-MAX_AGE_SEC = int(os.getenv("SELL_HB_MAX_AGE","900"))  # 15 мин по умолчанию
+MAX_AGE_SEC = int(os.getenv("SELL_HB_MAX_AGE", "900"))  # 15 мин по умолчанию
+
 
 def positions_count():
     try:
@@ -12,6 +17,7 @@ def positions_count():
         return len(obj or {})
     except Exception:
         return 0
+
 
 def heartbeat_fresh():
     if not HB.exists():
@@ -23,6 +29,7 @@ def heartbeat_fresh():
         ts = HB.stat().st_mtime
     age = time.time() - ts
     return age <= MAX_AGE_SEC, f"{int(age)}s"
+
 
 fresh, age_str = heartbeat_fresh()
 pos_n = positions_count()

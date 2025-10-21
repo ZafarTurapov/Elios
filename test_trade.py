@@ -9,20 +9,12 @@ ALPACA_SECRET_KEY = os.getenv("APCA_API_SECRET_KEY")
 BASE_URL = "https://paper-api.alpaca.markets"
 DATA_URL = "https://data.alpaca.markets/v2/stocks/bars"
 
-HEADERS = {
-    "APCA-API-KEY-ID": ALPACA_API_KEY,
-    "APCA-API-SECRET-KEY": ALPACA_SECRET_KEY
-}
+HEADERS = {"APCA-API-KEY-ID": ALPACA_API_KEY, "APCA-API-SECRET-KEY": ALPACA_SECRET_KEY}
 
 # === Получаем дату начала (3 дня назад)
 start_time = (datetime.utcnow() - timedelta(days=3)).isoformat() + "Z"
 
-params = {
-    "symbols": "AAPL",
-    "timeframe": "1Day",
-    "start": start_time,
-    "limit": 5
-}
+params = {"symbols": "AAPL", "timeframe": "1Day", "start": start_time, "limit": 5}
 
 print("📡 Запрос баров (AAPL за 3 дня)...")
 r = requests.get(DATA_URL, headers=HEADERS, params=params)
@@ -47,7 +39,7 @@ order_data = {
     "qty": 1,
     "side": "buy",
     "type": "market",
-    "time_in_force": "gtc"
+    "time_in_force": "gtc",
 }
 
 r = requests.post(order_url, json=order_data, headers=HEADERS)

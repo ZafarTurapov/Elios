@@ -35,15 +35,14 @@ y = df["label"]
 print(f"📈 Фич: {X.shape[1]}, Объектов: {X.shape[0]}")
 
 # Делим на train/test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
 
 # Обучаем модель
 print("🤖 Обучаем RandomForest...")
 model = RandomForestClassifier(
-    n_estimators=200,
-    max_depth=12,
-    random_state=42,
-    n_jobs=-1
+    n_estimators=200, max_depth=12, random_state=42, n_jobs=-1
 )
 model.fit(X_train, y_train)
 

@@ -1,22 +1,24 @@
 from modulefinder import ModuleFinder
 from pathlib import Path
 import importlib.metadata as imd
-import sys
 
 ROOT = Path("/root/stockbot")
 ENTRY_FILES = [
-    ROOT/"core/trading/signal_engine.py",
-    ROOT/"core/trading/trade_executor.py",
-    ROOT/"core/trading/sell_engine.py",
-    ROOT/"core/trading/positions_sync.py",
+    ROOT / "core/trading/signal_engine.py",
+    ROOT / "core/trading/trade_executor.py",
+    ROOT / "core/trading/sell_engine.py",
+    ROOT / "core/trading/positions_sync.py",
 ]
 ENTRY_FILES = [p for p in ENTRY_FILES if p.exists()]
 
-def is_internal(name:str)->bool:
+
+def is_internal(name: str) -> bool:
     return name.startswith("core.") or name.startswith("tools.")
 
-def top_level(name:str)->str:
+
+def top_level(name: str) -> str:
     return name.split(".")[0] if name else ""
+
 
 internal = {}
 external = set()
@@ -50,8 +52,10 @@ for name in sorted(external):
     if dists:
         vers = []
         for d in dists:
-            try: vers.append(f"{d}=={imd.version(d)}")
-            except Exception: vers.append(d)
+            try:
+                vers.append(f"{d}=={imd.version(d)}")
+            except Exception:
+                vers.append(d)
         third_party[name] = ", ".join(sorted(set(vers)))
     else:
         stdlib_guess.add(name)
@@ -64,7 +68,11 @@ for p in ENTRY_FILES:
 print("\n## Внутренние модули проекта (с путями)")
 for name in sorted(internal.keys()):
     p = internal[name]
-    rel = str(p.relative_to(ROOT)) if (p and str(p).startswith(str(ROOT))) else (str(p) if p else "—")
+    rel = (
+        str(p.relative_to(ROOT))
+        if (p and str(p).startswith(str(ROOT)))
+        else (str(p) if p else "—")
+    )
     print(f"- {name}  ·  {rel}")
 
 print("\n## Внешние зависимости (pip-дистрибуции)")

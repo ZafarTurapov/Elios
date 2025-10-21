@@ -8,6 +8,7 @@ CLEANED_PATH = "data/merged_sp500_fundamentals_clean.csv"
 TRAINING_DATA_PATH = "core/trading/training_data.json"
 OUTPUT_PATH = "data/fundamentals_with_labels.csv"
 
+
 def merge_with_labels():
     print(f"📂 Загружаем боевую историю: {TRAINING_DATA_PATH}...")
     with open(TRAINING_DATA_PATH, "r") as f:
@@ -42,7 +43,10 @@ def merge_with_labels():
         merged_df.to_csv(OUTPUT_PATH, index=False)
         print(f"🎯 Смерженные данные сохранены: {OUTPUT_PATH}")
     else:
-        print("⚠️ Не удалось объединить ни одной строки. Проверь соответствие symbol и year.")
+        print(
+            "⚠️ Не удалось объединить ни одной строки. Проверь соответствие symbol и year."
+        )
+
 
 if __name__ == "__main__":
     merge_with_labels()

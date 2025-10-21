@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
-import os, requests, html
+import os
+import requests
+import html
 
-def _clean(x: str|None) -> str:
-    if not x: return ""
+
+def _clean(x: str | None) -> str:
+    if not x:
+        return ""
     x = x.strip()
-    if (x.startswith('"') and x.endswith('"')) or (x.startswith("'") and x.endswith("'")):
+    if (x.startswith('"') and x.endswith('"')) or (
+        x.startswith("'") and x.endswith("'")
+    ):
         x = x[1:-1]
     return x.strip()
+
 
 def _parse_chats() -> list[str]:
     # поддерживаем TELEGRAM_CHAT_ID и/или TELEGRAM_CHAT_IDS (через запятую/пробел)
@@ -19,26 +26,33 @@ def _parse_chats() -> list[str]:
     seen, out = set(), []
     for p in parts:
         if p not in seen:
-            seen.add(p); out.append(p)
+            seen.add(p)
+            out.append(p)
     return out
+
 
 def _plain(text: str) -> str:
     # жёстко в ASCII, чтобы точно не падало в терминале/телеге
     try:
-        return (text or "").encode("ascii","ignore").decode("ascii")
+        return (text or "").encode("ascii", "ignore").decode("ascii")
     except Exception:
         return text or ""
 
+
 TG_TOKEN = _clean(os.getenv("TELEGRAM_BOT_TOKEN"))
-CHATS    = _parse_chats()
+CHATS = _parse_chats()
+
 
 def send(text: str, html_mode: bool = False) -> bool:
     if not TG_TOKEN:
-        print("[TG] skip: empty token"); return False
+        print("[TG] skip: empty token")
+        return False
     if not CHATS:
-        print("[TG] skip: no chats"); return False
+        print("[TG] skip: no chats")
+        return False
     if not text:
-        print("[TG] skip: empty text"); return False
+        print("[TG] skip: empty text")
+        return False
 
     url = f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage"
     ok_any = False
@@ -55,7 +69,7 @@ def send(text: str, html_mode: bool = False) -> bool:
                 data["text"] = _plain(text)
             r = requests.post(url, json=data, timeout=12)
             if r.status_code != 200:
-                body = r.text[:200].replace("\n"," ")
+                body = r.text[:200].replace("\n", " ")
                 print(f"[TG] chat={chat} http {r.status_code}: {body}")
                 continue
             ok_any = True
@@ -63,9 +77,11 @@ def send(text: str, html_mode: bool = False) -> bool:
             print(f"[TG] chat={chat} fail: {e}")
     return ok_any
 
+
 def ping() -> bool:
     if not TG_TOKEN:
-        print("[TG] ping: no token"); return False
+        print("[TG] ping: no token")
+        return False
     try:
         r = requests.get(f"https://api.telegram.org/bot{TG_TOKEN}/getMe", timeout=8)
         print(f"[TG] getMe: {r.status_code} {r.text[:120].replace(chr(10),' ')}")

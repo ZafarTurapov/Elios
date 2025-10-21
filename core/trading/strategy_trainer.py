@@ -9,6 +9,7 @@ from core.utils.telegram import send_telegram_message  # ✅ Telegram
 TRAINING_DATA_PATH = "/root/stockbot/core/trading/training_data.json"
 MODEL_PATH = "/root/stockbot/core/trading/strategy_model.json"
 
+
 def load_training_data():
     if not os.path.exists(TRAINING_DATA_PATH):
         msg = f"❌ Файл не найден: {TRAINING_DATA_PATH}"
@@ -23,13 +24,17 @@ def load_training_data():
         send_telegram_message(f"⛔️ Ошибка чтения обучающих данных: {e}")
         return []
 
+
 def train_strategy(data):
     win_alpha, win_rsi, win_ema, win_vol = [], [], [], []
 
     for d in data:
         if d.get("label") != "WIN":
             continue
-        if all(k in d and d[k] is not None for k in ["alpha_score", "rsi", "ema_dev", "vol_ratio"]):
+        if all(
+            k in d and d[k] is not None
+            for k in ["alpha_score", "rsi", "ema_dev", "vol_ratio"]
+        ):
             win_alpha.append(d["alpha_score"])
             win_rsi.append(d["rsi"])
             win_ema.append(d["ema_dev"])
@@ -45,9 +50,10 @@ def train_strategy(data):
         "min_alpha_score": round(float(np.median(win_alpha)), 3),
         "min_rsi": round(float(np.percentile(win_rsi, 25)), 2),
         "min_vol_ratio": round(float(np.percentile(win_vol, 50)), 2),
-        "max_ema_dev": round(float(np.percentile(win_ema, 75)), 2)
+        "max_ema_dev": round(float(np.percentile(win_ema, 75)), 2),
     }
     return model
+
 
 def save_model(model):
     try:
@@ -70,6 +76,7 @@ def save_model(model):
         print(err)
         send_telegram_message(err)
 
+
 def main():
     try:
         data = load_training_data()
@@ -82,6 +89,7 @@ def main():
         err = f"⛔️ Ошибка во время обучения: {e}"
         print(err)
         send_telegram_message(err)
+
 
 if __name__ == "__main__":
     main()

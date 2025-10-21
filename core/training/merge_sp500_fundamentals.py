@@ -28,8 +28,9 @@ for i, chunk in enumerate(pd.read_csv(stocks_file, chunksize=chunksize)):
     merged_chunk = pd.merge(chunk, fundamentals, on=["Symbol", "Year"], how="inner")
 
     # Сохраняем кусок в CSV
-    merged_chunk.to_csv(OUTPUT_FILE, mode="w" if first_write else "a",
-                        index=False, header=first_write)
+    merged_chunk.to_csv(
+        OUTPUT_FILE, mode="w" if first_write else "a", index=False, header=first_write
+    )
     first_write = False
 
     print(f"Обработан пакет {i+1}, строк: {len(merged_chunk)}")
