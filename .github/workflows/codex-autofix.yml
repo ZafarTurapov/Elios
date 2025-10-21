@@ -1,33 +1,96 @@
 ---
+# yamllint disable rule:truthy
 name: Codex Autofix
 on:
   workflow_dispatch:
   schedule:
     - cron: "0 * * * *"
+
 permissions:
   contents: write
   pull-requests: write
+
+concurrency:
+  group: codex-autofix
+  cancel-in-progress: true
+
 jobs:
   autofix:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Run ruff & black (no fail on change)
+
+      - name: Install formatters (best-effort)
         run: |
-          python -m pip install -U ruff black
+          python -m pip install -U pip || true
+          python -m pip install -U ruff black || true
+
+      - name: Run ruff & black
+        run: |
           ruff check . --fix || true
           black . || true
-      - name: Create PR
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+          git status -s
+
+      - name: Set bot identity
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit changes
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git add -A
+          git commit -m "ci: codex autofix (ruff/black)" || true
+
+      # Если есть PAT (секрет BOT_PAT) — создаём PR им (разрешён)
+      - name: Create PR with BOT_PAT
+        if: steps.diff.outputs.changed == 'true' && secrets.BOT_PAT != ''
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.BOT_PAT }}
           branch: codex/autofix-${{ github.run_id }}
           title: "ci: codex autofix"
           commit-message: "ci: codex autofix"
-          body: "Automated formatting/lint fixes."
+          body: "Automated ruff/black formatting."
           labels: autofix
           delete-branch: true
+
+      # Если PAT нет — пробуем GITHUB_TOKEN (может быть запрещён); не валим job
+      - name: Create PR with GITHUB_TOKEN (best-effort)
+        if: steps.diff.outputs.changed == 'true' && secrets.BOT_PAT == ''
+        uses: peter-evans/create-pull-request@v6
+        continue-on-error: true
+        with:
+          token: ${{ github.token }}
+          branch: codex/autofix-${{ github.run_id }}
+          title: "ci: codex autofix"
+          commit-message: "ci: codex autofix"
+          body: "Automated ruff/black formatting."
+          labels: autofix
+          delete-branch: true
+
+      # Fallback: если PR нельзя — тупо пушим ветку, job остаётся зелёным
+      - name: Push branch fallback (no PR)
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          set -x
+          git push -u origin "HEAD:refs/heads/codex/autofix-${GITHUB_RUN_ID}" || true
+          echo "::notice title=Codex Autofix::PR creation restricted. Branch pushed: codex/autofix-${GITHUB_RUN_ID}"
