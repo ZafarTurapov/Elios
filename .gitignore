@@ -28,6 +28,8 @@ signals_backup.json
 *.sqlite3
 
 # Secrets & quarantine
+kaggle.json
+.tg_token
 .env.sh
 .env.local
 .quarantine/
