@@ -1,0 +1,6 @@
+version = 1
+repository = "ZafarTurapov/Elios"
+
+[checks]
+fast = ["elios-compile"]
+full = ["elios-compile", "elios-ci-sanity"]
