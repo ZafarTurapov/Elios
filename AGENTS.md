@@ -1,0 +1,7 @@
+# Elios — engineering instructions
+
+**Owner-wide default (confirmed 2026-10-22):** for all current and future software projects, use DevRunner Next as the preferred technical execution path for approved `inspect`, `build`, `test`, `lint`, diagnostics and bounded maintenance, through ordinary ChatGPT → GitHub → limited Windows Worker → structured receipt. The functioning transport's real `build: PASS` is [DevRunner Issue #1393](https://github.com/ZafarTurapov/DevRunner/issues/1393#issuecomment-6338382983).
+
+**Important:** This proof concerns the DevRunner project, not an already successful Elios run. Before any Elios execution, verify target repository admission and supported profiles, then read the exact actual receipt. Use approved GitHub editing tools to change source; prefer DevRunner Next for available local engineering checks. Work/manual is fallback for unsupported or interactive work. Never infer authorization to use arbitrary shell/Windows actions, modify owner policy/secrets, disable existing safeguards or change working DevRunner/Local Agent installations.
+
+Owner-wide source of truth: [Development Canon](https://github.com/ZafarTurapov/Zafar-Memory/blob/main/00_MEMORY/DEVELOPMENT_CANON.md) §0C and [DevRunner universal runbook](https://github.com/ZafarTurapov/DevRunner/blob/bootstrap/core-foundation/docs/UNIVERSAL_TOOL.md). Prefer smallest necessary tests and evidence-backed PASS/FAIL over repeated ceremonial verification.
